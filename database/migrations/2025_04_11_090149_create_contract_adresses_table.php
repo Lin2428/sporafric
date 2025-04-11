@@ -1,0 +1,41 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('contract_adresses', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('contract_id');
+            $table->foreignId( 'country_id');
+            $table->string('contact_name')->nullable();
+            $table->string('contact_phone')->nullable();
+            $table->string('contact_email')->nullable();
+            $table->foreignId('city_id');
+            $table->foreignId('district_id')->nullable();
+            $table->foreignId('quartier_id')->nullable();
+            $table->string('address');
+            $table->string('postal_code')->nullable();
+            $table->string('lat')->nullable();
+            $table->string('lng')->nullable();
+            $table->foreignId('user_id')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('contract_adresses');
+    }
+};
