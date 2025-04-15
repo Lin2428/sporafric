@@ -6,9 +6,13 @@ use App\Filament\Resources\Location\DistrictResource\Pages;
 use App\Filament\Resources\Location\DistrictResource\RelationManagers;
 use App\Models\Location\District;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -26,7 +30,18 @@ class DistrictResource extends Resource
     {
         return $form
             ->schema([
-                //
+                    Select::make('city_id')
+                        ->relationship('city', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->label('Ville')
+                        ->columnSpanFull()
+                        ->required(),
+
+                    TextInput::make('name')
+                        ->label('Nom de l\'arrondissement')
+                        ->columnSpanFull()
+                        ->required(),
             ]);
     }
 
@@ -34,7 +49,22 @@ class DistrictResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                    ->label("Nom")
+                    ->searchable(),
+
+                    TextColumn::make("city.name")
+                    ->label("Ville")
+                    ->searchable(),
+
+                    TextColumn::make("city.country.name")
+                    ->label("Pays")
+                    ->searchable(),
+
+                    TextColumn::make("created_at")
+                    ->label("Création")
+                    ->dateTime('d/m/Y'),
+
             ])
             ->filters([
                 //
@@ -60,8 +90,8 @@ class DistrictResource extends Resource
     {
         return [
             'index' => Pages\ListDistricts::route('/'),
-            'create' => Pages\CreateDistrict::route('/create'),
-            'edit' => Pages\EditDistrict::route('/{record}/edit'),
+            // 'create' => Pages\CreateDistrict::route('/create'),
+            // 'edit' => Pages\EditDistrict::route('/{record}/edit'),
         ];
     }
 }

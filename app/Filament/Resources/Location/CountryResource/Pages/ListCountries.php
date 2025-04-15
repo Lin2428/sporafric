@@ -13,7 +13,11 @@ class ListCountries extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Ajouter un pays')
+            ->modalActions()
+            ->modalHeading('Ajouter un pays')
+            ->modalWidth('md'),
         ];
     }
 }

@@ -10,10 +10,14 @@ class ListGenerators extends ListRecords
 {
     protected static string $resource = GeneratorResource::class;
 
+    protected static ?string $title = 'Liste des groupes électrogènes';
+
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Ajouter')
+                ->icon('heroicon-o-plus'),
         ];
     }
 }

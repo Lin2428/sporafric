@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Piece extends Model
 {
     use SoftDeletes;
+
+    protected $fillable = [
+        'reference',
+        'designation',
+        'image',
+        'duree_vie',
+        'pr',
+        'pv',
+        'user_id',
+    ];
 }

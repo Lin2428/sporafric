@@ -13,7 +13,11 @@ class ListCities extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Ajouter une ville')
+                ->modalActions()
+                ->modalHeading('Ajouter une ville')
+                ->modalWidth('md'),
         ];
     }
 }

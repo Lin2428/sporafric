@@ -9,4 +9,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateGenerator extends CreateRecord
 {
     protected static string $resource = GeneratorResource::class;
+    protected static ?string $title = 'Ajouter un groupe électrogène';
 }

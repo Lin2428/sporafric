@@ -11,23 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contract_adresses', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('contract_id');
-            $table->foreignId( 'country_id');
+        Schema::table('contracts', function (Blueprint $table) {
+            $table->foreignId( 'customer_adresse_id')->nullable();
             $table->string('contact_name')->nullable();
             $table->string('contact_phone')->nullable();
             $table->string('contact_email')->nullable();
-            $table->foreignId('city_id');
-            $table->foreignId('district_id')->nullable();
-            $table->foreignId('quartier_id')->nullable();
-            $table->string('address');
-            $table->string('postal_code')->nullable();
             $table->string('lat')->nullable();
             $table->string('lng')->nullable();
-            $table->foreignId('user_id')->nullable();
-            $table->softDeletes();
-            $table->timestamps();
         });
     }
 
@@ -36,6 +26,14 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contract_adresses');
+        Schema::table('contracts', function (Blueprint $table) {
+            $table->dropForeign(['customer_adresse_id']);
+            $table->dropColumn('customer_adresse_id');
+            $table->dropColumn('contact_name');
+            $table->dropColumn('contact_phone');
+            $table->dropColumn('contact_email');
+            $table->dropColumn('lat');
+            $table->dropColumn('lng');
+        });
     }
 };

@@ -10,6 +10,8 @@ class EditGenerator extends EditRecord
 {
     protected static string $resource = GeneratorResource::class;
 
+    protected static ?string $title = 'Modifier un groupe électrogène';
+
     protected function getHeaderActions(): array
     {
         return [

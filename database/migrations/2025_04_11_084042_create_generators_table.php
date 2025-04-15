@@ -22,8 +22,9 @@ return new class extends Migration
             $table->double('serial_number')->nullable();
             $table->date('start-up')->nullable();
             $table->integer('status')->default(0)->nullable();
-            $table->time('houres')->nullable();
+            $table->string('houres')->nullable();
             $table->date('next_vidange')->nullable();
+            $table->string('fuel_type')->nullable();
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

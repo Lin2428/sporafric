@@ -13,7 +13,11 @@ class ListQuartiers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Ajouter un quartier')
+                ->modalActions()
+                ->modalHeading('Ajouter un quartier')
+                ->modalWidth('md'),
         ];
     }
 }

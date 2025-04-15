@@ -6,9 +6,13 @@ use App\Filament\Resources\Location\CityResource\Pages;
 use App\Filament\Resources\Location\CityResource\RelationManagers;
 use App\Models\Location\City;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -23,11 +27,23 @@ class CityResource extends Resource
     protected static ?string $navigationLabel = 'Ville';
     protected static ?int $navigationSort = 1;
 
+    
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                        Select::make('country_id')
+                            ->relationship('country', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->label('Pays')
+                            ->columnSpanFull()
+                            ->required(),
+
+                        TextInput::make('name')
+                            ->label('Nom de ville')
+                            ->columnSpanFull()
+                            ->required(),
             ]);
     }
 
@@ -35,7 +51,21 @@ class CityResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                    ->label("Nom de ville")
+                    ->searchable(),
+
+                    TextColumn::make("country.name")
+                    ->label("Pays")
+                    ->searchable(),
+
+                    TextColumn::make("created_at")
+                    ->dateTime('d/m/Y')
+                    ->sortable(),
+
+                    TextColumn::make('updated_at')
+                    ->dateTime('d/m/Y')
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -61,8 +91,8 @@ class CityResource extends Resource
     {
         return [
             'index' => Pages\ListCities::route('/'),
-            'create' => Pages\CreateCity::route('/create'),
-            'edit' => Pages\EditCity::route('/{record}/edit'),
+            // 'create' => Pages\CreateCity::route('/create'),
+            // 'edit' => Pages\EditCity::route('/{record}/edit'),
         ];
     }
 }

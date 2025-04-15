@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('contact_l_email')->nullable();
             $table->string('contact_l_phone')->nullable();
             $table->string('logo')->nullable();
-            $table->boolean('is_active');
+            $table->boolean('is_active')->default(true);
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

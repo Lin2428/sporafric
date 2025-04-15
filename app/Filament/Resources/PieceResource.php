@@ -6,6 +6,10 @@ use App\Filament\Resources\PieceResource\Pages;
 use App\Filament\Resources\PieceResource\RelationManagers;
 use App\Models\Piece;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -26,7 +30,55 @@ class PieceResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Group::make()
+                    ->schema([
+                        Section::make()
+                            ->columns()
+                            ->columnSpan(2)
+                            ->schema([
+                                TextInput::make('reference')
+                                    ->label('Référence')
+                                    ->columnSpanFull()
+                                    ->required(),
+
+                                TextInput::make('designation')
+                                    ->label('Désignation')
+                                    ->required()
+                                    ->columnSpanFull(),
+
+                                FileUpload::make('image')
+                                // ->acceptedFileTypes([
+                                //     'jpg',
+                                //     'png',
+                                //     'jpeg',
+                                // ])
+                                // ->imageCropAspectRatio('1:1')
+                                // ->imageResizeTargetWidth('800')
+                                // ->imageResizeTargetWidth('800')
+                                // ->imageResizeMode('contain')
+                                // ->imagePreviewHeight('250')
+                                    ->openable()
+                                    ->reorderable()
+                                    ->label('Image')
+                                    ->columnSpanFull(),
+
+                                TextInput::make('power')
+                                    ->numeric()
+                                    ->label('Puissance (KVA)'),
+
+                                TextInput::make('voltage')
+                                    ->numeric()
+                                    ->label('Tension (V)'),
+
+                                TextInput::make('frequency')
+                                    ->label('Fréquence (Hz)')
+                                    ->numeric(),
+
+                                    
+                            TextInput::make('fuel_type')
+                                ->label('Type de carburant'),
+                            ]),
+                    ])->columnSpan(['lg' => 2]),
             ]);
     }
 

@@ -10,10 +10,14 @@ class ListContracts extends ListRecords
 {
     protected static string $resource = ContractResource::class;
 
+    protected static ?string $title = 'Contrats';
+
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Nouveau contrat')
+                ->icon('heroicon-o-plus'),
         ];
     }
 }

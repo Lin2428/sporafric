@@ -13,7 +13,11 @@ class ListDistricts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label('Ajouter un arrondissement')
+                ->modalActions()
+                ->modalHeading('Ajouter un arrondissement')
+                ->modalWidth('md'),
         ];
     }
 }
