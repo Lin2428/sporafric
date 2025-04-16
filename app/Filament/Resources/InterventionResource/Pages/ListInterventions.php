@@ -10,6 +10,8 @@ class ListInterventions extends ListRecords
 {
     protected static string $resource = InterventionResource::class;
 
+    protected static ?string $title = 'Interventions';
+
     protected function getHeaderActions(): array
     {
         return [

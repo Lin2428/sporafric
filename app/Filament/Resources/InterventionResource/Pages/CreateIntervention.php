@@ -9,4 +9,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateIntervention extends CreateRecord
 {
     protected static string $resource = InterventionResource::class;
+
+    protected static ?string $title = 'Ajouter une intervention';
 }

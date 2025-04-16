@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Filament\Resources\GeneratorResource\Pages;
 
 use App\Filament\Resources\GeneratorResource;
+use Filament\Infolists\Components\Tabs\Tab;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
@@ -14,22 +14,28 @@ class ViewGenerator extends ViewRecord
 
     public function getTitle(): string | Htmlable
     {
-        $title =  "<strong class='text-primary'> {$this->record->name} - {$this->record->site} - {$this->record->modele}</strong>";
+        $title = "<strong class='text-primary'> {$this->record->name} - {$this->record->modele} - {$this->record->power}KVA</strong>";
         return new HtmlString($title);
     }
+
+
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('history')
-                ->label('Historique')
-                ->icon('heroicon-o-clock')
-                //->url($this->record->generator ? route('filament.resources.contracts.history', $this->record) : route('filament.resources.contracts.history', $this->record))
-                ->openUrlInNewTab(),
+
             Actions\ActionGroup::make([
                 Actions\EditAction::make()
                     ->label('Modifier le groupe electrogene')
                     ->icon('heroicon-o-pencil'),
+
+                Actions\Action::make('history')
+                    ->label('Historique')
+                    ->icon('heroicon-o-circle-stack')
+                    ->color('primary')
+                    //->url($this->record->generator ? route('filament.resources.contracts.history', $this->record) : route('filament.resources.contracts.history', $this->record))
+                    ->openUrlInNewTab(),
+
                 Actions\DeleteAction::make()
                     ->label('Supprimer le groupe electrogene')
                     ->icon('heroicon-o-trash'),
@@ -37,4 +43,3 @@ class ViewGenerator extends ViewRecord
         ];
     }
 }
-?>

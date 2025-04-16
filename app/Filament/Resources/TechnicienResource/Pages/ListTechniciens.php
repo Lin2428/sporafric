@@ -13,7 +13,11 @@ class ListTechniciens extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->label('Ajouter un technicien')
+                ->modalHeading('Ajouter un technicien')
+                ->modalActions()
+                ->modalWidth('md'),
         ];
     }
 }

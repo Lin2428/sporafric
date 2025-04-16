@@ -28,4 +28,20 @@ class Generator extends Model
         'start-up' => 'datetime',
         'next_vidange' => 'datetime',
     ];
+
+
+    protected $with = [
+        'contractGenerator',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function contractGenerator()
+    {
+        return $this->hasOne(ContractGenerator::class)->where('status', true);
+    }
+
 }

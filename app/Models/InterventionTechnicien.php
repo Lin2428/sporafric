@@ -13,4 +13,14 @@ class InterventionTechnicien extends Model
         'intervention_id',
         'technicien_id',
     ];
+
+    public function intervention()
+    {
+        return $this->belongsTo(Intervention::class);
+    }
+
+    public function technicien()
+    {
+        return $this->belongsTo(Technicien::class, 'technicien_id');
+    }
 }

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Intervention extends Model
@@ -27,4 +29,18 @@ class Intervention extends Model
         'raison',
         'user_id',
     ];
+
+    public function contract()
+    {
+        return $this->belongsTo(Contract::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function interventionTechniciens():BelongsToMany
+    {
+        return $this->belongsToMany(Technicien::class, 'intervention_techniciens');
+    }
 }

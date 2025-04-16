@@ -2,13 +2,23 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\InterventionStatus;
+use App\Enum\InterventionType;
 use App\Filament\Resources\InterventionResource\Pages;
 use App\Filament\Resources\InterventionResource\RelationManagers;
 use App\Models\Intervention;
+use Date;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -26,21 +36,139 @@ class InterventionResource extends Resource
     {
         return $form
             ->schema([
-                //
-            ]);
+                Group::make()
+                    ->schema([
+                        Section::make('Informations sur l’intervention')
+                            ->columns(2)
+                            ->schema([
+                                Select::make('contract_id')
+                                    ->relationship('contract', 'number')
+                                    ->label('Contrat')
+                                    ->required()
+                                    ->searchable()
+                                    ->columnSpanFull()
+                                    ->preload()
+                                    ->placeholder('Sélectionner un contrat'),
+                                    
+                                DatePicker::make('date_prise_appel')
+                                    ->label('Date de prise d’appel')
+                                    ->required(),
+
+                                DatePicker::make('date_planifiee')
+                                    ->label('Date planifiée')
+                                    ->required(),
+
+                                TextInput::make('identifiant')
+                                    ->label('Numéro de Bon d\'intervention')
+                                    ->required(),
+
+                                Select::make('type')
+                                    ->label('Type')
+                                    ->options(collect(InterventionType::cases())
+                                    ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                    ->toArray())
+                                    ->required(),
+
+                                Textarea::make('description_panne')
+                                    ->label('Description de la panne')
+                                    ->required()
+                                    ->rows(5)
+                                    ->columnSpanFull(),
+                            ])       
+                    ])->columnSpan(['lg' => 2]),
+
+                Group::make()
+                    ->schema([
+                    Section::make('Infos internes')
+                        ->columns(1)
+                        ->schema([
+                            DatePicker::make('start_date')
+                                ->label('Date de début')
+                                ->required(),
+                            DatePicker::make('end_date')
+                                ->label('Date limite')
+                                ->required(),
+
+                            Select::make('status')
+                                ->label('Statut')
+                                ->options(collect(InterventionStatus::cases())
+                                    ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                    ->toArray())
+                                ->required(),
+                            Select::make('interventionTechniciens.technicien_id')
+                                ->relationship('interventionTechniciens', 'name')
+                                ->label('Techniciens assignés')
+                                ->multiple()
+                                ->preload()
+                                ->searchable()
+                                ->placeholder('Sélectionner un technicien'),
+                        ])
+                ])->columnSpan(['lg' => 1]),
+                
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('created_at')
+                    ->label('Créé le')
+                    ->dateTime("d/m/Y à H:i")
+                    ->sortable(),
+                
+                    TextColumn::make('status')
+                    ->label('Statut')
+                    ->badge()
+                    ->getStateUsing(fn($record) => InterventionStatus::from($record->status)->label())
+                    ->searchable()
+                    ->colors([
+                        'warning' => "En cours",
+                        'danger' => "Non commencée",
+                        'primary' => "Annulée",
+                        'success' => "Terminée",
+                    ]),
+
+                TextColumn::make('contract.customer.name')
+                    ->label('Client')
+                    ->searchable()
+                    ->sortable()
+                    ->extraAttributes(['class' => 'font-bold'])
+                    ->limit(50),
+
+                TextColumn::make('contract.generator.name')
+                    ->label('Groupe Electrogène')
+                    ->searchable()
+                    ->sortable()
+                    ->extraAttributes(['class' => 'font-bold'])
+                    ->limit(50),
+
+                    TextColumn::make('contract.generator.modele')
+                    ->label('Modele')
+                    ->searchable()
+                    ->sortable()
+                    ->extraAttributes(['class' => 'font-bold'])
+                    ->limit(50),
+
+                TextColumn::make('identifiant')
+                    ->label('Numéro')
+                    ->searchable()
+                    ->sortable()
+                    ->limit(50),
+
+                TextColumn::make('type')
+                    ->label('Type')
+                    ->getStateUsing(fn($record) => InterventionType::from($record->type)->label())
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

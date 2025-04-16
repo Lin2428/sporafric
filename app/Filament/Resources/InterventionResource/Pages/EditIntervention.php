@@ -10,6 +10,8 @@ class EditIntervention extends EditRecord
 {
     protected static string $resource = InterventionResource::class;
 
+    protected static ?string $title = 'Modifier une intervention';
+
     protected function getHeaderActions(): array
     {
         return [

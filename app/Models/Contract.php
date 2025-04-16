@@ -46,7 +46,24 @@ class Contract extends Model
         });
 
         static::updating(function ($model) {
-            dd($model);
+            if ($model->isDirty('generator_id')) {
+                $oldGenerator = $model->getOriginal('generator_id');
+                $newGenerator = $model->generator_id;
+
+                if ($oldGenerator !== $newGenerator) {
+                    ContractGenerator::where('contract_id', $model->id)
+                        ->where('generator_id', $oldGenerator)
+                        ->update(['status' => false]);
+
+                    ContractGenerator::updateOrCreate(
+                        [
+                            'contract_id' => $model->id,
+                            'generator_id' => $newGenerator,
+                        ],
+                        ['status' => true, 'user_id' => auth()->user()->id]
+                    );
+                }
+            }
         });
     }
     public function customer()

@@ -1,10 +1,11 @@
-<div>
+<div wire:ignore>
     <div id="map" style="height: 400px; width: 100%; border-radius: 10px;"></div>
-
     <script>
+        const lat = parseFloat(@json($getRecord()->lat ?? $getRecord()->contractGenerator->contract->lat ?? null));
+        const lng = parseFloat(@json($getRecord()->lng ?? $getRecord()->contractGenerator->contract->lng ?? null));
+        
         function initMap() {
-            const lat = parseFloat(@json($lat ?? -4.2634));
-            const lng = parseFloat(@json($lng ?? 15.2429));
+            
             const position = { lat: lat, lng: lng };
 
             const map = new google.maps.Map(document.getElementById("map"), {

@@ -22,15 +22,16 @@ class ViewContract extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('history')
-                ->label('Historique')
-                ->icon('heroicon-o-clock')
-                //->url($this->record->generator ? route('filament.resources.contracts.history', $this->record) : route('filament.resources.contracts.history', $this->record))
-                ->openUrlInNewTab(),
             Actions\ActionGroup::make([
                 Actions\EditAction::make()
                     ->label('Modifier le contrat')
                     ->icon('heroicon-o-pencil'),
+                    Actions\Action::make('history')
+                    ->label('Historique')
+                    ->icon('heroicon-o-circle-stack')
+                    ->color('primary')
+                    //->url($this->record->generator ? route('filament.resources.contracts.history', $this->record) : route('filament.resources.contracts.history', $this->record))
+                    ->openUrlInNewTab(),
                 Actions\DeleteAction::make()
                     ->label('Supprimer le contrat')
                     ->icon('heroicon-o-trash'),
