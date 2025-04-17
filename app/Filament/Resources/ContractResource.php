@@ -3,6 +3,7 @@ namespace App\Filament\Resources;
 
 use App\Enum\GeneratorStatus;
 use App\Filament\Resources\ContractResource\Pages;
+use App\Filament\Utils\WidgetUtils;
 use App\Models\Contract;
 use App\Utils\NumberUtils;
 use Filament\Forms\Components\DatePicker;
@@ -40,19 +41,11 @@ class ContractResource extends Resource
                         Section::make('Infos générales')
                             ->columns(2)
                             ->schema([
-                                Select::make('customer_id')
-                                    ->label('Client')
-                                    ->relationship('customer', 'name')
-                                    ->required()
-                                    ->searchable()
+                                WidgetUtils::customerSelectWidget()
                                     ->columnSpanFull(),
 
-                                Select::make('generator_id')
-                                    ->label('Groupe électrogène')
-                                    ->relationship('generator', 'name')
-                                    ->required()
-                                    ->searchable()
-                                    ->columnSpanFull(),
+                                WidgetUtils::generatorSelectWidget()
+                                ->columnSpanFull(),
 
                                 TextInput::make('number')
                                     ->label('Numéro de contrat')
@@ -127,15 +120,9 @@ class ContractResource extends Resource
                         Section::make('Données de la carte')
                             ->columns(2)
                             ->schema([
-                                Select::make('customer_adresse_id')
-                                    ->options(function (callable $get) {
-                                        $customerId = $get('customer_id');
-                                        return \App\Models\CustomerAdress::where('customer_id', $customerId)->pluck('address', 'id');
-                                    })
-                                    ->label('Adresse du client')
-                                    ->searchable()
-                                    ->required()
-                                    ->columnSpanFull(),
+                                WidgetUtils::adresseSelectWidget()
+                                    ->columnSpanFull(), 
+                                    
                                 TextInput::make('lat')
                                     ->label('Latitude')
                                     ->reactive()

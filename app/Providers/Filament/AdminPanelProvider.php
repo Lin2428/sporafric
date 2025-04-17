@@ -25,12 +25,14 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
+            ->viteTheme(['public/css/filament/filament/app.css', 'resources/css/app.css',])
             ->path('admin')
             ->login()
             ->brandName('SPORAFRIC')
             ->brandLogo(asset('image/logo_light.png'))
             ->colors([
                 'primary' => Color::Yellow,
+                'secondary' => Color::Gray
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

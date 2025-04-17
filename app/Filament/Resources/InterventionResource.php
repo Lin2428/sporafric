@@ -116,6 +116,12 @@ class InterventionResource extends Resource
                     ->label('Créé le')
                     ->dateTime("d/m/Y à H:i")
                     ->sortable(),
+
+                    TextColumn::make('identifiant')
+                    ->label('Numéro')
+                    ->searchable()
+                    ->sortable()
+                    ->limit(50),
                 
                     TextColumn::make('status')
                     ->label('Statut')
@@ -148,12 +154,6 @@ class InterventionResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->extraAttributes(['class' => 'font-bold'])
-                    ->limit(50),
-
-                TextColumn::make('identifiant')
-                    ->label('Numéro')
-                    ->searchable()
-                    ->sortable()
                     ->limit(50),
 
                 TextColumn::make('type')

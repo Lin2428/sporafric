@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('date_planifiee');
             $table->integer('type');
             $table->string('identifiant');
-            $table->string('description_panne')->nullable();
+            $table->text('description_panne')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->integer('compteur')->nullable();

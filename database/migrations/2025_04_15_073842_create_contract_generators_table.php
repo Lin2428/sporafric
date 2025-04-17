@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('contract_generators', function (Blueprint $table) {
             $table->id();
             $table->foreignId('contract_id')->constrained();
-            $table->foreignId('generator_id')->constrained();
+            $table->foreignId('generator_id')->nullable();
             $table->boolean('status')->default(false);
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();

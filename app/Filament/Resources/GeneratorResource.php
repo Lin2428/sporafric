@@ -2,6 +2,8 @@
 namespace App\Filament\Resources;
 
 use App\Enum\GeneratorStatus;
+use App\Enum\InterventionStatus;
+use App\Enum\InterventionType;
 use App\Filament\Resources\GeneratorResource\Pages;
 use App\Models\Generator;
 use App\Utils\NumberUtils;
@@ -12,7 +14,9 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
@@ -242,8 +246,8 @@ class GeneratorResource extends Resource
                     ->columnSpanFull()
                     ->tabs([
                         Tabs\Tab::make('Contrat / SItuation')
-                        ->icon('heroicon-o-clipboard-document')
-                        ->iconPosition(IconPosition::After)
+                            ->icon('heroicon-o-clipboard-document')
+                            ->iconPosition(IconPosition::After)
                             ->schema([
                                 \Filament\Infolists\Components\Group::make()
                                     ->columnSpan(4)
@@ -462,23 +466,124 @@ class GeneratorResource extends Resource
                                     ]),
                             ]),
                         Tabs\Tab::make('Interventions')
-                        
-                        ->icon('heroicon-o-wrench-screwdriver')
-                        ->iconPosition(IconPosition::After)
+
+                            ->icon('heroicon-o-wrench-screwdriver')
+                            ->iconPosition(IconPosition::After)
                             ->schema([
-                                // ...
+                                RepeatableEntry::make("contractGenerator.contract.interventions")
+                                    ->label('Interventions de la location en cours')
+                                    ->schema([
+                                        TextEntry::make('status')
+                                            ->label('')
+                                            ->badge()
+                                            ->getStateUsing(fn($record) => InterventionStatus::from($record->status)->label())
+                                            ->colors([
+                                                'warning' => "En cours",
+                                                'danger'  => "Non commencée",
+                                                'primary' => "Annulée",
+                                                'success' => "Terminée",
+                                            ]),
+                                        TextEntry::make('created_at')
+                                            ->label('Créer le')
+                                            ->inlineLabel()
+                                            ->date('d/m/y à H:i'),
+
+                                        TextEntry::make('identifiant')
+                                            ->label('Numéro de Bon d\'intervention')
+                                            ->extraAttributes(['class' => 'font-bold']),
+
+                                        TextEntry::make('type')
+                                            ->label('Type')
+                                            ->getStateUsing(fn($record) => InterventionType::from($record->type)->label())
+                                            ->extraAttributes(['class' => 'font-bold']),
+
+                                        TextEntry::make('description_panne')
+                                            ->label('Description de la panne')
+                                            ->color('secondary')
+                                            ->columnSpanFull(),
+
+                                        \Filament\Infolists\Components\Group::make()
+                                            ->columns(4)
+                                            ->columnSpanFull()
+                                            ->schema([
+                                                TextEntry::make('date_prise_appel')
+                                                    ->label('Date de prise d’appel')
+                                                    ->date('d/m/Y')
+                                                    ->color('success'),
+
+                                                TextEntry::make('date_planifiee')
+                                                    ->label('Date planifiée')
+                                                    ->date('d/m/Y')
+                                                    ->color('danger'),
+
+                                                TextEntry::make('start_date')
+                                                    ->label('Date début')
+                                                    ->date('d/m/Y')
+                                                    ->color('success'),
+
+                                                TextEntry::make('end_date')
+                                                    ->label('Date limite')
+                                                    ->date('d/m/Y')
+                                                    ->color('danger'),
+                                            ]),
+
+                                        // \Filament\Infolists\Components\View::make('filament.infolist.components.technicien-card')
+                                        //         ->label('')
+                                        //         ->viewData([
+                                        //             'record' => fn ($record) => $record->interventionTechniciens,
+                                        //         ])
+                                        //         ->columnSpanFull(),
+
+                                        \Filament\Infolists\Components\Group::make()
+                                            ->columnSpanFull()
+                                            ->schema([
+                                                RepeatableEntry::make('interventionTechniciens')
+                                                    ->alignCenter()
+                                                    ->extraAttributes(['class' => 'border-0 shadow-none p-0 bg-transparent'])
+                                                    ->grid(2)
+                                                    ->schema([
+                                                        Grid::make()
+                                                            ->columns(2)
+                                                            ->schema([
+                                                                ImageEntry::make("photo")
+                                                                    ->hiddenLabel()
+                                                                    ->inlineLabel()
+                                                                    ->circular()
+                                                                    ->size(100)
+                                                                    ->height(100),
+                                                                \Filament\Infolists\Components\Group::make()
+                                                                ->columnSpan(['lg' => 1])
+                                                                    ->schema([
+                                                                        TextEntry::make('name')
+                                                                            ->hiddenLabel()
+                                                                            ->extraAttributes(['class' => 'mb-0 gap-y-0 p-0']),
+                                                                        TextEntry::make('email')
+                                                                            ->hiddenLabel()
+                                                                            ->inlineLabel()
+                                                                            ->extraAttributes(['class' => 'mb-0 gap-y-0 p-0']),
+                                                                        TextEntry::make('phone')
+                                                                            ->hiddenLabel()
+                                                                            ->inlineLabel()
+                                                                            ->extraAttributes(['class' => 'mb-0 gap-y-0 p-0']),
+                                                                    ]),
+                                                            ]),
+                                                    ])
+                                                    ->label('Liste des techniciens'),
+                                            ]),
+
+                                    ]),
                             ]),
                         Tabs\Tab::make('Pièces de rechange')
-                        
-                        ->icon('heroicon-o-cog-8-tooth')
-                        ->iconPosition(IconPosition::After)
+
+                            ->icon('heroicon-o-cog-8-tooth')
+                            ->iconPosition(IconPosition::After)
                             ->schema([
                                 // ...
                             ]),
 
                         Tabs\Tab::make('Facturation')
-                        ->icon('heroicon-o-ticket')
-                        ->iconPosition(IconPosition::After)
+                            ->icon('heroicon-o-ticket')
+                            ->iconPosition(IconPosition::After)
                             ->schema([
                                 // ...
                             ]),

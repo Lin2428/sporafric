@@ -30,6 +30,8 @@ class Intervention extends Model
         'user_id',
     ];
 
+    protected $with = ['interventionTechniciens'];
+
     public function contract()
     {
         return $this->belongsTo(Contract::class);

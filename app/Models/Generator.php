@@ -44,4 +44,6 @@ class Generator extends Model
         return $this->hasOne(ContractGenerator::class)->where('status', true);
     }
 
+   
+
 }

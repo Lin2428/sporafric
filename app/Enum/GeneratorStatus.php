@@ -5,8 +5,8 @@ enum GeneratorStatus: string
 {
     case DISPONIBLE = '0';
     case EN_MAINTENANCE = '1';
-    case EN_LOCATION = '3';
-    case INDISPONIBLE = '4';
+    case EN_LOCATION = '2';
+    case INDISPONIBLE = '3';
 
     public function label(): string
     {
