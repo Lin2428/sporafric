@@ -18,7 +18,7 @@ class InterventionDeliveryResource extends Resource
     protected static ?string $model = InterventionDelivery::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box-arrow-down';
-    protected static ?string $navigationGroup = 'Intervention';
+    protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Livraison / Installation';
     protected static ?int $navigationSort = 1;
 

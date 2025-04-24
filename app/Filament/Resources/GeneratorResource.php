@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources;
 
 use App\Enum\GeneratorStatus;
@@ -32,9 +33,9 @@ class GeneratorResource extends Resource
     protected static ?string $model = Generator::class;
 
     protected static ?string $navigationIcon  = 'icon-generator';
-    protected static ?string $navigationGroup = 'Gestion des GE';
+    protected static ?string $navigationGroup = 'Location';
     protected static ?string $navigationLabel = 'Groupes Electrogènes';
-    protected static ?int $navigationSort     = 0;
+    protected static ?int $navigationSort     = 2;
 
     public static function form(Form $form): Form
     {
@@ -61,16 +62,16 @@ class GeneratorResource extends Resource
                                     ->columnSpanFull(),
 
                                 FileUpload::make('image')
-                                // ->acceptedFileTypes([
-                                //     'jpg',
-                                //     'png',
-                                //     'jpeg',
-                                // ])
-                                // ->imageCropAspectRatio('1:1')
-                                // ->imageResizeTargetWidth('800')
-                                // ->imageResizeTargetWidth('800')
-                                // ->imageResizeMode('contain')
-                                // ->imagePreviewHeight('250')
+                                    // ->acceptedFileTypes([
+                                    //     'jpg',
+                                    //     'png',
+                                    //     'jpeg',
+                                    // ])
+                                    // ->imageCropAspectRatio('1:1')
+                                    // ->imageResizeTargetWidth('800')
+                                    // ->imageResizeTargetWidth('800')
+                                    // ->imageResizeMode('contain')
+                                    // ->imagePreviewHeight('250')
                                     ->openable()
                                     ->reorderable()
                                     ->label('Image')
@@ -104,8 +105,8 @@ class GeneratorResource extends Resource
 
                                 Select::make('status')
                                     ->options(collect(GeneratorStatus::cases())
-                                            ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                                            ->toArray())
+                                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                        ->toArray())
                                     ->searchable()
                                     ->label('Statut')
                                     ->preload()
@@ -552,7 +553,7 @@ class GeneratorResource extends Resource
                                                                     ->size(100)
                                                                     ->height(100),
                                                                 \Filament\Infolists\Components\Group::make()
-                                                                ->columnSpan(['lg' => 1])
+                                                                    ->columnSpan(['lg' => 1])
                                                                     ->schema([
                                                                         TextEntry::make('name')
                                                                             ->hiddenLabel()

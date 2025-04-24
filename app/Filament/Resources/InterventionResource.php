@@ -4,18 +4,22 @@ namespace App\Filament\Resources;
 
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
+use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
 use App\Filament\Resources\InterventionResource\Pages;
 use App\Filament\Resources\InterventionResource\RelationManagers;
 use App\Models\Intervention;
 use Date;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -28,7 +32,7 @@ class InterventionResource extends Resource
     protected static ?string $model = Intervention::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
-    protected static ?string $navigationGroup = 'Intervention';
+    protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Interventions';
     protected static ?int $navigationSort = 0;
 
@@ -49,7 +53,7 @@ class InterventionResource extends Resource
                                     ->columnSpanFull()
                                     ->preload()
                                     ->placeholder('Sélectionner un contrat'),
-                                    
+
                                 DatePicker::make('date_prise_appel')
                                     ->label('Date de prise d’appel')
                                     ->required(),
@@ -65,8 +69,8 @@ class InterventionResource extends Resource
                                 Select::make('type')
                                     ->label('Type')
                                     ->options(collect(InterventionType::cases())
-                                    ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                                    ->toArray())
+                                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                        ->toArray())
                                     ->required(),
 
                                 Textarea::make('description_panne')
@@ -74,38 +78,43 @@ class InterventionResource extends Resource
                                     ->required()
                                     ->rows(5)
                                     ->columnSpanFull(),
-                            ])       
+                            ])
                     ])->columnSpan(['lg' => 2]),
 
                 Group::make()
                     ->schema([
-                    Section::make('Infos internes')
-                        ->columns(1)
-                        ->schema([
-                            DatePicker::make('start_date')
-                                ->label('Date de début')
-                                ->required(),
-                            DatePicker::make('end_date')
-                                ->label('Date limite')
-                                ->required(),
+                        Section::make('Infos internes')
+                            ->columns(1)
+                            ->schema([
+                                DatePicker::make('start_date')
+                                    ->label('Date de début')
+                                    ->required(),
+                                DatePicker::make('end_date')
+                                    ->label('Date limite')
+                                    ->required(),
 
-                            Select::make('status')
-                                ->label('Statut')
-                                ->options(collect(InterventionStatus::cases())
-                                    ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                                    ->toArray())
-                                ->required(),
-                            Select::make('interventionTechniciens.technicien_id')
-                                ->relationship('interventionTechniciens', 'name')
-                                ->label('Techniciens assignés')
-                                ->multiple()
-                                ->preload()
-                                ->searchable()
-                                ->placeholder('Sélectionner un technicien'),
-                        ])
-                ])->columnSpan(['lg' => 1]),
-                
+                                Select::make('status')
+                                    ->label('Statut')
+                                    ->options(collect(InterventionStatus::cases())
+                                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                        ->toArray())
+                                    ->required(),
+                                Select::make('interventionTechniciens.technicien_id')
+                                    ->relationship('interventionTechniciens', 'name')
+                                    ->label('Techniciens assignés')
+                                    ->multiple()
+                                    ->preload()
+                                    ->searchable()
+                                    ->placeholder('Sélectionner un technicien'),
+                            ])
+                    ])->columnSpan(['lg' => 1]),
+
             ])->columns(3);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return static::buildInfolist($infolist);
     }
 
     public static function table(Table $table): Table
@@ -117,13 +126,13 @@ class InterventionResource extends Resource
                     ->dateTime("d/m/Y à H:i")
                     ->sortable(),
 
-                    TextColumn::make('identifiant')
+                TextColumn::make('identifiant')
                     ->label('Numéro')
                     ->searchable()
                     ->sortable()
                     ->limit(50),
-                
-                    TextColumn::make('status')
+
+                TextColumn::make('status')
                     ->label('Statut')
                     ->badge()
                     ->getStateUsing(fn($record) => InterventionStatus::from($record->status)->label())
@@ -149,7 +158,7 @@ class InterventionResource extends Resource
                     ->extraAttributes(['class' => 'font-bold'])
                     ->limit(50),
 
-                    TextColumn::make('contract.generator.modele')
+                TextColumn::make('contract.generator.modele')
                     ->label('Modele')
                     ->searchable()
                     ->sortable()
@@ -190,6 +199,23 @@ class InterventionResource extends Resource
             'index' => Pages\ListInterventions::route('/'),
             'create' => Pages\CreateIntervention::route('/create'),
             'edit' => Pages\EditIntervention::route('/{record}/edit'),
+            'view' => ViewIntervention::route('/{record}'),
         ];
+    }
+    public static function buildInfolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+
+                TextEntry::make('generator')
+                    ->getStateUsing(function (Intervention $record) {
+                        return $record->contract->generator->name . '-' . $record->contract->generator->modele . ' ' . $record->contract->generator->power . 'kW - N/S: ' . $record->contract->generator->serial_number;
+                    })->hiddenLabel()
+                    ->size(10)
+                    ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])
+                    ->columnSpanFull(),
+                \Filament\Infolists\Components\View::make('filament.infolist.pages.view-intervention')
+                    ->columnSpanFull(),
+            ]);
     }
 }

@@ -41,8 +41,13 @@ class Intervention extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function interventionTechniciens():BelongsToMany
+    public function interventionTechniciens(): BelongsToMany
     {
         return $this->belongsToMany(Technicien::class, 'intervention_techniciens');
+    }
+
+    public function getDateFormat()
+    {
+        return 'd/m/Y';
     }
 }

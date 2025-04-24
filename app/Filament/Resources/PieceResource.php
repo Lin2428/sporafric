@@ -22,9 +22,9 @@ class PieceResource extends Resource
     protected static ?string $model = Piece::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-8-tooth';
-    protected static ?string $navigationGroup = 'Gestion des GE';
+    protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Pièces de Réchange';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

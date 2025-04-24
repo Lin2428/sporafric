@@ -19,7 +19,7 @@ return new class extends Migration
             $table->double('power');
             $table->double('voltage')->nullable();
             $table->double('frequency')->nullable();
-            $table->double('serial_number')->nullable();
+            $table->string('serial_number')->nullable();
             $table->date('start-up')->nullable();
             $table->integer('status')->default(0)->nullable();
             $table->string('houres')->nullable();
