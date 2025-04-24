@@ -95,6 +95,15 @@
         object-fit: cover;
         border-radius: 4px;
     }
+
+    .container-2 {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        align-items: end;
+
+        margin-left: 1rem;
+    }
 </style>
 
 <div class="container-1">
@@ -266,14 +275,46 @@
         </div>
     </div>
 
-    <div>
+    <div class="container-2">
         <x-filament::button color="warning">
             Modifier
         </x-filament::button>
-
-        <iframe src="{{ asset('storage/interventions/test.pdf') }}" height="500"
-            style="background-color: white; border: none; width: 100%;"></iframe>
-
+        <br><br>
+        <div id="pdf-viewer"
+            style="width: 300px; height: 400px; overflow: hidden; background: white; border: 1px solid #ccc; border-radius: 8px;">
+        </div>
     </div>
 
 </div>
+<br>
+<hr>
+<br>
+
+
+<!-- PDF.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+
+<script>
+    const url = "{{ asset('storage/interventions/test.pdf') }}"; // Chemin vers ton PDF
+
+    const loadingTask = pdfjsLib.getDocument(url);
+    loadingTask.promise.then(pdf => {
+        pdf.getPage(1).then(page => {
+            const scale = 0.5; // Ajuste l'échelle si besoin
+            const viewport = page.getViewport({ scale });
+
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            document.getElementById("pdf-viewer").appendChild(canvas);
+
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            page.render(renderContext);
+        });
+    });
+</script>
