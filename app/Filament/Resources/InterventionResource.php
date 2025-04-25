@@ -209,7 +209,7 @@ class InterventionResource extends Resource
 
                 TextEntry::make('generator')
                     ->getStateUsing(function (Intervention $record) {
-                        return $record->contract->generator->name . '-' . $record->contract->generator->modele . ' ' . $record->contract->generator->power . 'kW - N/S: ' . $record->contract->generator->serial_number;
+                        return $record->contract->generator->name . '-' . $record->contract->generator->modele . ' ' . $record->contract->generator->power . 'KVA - N/S: ' . $record->contract->generator->serial_number;
                     })->hiddenLabel()
                     ->size(10)
                     ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])

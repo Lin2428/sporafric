@@ -104,6 +104,11 @@
 
         margin-left: 1rem;
     }
+
+    .pdf-flex {
+        display: flex;
+        gap: 1rem;
+    }
 </style>
 
 <div class="container-1">
@@ -281,7 +286,7 @@
         </x-filament::button>
         <br><br>
         <div id="pdf-viewer"
-            style="width: 300px; height: 400px; overflow: hidden; background: white; border: 1px solid #ccc; border-radius: 8px;">
+            style="width: 300px; height: 400px;cursor: pointer; overflow: hidden; background: white; border: 1px solid #ccc; border-radius: 8px;">
         </div>
     </div>
 
@@ -289,18 +294,88 @@
 <br>
 <hr>
 <br>
+<div class="container-1">
+    <div class="w-full">
 
+        <div class="data-block">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-credit-card')</i>
+                Mode de facturation:
+            </span>
+            <span>Hors conrat</span>
+        </div>
+
+
+        <div class="data-block">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-clock')</i>
+                Horaire:
+            </span>
+            <span>Journée normale (2h-30min)</span>
+        </div>
+
+        <div class="data-block">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-clipboard-document-list')</i>
+                Devis:
+            </span>
+            <span>N°12378 du 17/04/2024</span>
+        </div>
+
+        <div class="data-block">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-bookmark')</i>
+                Bon de commande:
+            </span>
+            <span>N°12378 du 17/04/2024</span>
+        </div>
+
+        <div class="data-block">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-banknotes')</i>
+                Montant facturé:
+            </span>
+            <span><b>120 000 Fcfa</b></span>
+        </div>
+
+    </div>
+
+    <div class="container-2">
+        <x-filament::button color="warning">
+            Modifier
+        </x-filament::button>
+        <br><br>
+        <div class="pdf-flex">
+            <div id="pdf-viewer-2"
+                style="width: 250px; height: 350px; overflow: hidden; background: white; border: 1px solid #ccc; border-radius: 8px;  cursor: pointer;">
+            </div>
+            <div id="pdf-viewer-3"
+                style="width: 250px; height: 350px; overflow: hidden; background: white; border: 1px solid #ccc; border-radius: 8px;cursor: pointer;">
+            </div>
+        </div>
+    </div>
+
+</div>
 
 <!-- PDF.js Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
 
 <script>
-    const url = "{{ asset('storage/interventions/test.pdf') }}"; // Chemin vers ton PDF
-
+    function renderPdfPage({
+    url,             // URL du PDF (ex: 'storage/mon-fichier.pdf')
+    targetElementId, // ID de l'élément où afficher le canvas
+    pageNumber = 1,  // Numéro de la page à afficher (par défaut 1)
+    scale = 0.5      // Échelle du rendu (0.5 = réduit, 1 = taille normale, etc.)
+}) {
     const loadingTask = pdfjsLib.getDocument(url);
+
     loadingTask.promise.then(pdf => {
-        pdf.getPage(1).then(page => {
-            const scale = 0.5; // Ajuste l'échelle si besoin
+        if (pageNumber > pdf.numPages) {
+            console.error(`Page ${pageNumber} dépasse le nombre de pages (${pdf.numPages}).`);
+            return;
+        }
+
+        pdf.getPage(pageNumber).then(page => {
             const viewport = page.getViewport({ scale });
 
             const canvas = document.createElement("canvas");
@@ -308,13 +383,152 @@
             canvas.height = viewport.height;
             canvas.width = viewport.width;
 
-            document.getElementById("pdf-viewer").appendChild(canvas);
+            // Vide l'élément si besoin
+            const target = document.getElementById(targetElementId);
+            target.innerHTML = "";
+            target.appendChild(canvas);
 
             const renderContext = {
                 canvasContext: context,
                 viewport: viewport
             };
+
             page.render(renderContext);
         });
+    }).catch(error => {
+        console.error("Erreur de chargement du PDF :", error);
     });
+}
+
+    renderPdfPage({
+    url: "{{ asset('storage/interventions/test.pdf') }}",
+    targetElementId: "pdf-viewer",
+    pageNumber: 1,
+    scale: 0.5
+    });
+
+    renderPdfPage({
+    url: "{{ asset('storage/devis/test.pdf') }}",
+    targetElementId: "pdf-viewer-2",
+    pageNumber: 1,
+    scale: 0.43
+    });
+
+    renderPdfPage({
+    url: "{{ asset('storage/bon_de_commande/test.pdf') }}",
+    targetElementId: "pdf-viewer-3",
+    pageNumber: 1,
+    scale: 0.43
+    });
+
+    function openPdfModal({
+    pdfUrl,
+    modalId = 'pdf-modal',
+    viewerId = 'pdf-full',
+    scale = 1.5,
+}) {
+    const modal = document.getElementById(modalId);
+    const viewer = document.getElementById(viewerId);
+
+    if (!modal || !viewer) {
+        console.error("Modal ou viewer non trouvé.");
+        return;
+    }
+let pdfLink = document.querySelector('#pdf-link');
+pdfLink.href = pdfUrl;
+    // Affiche le modal
+    modal.style.display = "flex";
+
+    // Vide le contenu précédent
+    viewer.innerHTML = "";
+
+
+    // Charge le PDF avec pdf.js
+    const loadingTask = pdfjsLib.getDocument(pdfUrl);
+    loadingTask.promise.then(pdf => {
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            pdf.getPage(pageNum).then(page => {
+                const viewport = page.getViewport({ scale });
+
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                page.render({ canvasContext: context, viewport });
+                viewer.appendChild(canvas);
+            });
+        }
+    }).catch(error => {
+        console.error("Erreur lors du chargement du PDF :", error);
+    });
+}
+
+// Fonction de fermeture
+function closePdfModal(modalId = 'pdf-modal') {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+document.getElementById("pdf-viewer").onclick = () => {
+    openPdfModal({
+        pdfUrl: "{{ asset('storage/interventions/test.pdf') }}",
+        modalId: "pdf-modal",
+        viewerId: "pdf-full",
+        scale: 1.5
+    });
+};
+
+document.getElementById("pdf-viewer-2").onclick = () => {
+    openPdfModal({
+        pdfUrl: "{{ asset('storage/devis/test.pdf') }}",
+        modalId: "pdf-modal",
+        viewerId: "pdf-full",
+        scale: 1.5
+    });
+};
+
+document.getElementById("pdf-viewer-3").onclick = () => {
+    openPdfModal({
+        pdfUrl: "{{ asset('storage/bon_de_commande/test.pdf') }}",
+        modalId: "pdf-modal",
+        viewerId: "pdf-full",
+        scale: 1.5
+    });
+};
+
+
 </script>
+
+
+<!-- Modale PDF -->
+<div id="pdf-modal" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+">
+    <div style="position: relative; background: white; padding: 10px; border-radius: 8px;">
+        <button onclick="closePdfModal()" style="
+            position: absolute;
+            top: 5px; right: 10px;
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+        ">X</button>
+
+        <a id="pdf-link" href="" target="_blank">
+            <div id="pdf-full" style="width: auto; height: 90vh; overflow: auto;"></div>
+    </div>
+    </a>
+</div>

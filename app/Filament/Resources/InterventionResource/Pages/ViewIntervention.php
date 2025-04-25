@@ -24,7 +24,11 @@ class ViewIntervention extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-
+            Actions\Action::make('facture')
+                ->label('Generer la facture')
+                ->icon('heroicon-o-ticket')
+                ->color('success')
+                ->iconPosition('after'),
             Actions\ActionGroup::make([
                 Actions\EditAction::make()
                     ->label('Modifier l\'intervention')

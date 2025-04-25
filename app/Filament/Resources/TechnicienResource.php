@@ -20,7 +20,7 @@ class TechnicienResource extends Resource
 {
     protected static ?string $model = Technicien::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+    protected static ?string $navigationIcon = 'heroicon-o-identification';
     protected static ?string $navigationGroup = 'Ronde';
     protected static ?string $navigationLabel = 'Techniciens';
     protected static ?int $navigationSort = 0;
@@ -102,9 +102,9 @@ class TechnicienResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                ->modalWidth('md'),
+                    ->modalWidth('md'),
                 Tables\Actions\EditAction::make()
-                ->modalWidth('md'),
+                    ->modalWidth('md'),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
