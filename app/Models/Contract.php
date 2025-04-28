@@ -18,6 +18,7 @@ class Contract extends Model
         'start_date',
         'end_date',
         'is_active',
+        'is_retired',
         'forfait',
         'user_id',
         'customer_adresse_id',
@@ -88,5 +89,5 @@ class Contract extends Model
     public function interventions()
     {
         return $this->hasMany(Intervention::class);
-    }   
+    }
 }

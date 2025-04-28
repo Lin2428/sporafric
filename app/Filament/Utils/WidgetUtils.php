@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Filament\Utils;
 
+use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\CustomerAdress;
 use App\Models\Generator;
@@ -93,6 +95,53 @@ class WidgetUtils
         return $select;
     }
 
+    public static function contractSelectWidget(): Select
+    {
+        $select = Select::make('contract_id')
+            ->relationship('customer', 'name')
+            ->searchable()
+            ->required()
+            ->allowHtml()
+            ->label('Contrat')
+            ->getSearchResultsUsing(function (string $search) {
+                $users = Contract::where('site', 'like', "%$search%")
+                    ->orWhere('contact_phone', 'like', "$search%")
+                    ->orWhere('contact_email', 'like', "$search%")
+                    ->orWhereHas('customer', function ($query) use ($search) {
+                        $query->where('name', 'like', "$search%");
+                        $query->orWhere('contact_c_phone', 'like', "$search%");
+                        $query->orWhere('contact_c_email', 'like', "$search%");
+                    })
+                    ->limit(50)
+                    ->get();
+
+                return $users
+                    ->mapWithKeys(function ($user) {
+                        return [$user->id => static::getContractSelect($user)];
+                    })
+                    ->toArray();
+            })
+            ->getOptionLabelUsing(function ($value) {
+                $customer = Customer::where('id', $value)
+                    ->firstOrFail();
+
+                return WidgetUtils::getCustomerSelect($customer);
+            })
+            ->createOptionModalHeading('Nouveau client')
+            ->createOptionUsing(function ($data) {
+                $customer = Customer::make($data);
+
+                if (mb_strlen($customer->email ?? '') === 0) {
+                    $customer->email = null;
+                }
+
+                $customer->save();
+            });
+        //->createOptionForm([Grid::make(2)->schema(CustomerUtils::form())]);
+
+        return $select;
+    }
+
     public static function adresseSelectWidget(): Select
     {
         $select = Select::make('customer_adresse_id')
@@ -100,10 +149,10 @@ class WidgetUtils
                 $customerId = $get('customer_id');
                 $adresse = CustomerAdress::where('customer_id', $customerId)->get();
                 return $adresse
-                ->mapWithKeys(function ($user) {
-                    return [$user->id => static::getAdresseSelect($user)];
-                })
-                ->toArray();
+                    ->mapWithKeys(function ($user) {
+                        return [$user->id => static::getAdresseSelect($user)];
+                    })
+                    ->toArray();
             })
             ->searchable()
             ->required()
@@ -112,10 +161,10 @@ class WidgetUtils
             ->label('Adresse du client')
             ->getSearchResultsUsing(function (string $search, callable $get) {
                 $customerId = $get('customer_id');
-                $adresse = CustomerAdress::where('customer_id','=', $customerId)
+                $adresse = CustomerAdress::where('customer_id', '=', $customerId)
                     ->whereHas('city', function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%");
-                })
+                        $query->where('name', 'like', "%$search%");
+                    })
                     ->orWhereHas('district', function ($query) use ($search) {
                         $query->where('name', 'like', "%$search%");
                     })
@@ -163,6 +212,13 @@ class WidgetUtils
     {
         return view('filament.forms.components.select-customer-result')
             ->with('customer', $model)
+            ->render();
+    }
+
+    public static function getContractSelect(Contract $model): string
+    {
+        return view('filament.forms.components.select-contract-result')
+            ->with('contract', $model)
             ->render();
     }
 

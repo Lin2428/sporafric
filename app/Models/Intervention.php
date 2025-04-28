@@ -45,9 +45,4 @@ class Intervention extends Model
     {
         return $this->belongsToMany(Technicien::class, 'intervention_techniciens');
     }
-
-    public function getDateFormat()
-    {
-        return 'd/m/Y';
-    }
 }

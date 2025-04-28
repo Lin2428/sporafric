@@ -7,6 +7,8 @@ use App\Enum\InterventionType;
 use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
 use App\Filament\Resources\InterventionResource\Pages;
 use App\Filament\Resources\InterventionResource\RelationManagers;
+use App\Filament\Utils\InterventionUtil;
+use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
 use Date;
 use Filament\Forms;
@@ -45,14 +47,8 @@ class InterventionResource extends Resource
                         Section::make('Informations sur l’intervention')
                             ->columns(2)
                             ->schema([
-                                Select::make('contract_id')
-                                    ->relationship('contract', 'number')
-                                    ->label('Contrat')
-                                    ->required()
-                                    ->searchable()
-                                    ->columnSpanFull()
-                                    ->preload()
-                                    ->placeholder('Sélectionner un contrat'),
+                                WidgetUtils::contractSelectWidget()
+                                    ->columnSpanFull(),
 
                                 DatePicker::make('date_prise_appel')
                                     ->label('Date de prise d’appel')
@@ -82,32 +78,7 @@ class InterventionResource extends Resource
                     ])->columnSpan(['lg' => 2]),
 
                 Group::make()
-                    ->schema([
-                        Section::make('Infos internes')
-                            ->columns(1)
-                            ->schema([
-                                DatePicker::make('start_date')
-                                    ->label('Date de début')
-                                    ->required(),
-                                DatePicker::make('end_date')
-                                    ->label('Date limite')
-                                    ->required(),
-
-                                Select::make('status')
-                                    ->label('Statut')
-                                    ->options(collect(InterventionStatus::cases())
-                                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                                        ->toArray())
-                                    ->required(),
-                                Select::make('interventionTechniciens.technicien_id')
-                                    ->relationship('interventionTechniciens', 'name')
-                                    ->label('Techniciens assignés')
-                                    ->multiple()
-                                    ->preload()
-                                    ->searchable()
-                                    ->placeholder('Sélectionner un technicien'),
-                            ])
-                    ])->columnSpan(['lg' => 1]),
+                    ->schema([InterventionUtil::infoInterne()])->columnSpan(['lg' => 1]),
 
             ])->columns(3);
     }

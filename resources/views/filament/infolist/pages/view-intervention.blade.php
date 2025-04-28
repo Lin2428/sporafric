@@ -159,9 +159,7 @@
         </div>
     </div>
 
-    <x-filament::button color="warning">
-        Modifier
-    </x-filament::button>
+    @include('filament.infolist.pages.modals.modal_1')
 
 </div>
 <br>

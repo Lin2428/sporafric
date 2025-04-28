@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\utils;
 
 use App\Models\Location\City;
@@ -116,8 +117,9 @@ class CustomerUtil
                                 ->label('Code postal'),
                         ])->columns(1),
 
-                ])->columnSpan(['lg' => 1,
-            ]),
+                ])->columnSpan([
+                    'lg' => 1,
+                ]),
 
         ];
     }
@@ -151,5 +153,4 @@ class CustomerUtil
 
         ];
     }
-
 }
