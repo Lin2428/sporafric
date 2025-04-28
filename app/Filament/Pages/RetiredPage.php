@@ -8,6 +8,7 @@ use App\Models\Contract;
 use App\Models\Intervention;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
@@ -36,10 +37,12 @@ class RetiredPage extends Page implements HasForms, HasTable
             CreateAction::make()
                 ->label('Nouveau retrait')
                 ->modalHeading('Nouveau retrait')
+                ->model(Intervention::class)
                 ->form([
-                    Group::make()
+                    Grid::make()
+                        ->columns(2)
                         ->schema([
-                            Section::make('Informations sur l’intervention')
+                            Section::make('Informations sur le retrait')
                                 ->columns(2)
                                 ->schema([
                                     WidgetUtils::contractSelectWidget()
@@ -57,10 +60,10 @@ class RetiredPage extends Page implements HasForms, HasTable
                                         ->required()
                                         ->rows(3)
                                         ->columnSpanFull(),
-                                ]),
-                            InterventionUtil::infoInterne()
+                                ])->columnSpan(['lg' => 1]),
+                            InterventionUtil::infoInterne()->columnSpan(['lg' => 1]),
                         ])
-                ])
+                ])->action(function (array $data) {})
         ];
     }
     public function table(Table $table): Table

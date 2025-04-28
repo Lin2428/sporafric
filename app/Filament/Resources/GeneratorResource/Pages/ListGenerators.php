@@ -29,17 +29,20 @@ class ListGenerators extends ListRecords
                 $query->where('status', '=', GeneratorStatus::INDISPONIBLE->value)
             ),
 
-            
-            
+
+
         ];
     }
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
+            /*Actions\CreateAction::make()
                 ->label('Ajouter')
-                ->icon('heroicon-o-plus'),
+                ->icon('heroicon-o-plus'),*/
+            Actions\Action::make('synchronuis')
+                ->label('Synchroniser')
+                ->icon('heroicon-o-arrow-path'),
         ];
     }
 }

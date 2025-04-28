@@ -13,7 +13,10 @@ class ListPieces extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            //Actions\CreateAction::make(),
+            Actions\Action::make('synchronuis')
+                ->label('Synchroniser')
+                ->icon('heroicon-o-arrow-path'),
         ];
     }
 }
