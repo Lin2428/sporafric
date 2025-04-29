@@ -37,7 +37,11 @@ class InterventionResource extends Resource
     protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Interventions';
     protected static ?int $navigationSort = 0;
-
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Intervention::count();
+        return $count;
+    }
     public static function form(Form $form): Form
     {
         return $form

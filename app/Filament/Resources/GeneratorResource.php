@@ -37,6 +37,12 @@ class GeneratorResource extends Resource
     protected static ?string $navigationLabel = 'Groupes Electrogènes';
     protected static ?int $navigationSort     = 2;
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Generator::count();
+        return $count;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
