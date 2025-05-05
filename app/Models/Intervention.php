@@ -12,7 +12,12 @@ class Intervention extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'type_location',
         'contract_id',
+        'customer_id',
+        'generator',
+        'power',
+        'serial_number',
         'date_prise_appel',
         'date_planifiee',
         'type',
@@ -35,6 +40,10 @@ class Intervention extends Model
     public function contract()
     {
         return $this->belongsTo(Contract::class);
+    }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
     public function user()
     {

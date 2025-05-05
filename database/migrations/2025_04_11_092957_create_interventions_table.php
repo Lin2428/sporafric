@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('interventions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('contract_id');
+            $table->integer('type_location');
+            $table->foreignId('contract_id')->nullable();
+            $table->foreignId('customer_id')->nullable();
             $table->date('date_prise_appel');
             $table->date('date_planifiee');
             $table->integer('type');
@@ -28,6 +30,9 @@ return new class extends Migration
             $table->boolean('status')->nullable();
             $table->boolean('cancelled')->default(false);
             $table->string('raison')->nullable();
+            $table->string('generator')->nullable();
+            $table->string('power')->nullable();
+            $table->string('serial_number')->nullable();
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

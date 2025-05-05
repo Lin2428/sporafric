@@ -15,7 +15,20 @@ class ViewIntervention extends ViewRecord
 
     public function getTitle(): string | Htmlable
     {
-        $title = "<strong class='text-primary'> {$this->record->contract->customer->name} - {$this->record->contract->site}</strong>";
+        $img = $this->record->contract != null
+            ? $this->record->contract->customer->logo
+            : $this->record->customer->logo;
+
+        $name = $this->record->contract != null
+            ? $this->record->contract->customer->name . " - " . $this->record->contract->site
+            : $this->record->customer->name . " - " . $this->record->identifiant;
+
+        $title = '
+        <div class="flex items-center space-x-4">
+            <img src="' . asset("/storage/$img") . '" class="w-[100px] h-auto object-contain rounded" alt="Logo">
+            <strong class="text-primary text-3xl">' . e($name) . '</strong>
+        </div>
+    ';
         return new HtmlString($title);
     }
 

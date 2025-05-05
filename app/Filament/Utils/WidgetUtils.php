@@ -98,7 +98,7 @@ class WidgetUtils
     public static function contractSelectWidget(): Select
     {
         $select = Select::make('contract_id')
-            ->relationship('customer', 'name')
+            ->relationship('contract', 'name')
             ->searchable()
             ->required()
             ->allowHtml()

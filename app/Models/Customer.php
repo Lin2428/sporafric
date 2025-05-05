@@ -30,13 +30,13 @@ class Customer extends Model
         'is_active' => 'boolean',
         'deleted_at' => 'datetime',
     ];
-
+    protected $with = ['customerAdresses'];
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function country()
+    /*public function country()
     {
         return $this->belongsTo(Country::class);
     }
@@ -51,7 +51,7 @@ class Customer extends Model
     public function quartier()
     {
         return $this->belongsTo(Quartier::class);
-    }
+    }*/
 
     public function customerAdresses()
     {
