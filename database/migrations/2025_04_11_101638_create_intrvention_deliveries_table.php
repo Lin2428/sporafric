@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('intervention_id');
             $table->foreignId('piece_id');
+            $table->integer('qty');
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

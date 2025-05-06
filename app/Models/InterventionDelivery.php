@@ -14,6 +14,7 @@ class InterventionDelivery extends Model
     protected $fillable = [
         'intervention_id',
         'piece_id',
+        'qty',
         'user_id',
     ];
 
