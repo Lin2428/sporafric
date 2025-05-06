@@ -159,8 +159,6 @@
         </div>
     </div>
 
-    @include('filament.infolist.pages.modals.modal_1')
-
 </div>
 <br>
 <hr>
@@ -197,9 +195,6 @@
     <div>
 
     </div>
-    <x-filament::button color="warning">
-        Modifier
-    </x-filament::button>
 </div>
 <br>
 <hr>
@@ -279,9 +274,7 @@
     </div>
 
     <div class="container-2">
-        <x-filament::button color="warning">
-            Modifier
-        </x-filament::button>
+        @livewire('intervention-action-form1',['record' => $getRecord()])
         <br><br>
         <div id="pdf-viewer"
             style="width: 300px; height: 400px;cursor: pointer; overflow: hidden; background: white; border: 1px solid #ccc; border-radius: 8px;">

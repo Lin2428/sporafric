@@ -18,4 +18,9 @@ class Piece extends Model
         'pv',
         'user_id',
     ];
+
+    public function interventions()
+    {
+        return $this->belongsToMany(Intervention::class, 'intrvention_deliveries');
+    }
 }

@@ -6,6 +6,7 @@ use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\CustomerAdress;
 use App\Models\Generator;
+use App\Models\Piece;
 use Closure;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
@@ -201,6 +202,45 @@ class WidgetUtils
         return $select;
     }
 
+    public static function pieceSelectWidget(?Closure $onUpdate = null, ?Closure $callback = null, bool $isDispo = true): Select
+    {
+        $select = Select::make('piece_id')
+            ->allowHtml()
+            ->getSearchResultsUsing(function (string $search) use ($isDispo) {
+                $query = Piece::query()
+                    ->where(function (Builder $query) use ($search) {
+                        $query
+                            ->where('reference', 'like', "%{$search}%")
+                            ->orWhere('designation', 'like', "%{$search}%")
+                        ;
+                    });
+
+                /*if ($isDispo) {
+                    $query->where("status", "=", '0');
+                }*/
+
+                $result = $query->get();
+
+                return $result
+                    ->mapWithKeys(fn($pieces) => [
+                        $pieces->id => WidgetUtils::getPieceSelect($pieces),
+                    ])->toArray();
+            })
+            ->getOptionLabelUsing(function ($value) {
+                $piece = Piece::where('id', $value)
+                    ->firstOrFail();
+
+                return WidgetUtils::getPieceSelect($piece);
+            })
+            ->searchable()
+            ->label('Pièces');
+
+        if ($onUpdate !== null) {
+            $select = $select->afterStateUpdated($onUpdate)->reactive();
+        }
+        return $select;
+    }
+
     public static function getGeneratorSelect(Generator $model): string
     {
         return view('filament.forms.components.select-generator-result')
@@ -226,6 +266,13 @@ class WidgetUtils
     {
         return view('filament.forms.components.select-adresse-result')
             ->with('adresse', $model)
+            ->render();
+    }
+
+    public static function getPieceSelect(Piece $model): string
+    {
+        return view('filament.forms.components.select-piece-result')
+            ->with('piece', $model)
             ->render();
     }
 }

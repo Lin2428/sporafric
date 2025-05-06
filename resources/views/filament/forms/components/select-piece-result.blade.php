@@ -1,47 +1,23 @@
-<?php
-$bg = match($generator->status) {
-    0 => 'bg-green-50',
-    1 => 'bg-yellow-50',
-    2 => 'bg-blue-50',
-    default => 'bg-red-50',
-};
-
-$text = match($generator->status) {
-    0 => 'text-green-700',
-    1 => 'text-yellow-700',
-    2 => 'text-blue-700',
-    default => 'text-red-700',
-};
-
-$ring = match($generator->status) {
-    0 => 'ring-green-600/10',
-    1 => 'ring-yellow-600/10',
-    2 => 'ring-blue-600/10',
-    default => 'ring-red-600/10',
-};
-?>
-
 <div class="rounded-md w-full">
     <div class="flex w-full">
 
-        <img src="{{asset('storage/' . $generator->image)}}" class="img overflow-hidden" alt="">
+        <img src="{{asset('storage/' . $piece->image)}}" class="img overflow-hidden" alt="">
 
         <div class=" ml-10 justify-center text-xs w-full">
-            <div class="font-medium pb-1">{{ $generator->name}} - {{ $generator->modele }}</div>
+            <div class="font-medium pb-1">{{ $piece->reference}} - {{ $piece->designation }}</div>
             <div class="flex items-center">
-                {{$generator->power}}KVA
+                {{\App\Utils\NumberUtils::format($piece->pv)}} FCFA
             </div>
 
-            <span
-                class="inline-flex items-center rounded-md {{$bg}} px-2 py-1 text-xs font-medium {{$text}} ring-1 {{$ring}} ring-inset">
-                {{ \App\Enum\GeneratorStatus::from($generator->status)->label() }}</span>
+            <span class="inline-flex ">
+                {{ $piece->duree_vie}} h</span>
         </div>
     </div>
 </div>
 
 <style>
     .img {
-        width: 70%;
+        width: 70px;
         height: 70px;
         overflow: hidden;
         object-fit: cover;

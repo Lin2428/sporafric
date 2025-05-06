@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\GeneratorResource\Pages;
 
 use App\Filament\Resources\InterventionResource;
+use Filament\Actions\Action;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\Tabs\Tab;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
@@ -12,6 +14,7 @@ use Illuminate\Support\HtmlString;
 class ViewIntervention extends ViewRecord
 {
     protected static string $resource = InterventionResource::class;
+    public $showForm = false;
 
     public function getTitle(): string | Htmlable
     {
@@ -51,6 +54,13 @@ class ViewIntervention extends ViewRecord
                     ->label('Annulé l\'intervention')
                     ->icon('heroicon-o-trash'),
             ]),
+        ];
+    }
+    protected function getFormSchema(): array
+    {
+        return [
+            TextInput::make('title')->label('Titre'),
+            // ... d'autres champs
         ];
     }
 }

@@ -54,4 +54,9 @@ class Intervention extends Model
     {
         return $this->belongsToMany(Technicien::class, 'intervention_techniciens');
     }
+
+    public function pieces()
+    {
+        return $this->belongsToMany(Piece::class, 'intrvention_deliveries');
+    }
 }

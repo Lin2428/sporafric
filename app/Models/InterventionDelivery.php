@@ -16,4 +16,9 @@ class InterventionDelivery extends Model
         'piece_id',
         'user_id',
     ];
+
+    public function piece()
+    {
+        return $this->belongTo(Piece::class);
+    }
 }
