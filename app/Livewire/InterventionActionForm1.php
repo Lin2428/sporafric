@@ -48,7 +48,6 @@ class InterventionActionForm1 extends Component implements HasForms, HasActions
         return Action::make('edit')
             ->label('Modifier')
             ->modalHeading('Mondifier les informations')
-->
             ->form([
                 FileUpload::make('fiche')
                     ->label('Fiche d\'intervention')
