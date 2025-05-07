@@ -35,7 +35,7 @@ class Intervention extends Model
         'user_id',
     ];
 
-    protected $with = ['interventionTechniciens'];
+    protected $with = ['interventionTechniciens',];
 
     public function contract()
     {
@@ -62,6 +62,6 @@ class Intervention extends Model
 
     public function infos()
     {
-        return $this->belongsTo(InterventionInfo::class);
+        return $this->hasOne(InterventionInfo::class, 'intervention_id');
     }
 }

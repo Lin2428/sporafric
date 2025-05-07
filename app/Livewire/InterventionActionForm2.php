@@ -38,8 +38,6 @@ class InterventionActionForm2 extends Component implements HasForms, HasActions
 
     public function editAction(): Action
     {
-        dd($this->record->infos);
-
         return Action::make('edit')
             ->label('Modifier')
             ->modalHeading('Mondifier les informations')
@@ -53,11 +51,11 @@ class InterventionActionForm2 extends Component implements HasForms, HasActions
                             ->options(collect(FactureType::cases())
                                 ->mapWithKeys(fn($status) => [$status->value => $status->label()])
                                 ->toArray())
-                            ->reactive(),
+                            ->default((string)$this->record->facturable),
                         Select::make('astrinte')
                             ->label("Horaire")
-                            ->options(["1" => "Journée normale", "0" => "Astrainte"])
-                            ->reactive(),
+                            ->options(["0" => "Journée normale", "1" => "Astrainte"])
+                            ->default((string)$this->record->astrinte),
                         Grid::make(2)
                             ->schema([
                                 Section::make('Devis')
@@ -65,17 +63,20 @@ class InterventionActionForm2 extends Component implements HasForms, HasActions
                                     ->columnSpan(1)
                                     ->schema([
                                         TextInput::make('devis_numero')
-                                            ->label('Numéro'),
+                                            ->label('Numéro')
+                                            ->default($this->record->infos?->devis_numero),
                                         DatePicker::make('devis_date')
+                                            ->default($this->record->infos?->devis_date)
                                             ->label('Date'),
                                         TextInput::make('devis_montant')
                                             ->label('Montant')
                                             ->numeric()
+                                            ->default($this->record->infos?->devis_montant)
                                             ->columnSpanFull(),
                                         FileUpload::make('devis_fiche')
                                             ->label('Devis PDF')
                                             ->disk('devis')
-                                            //->default($this->record->fiche)
+                                            ->default($this->record->infos?->devis_fiche)
                                             ->getUploadedFileNameForStorageUsing(function ($file) {
                                                 $record = $this->record;
 
@@ -91,14 +92,16 @@ class InterventionActionForm2 extends Component implements HasForms, HasActions
                                     ->columnSpan(1)
                                     ->schema([
                                         TextInput::make('bc_numero')
-                                            ->label('Numéro'),
+                                            ->label('Numéro')
+                                            ->default($this->record->infos?->bc_numero),
                                         DatePicker::make('bc_date')
-                                            ->label('Date'),
+                                            ->label('Date')
+                                            ->default($this->record->infos?->bc_date),
 
                                         FileUpload::make('bc_fiche')
                                             ->label('Bon de commande PDF')
                                             ->disk('bon_de_commande')
-                                            //->default($this->record->fiche)
+                                            ->default($this->record->infos?->bc_fiche)
                                             ->getUploadedFileNameForStorageUsing(function ($file) {
                                                 $record = $this->record;
 

@@ -3,9 +3,6 @@
 namespace App\Filament\Resources\GeneratorResource\Pages;
 
 use App\Filament\Resources\InterventionResource;
-use Filament\Actions\Action;
-use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\Tabs\Tab;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
@@ -40,11 +37,11 @@ class ViewIntervention extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('facture')
+            /*Actions\Action::make('facture')
                 ->label('Generer la facture')
                 ->icon('heroicon-o-ticket')
                 ->color('success')
-                ->iconPosition('after'),
+                ->iconPosition('after'),*/
             Actions\ActionGroup::make([
                 Actions\EditAction::make()
                     ->label('Modifier l\'intervention')
@@ -54,13 +51,6 @@ class ViewIntervention extends ViewRecord
                     ->label('Annulé l\'intervention')
                     ->icon('heroicon-o-trash'),
             ]),
-        ];
-    }
-    protected function getFormSchema(): array
-    {
-        return [
-            TextInput::make('title')->label('Titre'),
-            // ... d'autres champs
         ];
     }
 }

@@ -84,7 +84,8 @@ class InterventionResource extends Resource
                                     ->label("Type de location")
                                     ->options(["1" => "Sous contrat", "0" => "Hors contrat"])
                                     ->columnSpanFull()
-                                    ->reactive(),
+                                    ->reactive()
+                                    ->required(),
 
                                 WidgetUtils::contractSelectWidget()
                                     ->columnSpanFull()

@@ -110,7 +110,11 @@
         gap: 1rem;
     }
 </style>
-
+<span class="text-red-800">
+    {{$getRecord()->type_location == 1 ? "Sous contrat":"Hors contrat"}}
+</span>
+<br>
+<br>
 <div class="container-1">
     <div class="w-full">
         {{-- Date de prise d'appel --}}
@@ -226,6 +230,7 @@
                 <i class="icon">@svg('heroicon-s-cog-6-tooth')</i>
                 Matériel livré/installé
             </span>
+            @if($getRecord()->pieces->isNotEmpty())
             <table class="materiel-table">
                 <thead>
                     <tr>
@@ -254,6 +259,9 @@
                     @endforeach
                 </tbody>
             </table>
+            @else
+            <span>Aucune pièce livrée</span>
+            @endif
         </div>
     </div>
 
@@ -277,7 +285,9 @@
                 <i class="icon">@svg('heroicon-s-credit-card')</i>
                 Mode de facturation:
             </span>
-            <span>Hors conrat</span>
+            <span>{{$getRecord()->facturable != "" ? \App\Enum\FactureType::from($getRecord()->facturable)->label():
+                "Non defini"
+                }}</span>
         </div>
 
 
@@ -286,7 +296,9 @@
                 <i class="icon">@svg('heroicon-s-clock')</i>
                 Horaire:
             </span>
-            <span>Journée normale (2h-30min)</span>
+            <span> {{$getRecord()->astrinte != "" ?\App\Enum\HoraireType::from($getRecord()->astrinte)->label() :
+                "Non defini"
+                }}</span>
         </div>
 
         <div class="data-block">
@@ -294,7 +306,9 @@
                 <i class="icon">@svg('heroicon-s-clipboard-document-list')</i>
                 Devis:
             </span>
-            <span>N°12378 du 17/04/2024</span>
+            <span>N°{{$getRecord()->infos?->devis_numero}} du
+                {{$getRecord()->infos?->devis_date
+                != null ? \App\Utils\DateUtils::format($getRecord()->infos?->devis_date) : ""}}</span>
         </div>
 
         <div class="data-block">
@@ -302,7 +316,9 @@
                 <i class="icon">@svg('heroicon-s-bookmark')</i>
                 Bon de commande:
             </span>
-            <span>N°12378 du 17/04/2024</span>
+            <span>N°{{$getRecord()->infos?->bc_numero}} du
+                {{$getRecord()->infos?->bc_date !=
+                null ? \App\Utils\DateUtils::format($getRecord()->infos?->bc_date) : ""}}</span>
         </div>
 
         <div class="data-block">
@@ -310,7 +326,7 @@
                 <i class="icon">@svg('heroicon-s-banknotes')</i>
                 Montant facturé:
             </span>
-            <span><b>120 000 Fcfa</b></span>
+            <span><b>{{\App\Utils\NumberUtils::format($getRecord()->infos?->devis_montant??0)}} Fcfa</b></span>
         </div>
 
     </div>
@@ -381,14 +397,14 @@
     });
 
     renderPdfPage({
-    url: "{{ asset('storage/devis/test.pdf') }}",
+    url: "{{ asset('storage/devis/'.$getRecord()->infos?->devis_fiche) }}",
     targetElementId: "pdf-viewer-2",
     pageNumber: 1,
     scale: 0.43
     });
 
     renderPdfPage({
-    url: "{{ asset('storage/bon_de_commande/test.pdf') }}",
+    url: "{{ asset('storage/bon_de_commande/'.$getRecord()->infos?->bc_fiche) }}",
     targetElementId: "pdf-viewer-3",
     pageNumber: 1,
     scale: 0.43
@@ -456,7 +472,7 @@ document.getElementById("pdf-viewer").onclick = () => {
 
 document.getElementById("pdf-viewer-2").onclick = () => {
     openPdfModal({
-        pdfUrl: "{{ asset('storage/devis/test.pdf') }}",
+        pdfUrl: "{{ asset('storage/devis/'.$getRecord()->infos?->devis_fiche) }}",
         modalId: "pdf-modal",
         viewerId: "pdf-full",
         scale: 1.5
@@ -465,7 +481,7 @@ document.getElementById("pdf-viewer-2").onclick = () => {
 
 document.getElementById("pdf-viewer-3").onclick = () => {
     openPdfModal({
-        pdfUrl: "{{ asset('storage/bon_de_commande/test.pdf') }}",
+        pdfUrl: "{{ asset('storage/bon_de_commande/'.$getRecord()->infos?->bc_fiche) }}",
         modalId: "pdf-modal",
         viewerId: "pdf-full",
         scale: 1.5
