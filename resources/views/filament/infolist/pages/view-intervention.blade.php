@@ -232,42 +232,26 @@
                         <th>Référence</th>
                         <th>Désignation</th>
                         <th>Image</th>
+                        <th>Prix</th>
                         <th>Usure</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach($getRecord()->pieces as $piece)
                     <tr>
-                        <td>GEN-001</td>
-                        <td>Filtre à air moteur diesel</td>
-                        <td><img class="piece-img"
-                                src="https://tpdemain.com/wp-content/uploads/2023/02/2ef0c05e-b2d7-4a9f-b4e4-d22ed634a236.jpeg"
-                                alt="Filtre à air"></td>
-                        <td>5000h</td>
+                        <td>{{$piece->designation}}</td>
+                        <td>{{$piece->reference}}</td>
+                        <td><img class="piece-img" src="{{asset('storage/'.$piece->image)}}" alt="Filtre à air">
+                        </td>
+                        <td>
+                            {{\App\Utils\NumberUtils::format($piece->pv)}} FCFA
+                        </td>
+
+                        <td>
+                            {{ $piece->duree_vie}} h
+                        </td>
                     </tr>
-                    <tr>
-                        <td>GEN-002</td>
-                        <td>Alternateur pour générateur 7kVA</td>
-                        <td><img class="piece-img"
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjNVKGPmfV3xdPNO87dkZNUA67nr9YB_Lkug&s"
-                                alt="Alternateur"></td>
-                        <td>8000h</td>
-                    </tr>
-                    <tr>
-                        <td>GEN-003</td>
-                        <td>Démarreur électrique 12V</td>
-                        <td><img class="piece-img"
-                                src="https://www.valeo.com/wp-content/uploads/2023/06/Starter-_-ReStarter.png"
-                                alt="Démarreur"></td>
-                        <td>4300h</td>
-                    </tr>
-                    <tr>
-                        <td>GEN-004</td>
-                        <td>Pompe à carburant pour moteur Perkins</td>
-                        <td><img class="piece-img"
-                                src="https://tracteur-market.fr/media/images/pompe-alimenttion-moteur-perkins-3-152.400x400.jpg"
-                                alt="Pompe à carburant"></td>
-                        <td>5000h</td>
-                    </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -332,9 +316,7 @@
     </div>
 
     <div class="container-2">
-        <x-filament::button color="warning">
-            Modifier
-        </x-filament::button>
+        @livewire('intervention-action-form2',['record' => $getRecord()])
         <br><br>
         <div class="pdf-flex">
             <div id="pdf-viewer-2"
@@ -392,7 +374,7 @@
 }
 
     renderPdfPage({
-    url: "{{ asset('storage/interventions/test.pdf') }}",
+    url: "{{ asset('storage/interventions/'.$getRecord()->fiche) }}",
     targetElementId: "pdf-viewer",
     pageNumber: 1,
     scale: 0.5
@@ -465,7 +447,7 @@ function closePdfModal(modalId = 'pdf-modal') {
 
 document.getElementById("pdf-viewer").onclick = () => {
     openPdfModal({
-        pdfUrl: "{{ asset('storage/interventions/test.pdf') }}",
+        pdfUrl: "{{ asset('storage/interventions/'.$getRecord()->fiche) }}",
         modalId: "pdf-modal",
         viewerId: "pdf-full",
         scale: 1.5

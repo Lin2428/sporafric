@@ -57,6 +57,11 @@ class Intervention extends Model
 
     public function pieces()
     {
-        return $this->belongsToMany(Piece::class, 'intrvention_deliveries');
+        return $this->belongsToMany(Piece::class, 'intrvention_deliveries')->withPivot('qty');
+    }
+
+    public function infos()
+    {
+        return $this->belongsTo(InterventionInfo::class);
     }
 }

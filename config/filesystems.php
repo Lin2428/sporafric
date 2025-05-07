@@ -62,6 +62,18 @@ return [
             'url' => env('APP_URL') . '/storage/interventions',
             'visibility' => 'public',
         ],
+        'devis' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/devis'),
+            'url' => env('APP_URL') . '/storage/devis',
+            'visibility' => 'public',
+        ],
+        'bon_de_commande' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/bon_de_commande'),
+            'url' => env('APP_URL') . '/storage/bon_de_commande',
+            'visibility' => 'public',
+        ],
 
     ],
 

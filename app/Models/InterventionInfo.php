@@ -14,6 +14,7 @@ class InterventionInfo extends Model
         'devis_numero',
         'devis_date',
         'devis_montant',
+        'devis_fiche',
         'bc_numero',
         'bc_date',
         'bc_fiche',

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('devis_numero');
             $table->date('devis_date');
             $table->integer('devis_montant');
+            $table->string('devis_fiche');
             $table->string('bc_numero');
             $table->date('bc_date');
             $table->string('bc_fiche');
