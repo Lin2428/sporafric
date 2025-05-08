@@ -6,30 +6,30 @@
         Envoyer
     </x-filament::button>
 
-    <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-blue-600 text-white">
+    <table class="table-auto border divide-y divide-x">
+        <thead class="border">
             <tr>
-                <th class="px-4 py-2 text-left text-sm font-medium">Date</th>
-                <th class="px-4 py-4 text-left text-sm font-medium">Bon d’intervention</th>
-                <th class="px-4 py-2 text-left text-sm font-medium">Code Site</th>
-                <th class="px-4 py-2 text-left text-sm font-medium">Type d'intervention</th>
-                <th class="px-4 py-2 text-left text-sm font-medium">Status</th>
-                <th class="px-4 py-2 text-left text-sm font-medium">Description</th>
+                <th class="border px-4 py-2 text-left text-sm font-medium">Date</th>
+                <th class="border px-4 py-4 text-left text-sm font-medium">Bon d’intervention</th>
+                <th class="border px-4 py-2 text-left text-sm font-medium">Code Site</th>
+                <th class="border px-4 py-2 text-left text-sm font-medium">Type d'intervention</th>
+                <th class="border px-4 py-2 text-left text-sm font-medium">Status</th>
+                <th class="border px-4 py-2 text-left text-sm font-medium">Description</th>
             </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-100">
+        <tbody class="divide-e divide-y  divide-x">
             @if ($this->results!= null)
             @foreach ($this->results as $intervention)
-            <tr class="hover:bg-gray-50 transition">
-                <td class="px-4 py-2 text-sm text-gray-700">{{ $intervention->created_at->format('d/m/Y') }}</td>
-                <td class="px-4 py-2 text-sm text-gray-700">{{ $intervention->identifiant }}</td>
-                <td class="px-4 py-2 text-sm text-gray-700">{{ $intervention->contract?->code_site }}</td>
-                <td class="px-4 py-2 text-sm text-gray-700">{{
+            <tr class=" transition">
+                <td class="border px-4 py-2 text-sm ">{{ $intervention->created_at->format('d/m/Y') }}</td>
+                <td class="border px-4 py-2 text-sm ">{{ $intervention->identifiant }}</td>
+                <td class="border px-4 py-2 text-sm ">{{ $intervention->contract?->code_site }}</td>
+                <td class="border px-4 py-2 text-sm ">{{
                     \App\Enum\InterventionType::from($intervention->type)->label()}}
                 </td>
-                <td class="px-4 py-2 text-sm text-gray-700">{{
+                <td class="border px-4 py-2 text-sm">{{
                     \App\Enum\InterventionStatus::from($intervention->status)->label()}}</td>
-                <td class="px-4 py-2 text-sm text-gray-700 max-w-xs truncate" title="{{ $intervention->description }}">
+                <td class="border px-4 py-2 text-sm  max-w-xs truncate" title="{{ $intervention->description_panne }}">
                     {{ $intervention->description_panne }}
                 </td>
             </tr>
