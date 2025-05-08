@@ -23,10 +23,9 @@ class Generator extends Model
         'fuel_type',
         'user_id',
     ];
-    
+
     protected $casts = [
         'start-up' => 'datetime',
-        'next_vidange' => 'datetime',
     ];
 
 
@@ -43,7 +42,4 @@ class Generator extends Model
     {
         return $this->hasOne(ContractGenerator::class)->where('status', true);
     }
-
-   
-
 }

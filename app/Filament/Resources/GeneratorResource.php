@@ -33,7 +33,7 @@ class GeneratorResource extends Resource
     protected static ?string $model = Generator::class;
 
     protected static ?string $navigationIcon  = 'icon-generator';
-    protected static ?string $navigationGroup = 'Location';
+    protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Groupes Electrogènes';
     protected static ?int $navigationSort     = 2;
 
@@ -106,8 +106,7 @@ class GeneratorResource extends Resource
                             ->schema([
                                 DatePicker::make('start-up')
                                     ->label('Mise en service')
-                                    ->default(now())
-                                    ->extraAttributes(['style' => 'max-width: 230px;']),
+                                    ->default(now()),
 
                                 Select::make('status')
                                     ->options(collect(GeneratorStatus::cases())
@@ -116,16 +115,15 @@ class GeneratorResource extends Resource
                                     ->searchable()
                                     ->label('Statut')
                                     ->preload()
-                                    ->extraAttributes(['style' => 'max-width: 230px;'])
+
                                     ->required(),
 
                                 TextInput::make('houres')
-                                    ->label('Heures de fonctionnement')
-                                    ->extraAttributes(['style' => 'max-width: 230px;']),
+                                    ->label('Heures de fonctionnement'),
 
-                                DatePicker::make('next_vidange')
-                                    ->label('Prochaine vidange')
-                                    ->extraAttributes(['style' => 'max-width: 230px;']),
+                                TextInput::make('next_vidange')
+                                    ->label('Prochaine vidange (h)')
+                                    ->numeric(),
                             ]),
                     ])
                     ->columnSpan(['lg' => 1]),
@@ -307,7 +305,7 @@ class GeneratorResource extends Resource
                                                     ->color('success'),
 
                                                 TextEntry::make('next_vidange')
-                                                    ->date('d/m/Y')
+                                                    ->getStateUsing(fn($record) => NumberUtils::format($record->next_vidange) . ' h')
                                                     ->label('Prochaine vidange')
                                                     ->color('success'),
 
@@ -486,8 +484,8 @@ class GeneratorResource extends Resource
                                             ->getStateUsing(fn($record) => InterventionStatus::from($record->status)->label())
                                             ->colors([
                                                 'warning' => "En cours",
-                                                'danger'  => "Non commencée",
-                                                'primary' => "Annulée",
+                                                'info'  => "Non commencée",
+                                                'danger' => "Annulée",
                                                 'success' => "Terminée",
                                             ]),
                                         TextEntry::make('created_at')

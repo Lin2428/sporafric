@@ -14,8 +14,8 @@ class ListContractFactures extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->label('Nouvelle facture'),
+            //Actions\CreateAction::make()
+            //->label('Nouvelle facture'),
         ];
     }
 }

@@ -5,6 +5,8 @@ namespace App\Filament\Pages;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
 use Carbon\Carbon;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Tabs;
@@ -28,66 +30,91 @@ class ReportPage extends Page implements HasForms
         return [
             Tabs::make('Tabs')
                 ->tabs([
-                    Tabs\Tab::make('Rapport journalier')
+                    Tabs\Tab::make('Rapport hebdomadaire')
                         ->icon('heroicon-s-calendar-days')
                         ->schema([
                             Group::make()
-                                ->columns(4)
+                                ->columns(3)
                                 ->columnSpanFull()
                                 ->schema([
-
-                                    WidgetUtils::generatorSelectWidget(fn($state) => $this->submit())
-                                        ->reactive()
-                                        ->debounce(3000),
-                                    WidgetUtils::customerSelectWidget()
-                                        ->reactive()
-                                        ->afterStateUpdated(fn($state) => $this->submit())->reactive()
-                                        ->debounce(3000),
+                                    //WidgetUtils::generatorSelectWidget(isDispo: false),
+                                    //WidgetUtils::customerSelectWidget(),
                                     DatePicker::make('start_date')
-                                        ->label('A partir du')
-                                        ->reactive()
-                                        ->debounce(3000)
-                                        ->afterStateUpdated(fn($state) => $this->submit()),
+                                        ->label('A partir du'),
+
                                     DatePicker::make('end_date')
-                                        ->label('Jusqu\'au')
-                                        ->reactive()
-                                        ->reactive()
-                                        ->debounce(3000)
-                                        ->afterStateUpdated(fn($state) => $this->submit())
+                                        ->label('Jusqu\'au'),
+                                    Actions::make([
+                                        Action::make('resetStars')
+                                            ->hiddenLabel()
+                                            ->icon('heroicon-m-magnifying-glass')
+                                            ->action(fn($state) => $this->submitTab1())
+                                    ])->alignRight(),
                                 ]),
                         ]),
                     Tabs\Tab::make('Rapport mensuel')
                         ->icon('heroicon-s-calendar-date-range')
                         ->schema([
                             Group::make()
-                                ->columns(3)
+                                ->columns(2)
                                 ->columnSpanFull()
                                 ->schema([
-                                    WidgetUtils::generatorSelectWidget(fn($state) => $this->submit())
-                                        ->reactive()
-                                        ->debounce(3000),
-                                    WidgetUtils::customerSelectWidget()
-                                        ->reactive()
-                                        ->afterStateUpdated(fn($state) => $this->submit())->reactive()
-                                        ->debounce(3000),
                                     TextInput::make('month')
                                         ->type('month')
-                                        ->label('Mois')
-                                        ->reactive()
-                                        ->debounce(3000)
-                                        ->afterStateUpdated(fn($state) => $this->submit()),
+                                        ->label('Mois'),
+                                    Actions::make([
+                                        Action::make('submit1')
+                                            ->hiddenLabel()
+                                            ->icon('heroicon-m-magnifying-glass')
+                                            ->action(fn($state) => $this->submitTab2())
+                                    ])->alignRight(),
+                                ]),
+                        ]),
+                    Tabs\Tab::make('Location')
+                        ->icon('heroicon-s-home-modern')
+                        ->schema([
+                            Group::make()
+                                ->columns(2)
+                                ->columnSpanFull()
+                                ->schema([
+                                    TextInput::make('month')
+                                        ->type('month')
+                                        ->label('Mois'),
+                                    Actions::make([
+                                        Action::make('submit2')
+                                            ->hiddenLabel()
+                                            ->icon('heroicon-m-magnifying-glass')
+                                            ->action(fn($state) => $this->submit())
+                                    ])->alignRight(),
+                                ]),
+                        ]),
+                        Tabs\Tab::make('Location')
+                        ->icon('heroicon-s-home-modern')
+                        ->schema([
+                            Group::make()
+                                ->columns(2)
+                                ->columnSpanFull()
+                                ->schema([
+                                    TextInput::make('month')
+                                        ->type('month')
+                                        ->label('Mois'),
+                                    Actions::make([
+                                        Action::make('submit2')
+                                            ->hiddenLabel()
+                                            ->icon('heroicon-m-magnifying-glass')
+                                            ->action(fn($state) => $this->submit())
+                                    ])->alignRight(),
                                 ]),
                         ]),
                 ]),
         ];
     }
 
-    public function submit()
+    public function submitTab1()
     {
         $this->results = [];
-        $month = Carbon::parse($this->month)->month;
-        $year = Carbon::parse($this->month)->year;
-        $interventions = Intervention::whereHas('contract', function ($query) {
+        $interventions = Intervention::query();
+        /*$interventions->whereHas('contract', function ($query) {
             if ($this->generator_id) {
                 $query->where('generator_id', $this->generator_id);
             }
@@ -95,18 +122,35 @@ class ReportPage extends Page implements HasForms
             if ($this->customer_id) {
                 $query->where('customer_id', $this->customer_id);
             }
-        });
+        })->orWhere(function ($query) {
+            $query->whereNull('contract_id');
+            if ($this->customer_id !== null) {
+                $query->where('customer_id', $this->customer_id);
+            }
+        });*/
 
         if ($this->start_date && $this->end_date) {
             $interventions->whereBetween('created_at', [$this->start_date, $this->end_date]);
         }
 
+        if (($this->start_date && $this->end_date)  !== null) {
+            $this->results = $interventions->get();
+        }
+    }
+
+    public function submitTab2()
+    {
+        $this->results = [];
+        $month = Carbon::parse($this->month)->month;
+        $year = Carbon::parse($this->month)->year;
+
+        $interventions = Intervention::query();
         if ($this->month) {
             $interventions->whereYear('created_at', $year)
-                ->whereMonth('created_at', $month)
-                ->get();
+                ->whereMonth('created_at', $month);
         }
-
-        $this->results = $interventions->get();
+        if ($this->month !== null) {
+            $this->results = $interventions->get();
+        }
     }
 }

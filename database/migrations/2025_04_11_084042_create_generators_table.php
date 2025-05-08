@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('start-up')->nullable();
             $table->integer('status')->default(0)->nullable();
             $table->string('houres')->nullable();
-            $table->date('next_vidange')->nullable();
+            $table->integer('next_vidange')->nullable();
             $table->string('fuel_type')->nullable();
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();

@@ -23,7 +23,7 @@
             <tr class="hover:bg-gray-50 transition">
                 <td class="px-4 py-2 text-sm text-gray-700">{{ $intervention->created_at->format('d/m/Y') }}</td>
                 <td class="px-4 py-2 text-sm text-gray-700">{{ $intervention->identifiant }}</td>
-                <td class="px-4 py-2 text-sm text-gray-700">{{ $intervention->contract->code_site }}</td>
+                <td class="px-4 py-2 text-sm text-gray-700">{{ $intervention->contract?->code_site }}</td>
                 <td class="px-4 py-2 text-sm text-gray-700">{{
                     \App\Enum\InterventionType::from($intervention->type)->label()}}
                 </td>
