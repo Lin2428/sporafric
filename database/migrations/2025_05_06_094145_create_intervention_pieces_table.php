@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('intervention_pieces', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('intrvention_id')->constrained();
-            $table->foreignId('piece_id')->constrained();
+            $table->foreignId('intrvention_id');
+            $table->foreignId('piece_id');
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
