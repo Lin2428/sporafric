@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class WorkList extends Model
 {
     use SoftDeletes;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'user_id',
+    ];
 }

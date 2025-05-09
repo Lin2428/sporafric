@@ -88,5 +88,10 @@ class Contract extends Model
     public function interventions()
     {
         return $this->hasMany(Intervention::class);
-    }   
+    }
+
+    public function factures()
+    {
+        return $this->hasMany(ContractFacture::class);
+    }
 }

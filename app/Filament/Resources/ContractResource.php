@@ -21,6 +21,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class ContractResource extends Resource
@@ -28,7 +29,7 @@ class ContractResource extends Resource
     protected static ?string $model = Contract::class;
 
     protected static ?string $navigationIcon  = 'heroicon-o-clipboard-document';
-    protected static ?string $navigationGroup = 'Contrat';
+    protected static ?string $navigationGroup = 'Location';
     protected static ?string $navigationLabel = 'Contrats';
     protected static ?int $navigationSort     = 0;
 
@@ -212,12 +213,14 @@ class ContractResource extends Resource
                     ->size(50),
             ])
             ->filters([
-                //
+                SelectFilter::make('is_active'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

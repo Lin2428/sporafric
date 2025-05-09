@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('contract_factures', function (Blueprint $table) {
             $table->id();
             $table->foreignId('contract_id');
+            $table->foreignId('intervention_id')->nullable();
             $table->integer('montant');
             $table->string('note')->nullable();
             $table->boolean('is_paid');

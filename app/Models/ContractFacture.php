@@ -11,6 +11,7 @@ class ContractFacture extends Model
 
     protected $fillable = [
         'contract_id',
+        'intervention_id',
         'montant',
         'note',
         'is_paid',
@@ -25,4 +26,13 @@ class ContractFacture extends Model
         'start_date' => 'date',
         'end_date' => 'date',
     ];
+
+    protected $with = [
+        'intervention',
+    ];
+
+    public function intervention()
+    {
+        return $this->belongsTo(Intervention::class);
+    }
 }
