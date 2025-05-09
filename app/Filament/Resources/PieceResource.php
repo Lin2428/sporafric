@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PieceResource\Pages;
 use App\Filament\Resources\PieceResource\RelationManagers;
 use App\Models\Piece;
+use App\Utils\NumberUtils;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -13,6 +14,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -24,7 +27,7 @@ class PieceResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-cog-8-tooth';
     protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Pièces de Réchange';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -47,36 +50,34 @@ class PieceResource extends Resource
                                     ->columnSpanFull(),
 
                                 FileUpload::make('image')
-                                // ->acceptedFileTypes([
-                                //     'jpg',
-                                //     'png',
-                                //     'jpeg',
-                                // ])
-                                // ->imageCropAspectRatio('1:1')
-                                // ->imageResizeTargetWidth('800')
-                                // ->imageResizeTargetWidth('800')
-                                // ->imageResizeMode('contain')
-                                // ->imagePreviewHeight('250')
+                                    // ->acceptedFileTypes([
+                                    //     'jpg',
+                                    //     'png',
+                                    //     'jpeg',
+                                    // ])
+                                    // ->imageCropAspectRatio('1:1')
+                                    // ->imageResizeTargetWidth('800')
+                                    // ->imageResizeTargetWidth('800')
+                                    // ->imageResizeMode('contain')
+                                    // ->imagePreviewHeight('250')
                                     ->openable()
                                     ->reorderable()
                                     ->label('Image')
                                     ->columnSpanFull(),
 
-                                TextInput::make('power')
+                                TextInput::make('duree_vie')
                                     ->numeric()
-                                    ->label('Puissance (KVA)'),
+                                    ->label('Durée de vie'),
 
-                                TextInput::make('voltage')
+                                TextInput::make('pr')
                                     ->numeric()
-                                    ->label('Tension (V)'),
+                                    ->label('Prix d\'achat'),
 
-                                TextInput::make('frequency')
-                                    ->label('Fréquence (Hz)')
+                                TextInput::make('pv')
+                                    ->label('Prix de vente')
                                     ->numeric(),
 
-                                    
-                            TextInput::make('fuel_type')
-                                ->label('Type de carburant'),
+
                             ]),
                     ])->columnSpan(['lg' => 2]),
             ]);
@@ -86,7 +87,31 @@ class PieceResource extends Resource
     {
         return $table
             ->columns([
-                //
+                ImageColumn::make('image')
+                    ->label('Image')
+                    ->size(50)
+                    ->extraAttributes(['style' => 'width: 100px, height: 100px;']),
+
+                TextColumn::make('reference')
+                    ->label('Reference')
+                    ->searchable(),
+
+                TextColumn::make('designation')
+                    ->label('Designation')
+                    ->extraAttributes(['style' => 'font-weight: bold; '])
+                    ->searchable(),
+                TextColumn::make('pr')
+                    ->label('Prix d\'achat')
+                    ->getStateUsing(fn($record) => NumberUtils::format($record->pr) . " FCFA")
+                    ->searchable(),
+                TextColumn::make('pv')
+                    ->label('Prix de vente')
+                    ->getStateUsing(fn($record) => NumberUtils::format($record->pr) . " FCFA")
+                    ->searchable(),
+                TextColumn::make('duree_vie')
+                    ->label('Durée de vie')
+                    ->getStateUsing(fn($record) => NumberUtils::format($record->duree_vie) . "h")
+                    ->searchable(),
             ])
             ->filters([
                 //

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources;
 
 use App\Enum\GeneratorStatus;
@@ -29,9 +30,9 @@ class ContractResource extends Resource
     protected static ?string $model = Contract::class;
 
     protected static ?string $navigationIcon  = 'heroicon-o-clipboard-document';
-    protected static ?string $navigationGroup = 'Location';
+    protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Contrats';
-    protected static ?int $navigationSort     = 0;
+    //protected static ?int $navigationSort     = 0;
 
     public static function form(Form $form): Form
     {
@@ -46,7 +47,7 @@ class ContractResource extends Resource
                                     ->columnSpanFull(),
 
                                 WidgetUtils::generatorSelectWidget()
-                                ->columnSpanFull(),
+                                    ->columnSpanFull(),
 
                                 TextInput::make('number')
                                     ->label('Numéro de contrat')
@@ -70,10 +71,10 @@ class ContractResource extends Resource
                             ]),
 
                         Section::make('Localisation sur la carte')
-                        ->schema([
-                            View::make('filament.forms.components.map-picker')
-                            ->label(''),
-                        ]),
+                            ->schema([
+                                View::make('filament.forms.components.map-picker')
+                                    ->label(''),
+                            ]),
                     ])->columnSpan(['lg' => 2]),
 
                 Group::make()
@@ -122,8 +123,8 @@ class ContractResource extends Resource
                             ->columns(2)
                             ->schema([
                                 WidgetUtils::adresseSelectWidget()
-                                    ->columnSpanFull(), 
-                                    
+                                    ->columnSpanFull(),
+
                                 TextInput::make('lat')
                                     ->label('Latitude')
                                     ->reactive()
@@ -157,10 +158,10 @@ class ContractResource extends Resource
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50),
 
-                    TextColumn::make('is_active')
+                TextColumn::make('is_active')
                     ->label('Statut')
                     ->badge()
-                    ->getStateUsing(fn (Contract $record): string => $record->is_active ? 'En cours' : 'Terminé')
+                    ->getStateUsing(fn(Contract $record): string => $record->is_active ? 'En cours' : 'Terminé')
                     ->colors([
                         'success' => 'En cours',
                         'danger' => 'Terminé',
@@ -253,221 +254,221 @@ class ContractResource extends Resource
             ->columns(7)
             ->schema([
                 \Filament\Infolists\Components\Group::make()
-                ->columnSpan(4)
+                    ->columnSpan(4)
                     ->columns(2)
                     ->schema([
                         \Filament\Infolists\Components\Section::make('Informations du groupe électrogène')
-                        ->columns(3)
-                        ->schema([
-                            TextEntry::make('generator.status')
-                            ->label('')
-                            ->badge()
-                            ->getStateUsing(function (Contract $record) {
-                                return $record->generator ? GeneratorStatus::from($record->generator->status)->label() : "Pas de GE assigné";
-                            })
-                            ->colors([
-                                'success' => 'Disponible',
-                                'warning' => ['Pas de GE assigné', 'En maintenance'],
-                                'info' => 'En location',
-                                'danger' => 'Indisponible',
+                            ->columns(3)
+                            ->schema([
+                                TextEntry::make('generator.status')
+                                    ->label('')
+                                    ->badge()
+                                    ->getStateUsing(function (Contract $record) {
+                                        return $record->generator ? GeneratorStatus::from($record->generator->status)->label() : "Pas de GE assigné";
+                                    })
+                                    ->colors([
+                                        'success' => 'Disponible',
+                                        'warning' => ['Pas de GE assigné', 'En maintenance'],
+                                        'info' => 'En location',
+                                        'danger' => 'Indisponible',
+                                    ])
+                                    ->columnSpanFull(),
+
+                                ImageEntry::make('generator.image')
+                                    ->label('')
+                                    ->columnSpanFull()
+                                    ->extraAttributes(['class' => 'w-full d-flex justify-center']),
+
+                                TextEntry::make('generator.name')
+                                    ->label('GE')
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
+
+                                TextEntry::make('generator.modele')
+                                    ->label('Modèle')
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
+
+                                TextEntry::make('generator.serial_number')
+                                    ->label('Numéro de série')
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
+
+                                TextEntry::make('generator.power')
+                                    ->label('Puissance')
+                                    ->color('success'),
+
+                                TextEntry::make('generator.fuel_type')
+                                    ->label('Type de carburant')
+                                    ->color('success'),
+
+                                TextEntry::make('generator.houres')
+                                    ->label('Heures de fonc.')
+                                    ->color('success'),
+
+                                TextEntry::make('generator.next_vidange')
+                                    ->date('d/m/Y')
+                                    ->label('Prochaine vidange')
+                                    ->color('success'),
+
+                                TextEntry::make('generator.start-up')
+                                    ->label('Mise en service')
+                                    ->date('d/m/Y')
+                                    ->color('success'),
+
+                                TextEntry::make('generator.created_at')
+                                    ->label('Ajouté le')
+                                    ->date('d/m/Y')
+                                    ->color('success'),
                             ])
-                            ->columnSpanFull(),
+                    ]),
 
-                            ImageEntry::make('generator.image')
-                            ->label('')
-                            ->columnSpanFull()
-                            ->extraAttributes(['class' => 'w-full d-flex justify-center']),
-                            
-                            TextEntry::make('generator.name')
-                            ->label('GE')
-                            ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                            TextEntry::make('generator.modele')
-                            ->label('Modèle')
-                            ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                            TextEntry::make('generator.serial_number')
-                            ->label('Numéro de série')
-                            ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                            TextEntry::make('generator.power')
-                            ->label('Puissance')
-                            ->color('success'),
-
-                            TextEntry::make('generator.fuel_type')
-                            ->label('Type de carburant')
-                            ->color('success'),
-
-                            TextEntry::make('generator.houres')
-                            ->label('Heures de fonc.')
-                            ->color('success'),
-
-                            TextEntry::make('generator.next_vidange')
-                            ->date('d/m/Y')
-                            ->label('Prochaine vidange')
-                            ->color('success'),
-
-                            TextEntry::make('generator.start-up')
-                            ->label('Mise en service')
-                            ->date('d/m/Y')
-                            ->color('success'),
-
-                            TextEntry::make('generator.created_at')
-                            ->label('Ajouté le')
-                            ->date('d/m/Y')
-                            ->color('success'),
-                        ])
-                     ]),
-
-                     \Filament\Infolists\Components\Group::make()
-                ->columnSpan(3)
+                \Filament\Infolists\Components\Group::make()
+                    ->columnSpan(3)
                     ->columns(2)
                     ->schema([
                         \Filament\Infolists\Components\Section::make('Contrat')
-                        ->columns(2)
-                        ->schema([
-                            TextEntry::make('is_active')
-                            ->label('')
-                            ->badge()
-                            ->getStateUsing(function (Contract $record) {
-                                return $record->is_active ? 'En cours' : 'Terminé';
-                            })
-                            ->colors([
-                                'success' => 'En cours',
-                                'danger' => 'Terminé',
-                            ]),
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('is_active')
+                                    ->label('')
+                                    ->badge()
+                                    ->getStateUsing(function (Contract $record) {
+                                        return $record->is_active ? 'En cours' : 'Terminé';
+                                    })
+                                    ->colors([
+                                        'success' => 'En cours',
+                                        'danger' => 'Terminé',
+                                    ]),
 
 
-                            ImageEntry::make('customer.logo')
-                            ->label('')
-                            ->columnSpanFull()
-                            ->extraAttributes(['class' => 'w-full d-flex justify-center']),
-                            
-                            TextEntry::make('number')
-                            ->label('N° contrat')
-                            ->extraAttributes(['class' => 'font-bold']),
-                            
-                            TextEntry::make('customer.name')
-                            ->label('Client')
-                            ->extraAttributes(['class' => 'font-bold']),
+                                ImageEntry::make('customer.logo')
+                                    ->label('')
+                                    ->columnSpanFull()
+                                    ->extraAttributes(['class' => 'w-full d-flex justify-center']),
 
-                            TextEntry::make('forfait')
-                            ->label('Forfait de maintenance mensuel')
-                            ->formatStateUsing(fn ($state) => NumberUtils::format($state).' FCFA')   
-                            ->extraAttributes(['class' => 'font-bold'])
-                            ->columnSpanFull(),
+                                TextEntry::make('number')
+                                    ->label('N° contrat')
+                                    ->extraAttributes(['class' => 'font-bold']),
 
-                            TextEntry::make('site')
-                            ->label('Site')
-                            ->color('success'),
-                            TextEntry::make('code_site')
-                            ->label('Code')
-                            ->color('success'),
-                            TextEntry::make('start_date')
-                            ->date('d/m/Y')
-                            ->label('A debuter le')
-                            ->color('success'),
-                            TextEntry::make('end_date')
-                            ->date('d/m/Y')
-                            ->label('Se terminer le')
-                            ->color('danger'),
-                            
-                        ])
-                     ]),
+                                TextEntry::make('customer.name')
+                                    ->label('Client')
+                                    ->extraAttributes(['class' => 'font-bold']),
 
-                     \Filament\Infolists\Components\Group::make()
-                     ->columnSpan(7)
-                         ->columns(2)
-                         ->schema([
-                             \Filament\Infolists\Components\Section::make('Detail du contrat')
-                             ->columns(2)
-                             ->schema([
-                                \Filament\Infolists\Components\Section::make("Localisation")
-                                ->columns(2)
-                                ->columnSpan(['lg' => 1])
-                                ->schema([
-                                    TextEntry::make('customerAdress.country.name')
-                                    ->label('Pays')
-                                    ->color('success'),
-                                    TextEntry::make('customerAdress.city.name')
-                                    ->label('Ville')
-                                    ->color('success'),
-                                    TextEntry::make('customerAdress.district.name')
-                                    ->label('Arrondissement')
-                                    ->color('success'),
-                                    TextEntry::make('customerAdress.quartier.name')
-                                    ->label('Quartier')
-                                    ->color('success'),
-                                    TextEntry::make('customerAdress.address')
-                                    ->label('Adresse')
+                                TextEntry::make('forfait')
+                                    ->label('Forfait de maintenance mensuel')
+                                    ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
+                                    ->extraAttributes(['class' => 'font-bold'])
                                     ->columnSpanFull(),
-                                    TextEntry::make('customerAdress.postal_code')
-                                    ->label('Code postal')
+
+                                TextEntry::make('site')
+                                    ->label('Site')
                                     ->color('success'),
-                                ]),
+                                TextEntry::make('code_site')
+                                    ->label('Code')
+                                    ->color('success'),
+                                TextEntry::make('start_date')
+                                    ->date('d/m/Y')
+                                    ->label('A debuter le')
+                                    ->color('success'),
+                                TextEntry::make('end_date')
+                                    ->date('d/m/Y')
+                                    ->label('Se terminer le')
+                                    ->color('danger'),
+
+                            ])
+                    ]),
+
+                \Filament\Infolists\Components\Group::make()
+                    ->columnSpan(7)
+                    ->columns(2)
+                    ->schema([
+                        \Filament\Infolists\Components\Section::make('Detail du contrat')
+                            ->columns(2)
+                            ->schema([
+                                \Filament\Infolists\Components\Section::make("Localisation")
+                                    ->columns(2)
+                                    ->columnSpan(['lg' => 1])
+                                    ->schema([
+                                        TextEntry::make('customerAdress.country.name')
+                                            ->label('Pays')
+                                            ->color('success'),
+                                        TextEntry::make('customerAdress.city.name')
+                                            ->label('Ville')
+                                            ->color('success'),
+                                        TextEntry::make('customerAdress.district.name')
+                                            ->label('Arrondissement')
+                                            ->color('success'),
+                                        TextEntry::make('customerAdress.quartier.name')
+                                            ->label('Quartier')
+                                            ->color('success'),
+                                        TextEntry::make('customerAdress.address')
+                                            ->label('Adresse')
+                                            ->columnSpanFull(),
+                                        TextEntry::make('customerAdress.postal_code')
+                                            ->label('Code postal')
+                                            ->color('success'),
+                                    ]),
 
                                 \Filament\Infolists\Components\Section::make('Contact commercial')
-                                ->columns(2)
-                                ->columnSpan(['lg' => 1])
-                                ->schema([
-                                    TextEntry::make('customerAdress.customer.contact_c_name')
-                                    ->label('Nom')
-                                    ->color('success'),
-                                    TextEntry::make('customerAdress.customer.contact_c_email')
-                                    ->label('Email')
-                                    ->color('success'),
-                                    TextEntry::make('customerAdress.customer.contact_c_phone')
-                                    ->label('Téléphone')
-                                    ->color('success'),
-                                ]),
+                                    ->columns(2)
+                                    ->columnSpan(['lg' => 1])
+                                    ->schema([
+                                        TextEntry::make('customerAdress.customer.contact_c_name')
+                                            ->label('Nom')
+                                            ->color('success'),
+                                        TextEntry::make('customerAdress.customer.contact_c_email')
+                                            ->label('Email')
+                                            ->color('success'),
+                                        TextEntry::make('customerAdress.customer.contact_c_phone')
+                                            ->label('Téléphone')
+                                            ->color('success'),
+                                    ]),
 
                                 \Filament\Infolists\Components\Section::make('Contact logistique')
-                                ->columns(2)
-                                ->columnSpan(['lg' => 1])
-                                ->schema([
-                                    TextEntry::make('customerAdress.customer.contact_l_name')
-                                    ->label('Nom')
-                                    ->color('success'),
-                                    TextEntry::make('customerAdress.customer.contact_l_email')
-                                    ->label('Email')
-                                    ->color('success'),
-                                    TextEntry::make('customerAdress.customer.contact_l_phone')
-                                    ->label('Téléphone')
-                                    ->color('success'),
-                                ]),
+                                    ->columns(2)
+                                    ->columnSpan(['lg' => 1])
+                                    ->schema([
+                                        TextEntry::make('customerAdress.customer.contact_l_name')
+                                            ->label('Nom')
+                                            ->color('success'),
+                                        TextEntry::make('customerAdress.customer.contact_l_email')
+                                            ->label('Email')
+                                            ->color('success'),
+                                        TextEntry::make('customerAdress.customer.contact_l_phone')
+                                            ->label('Téléphone')
+                                            ->color('success'),
+                                    ]),
 
                                 \Filament\Infolists\Components\Section::make('Contact sur site')
-                                ->columns(2)
-                                ->columnSpan(['lg' => 1])
-                                ->schema([
-                                    TextEntry::make('contact_name')
-                                    ->label('Nom')
-                                    ->color('success'),
-                                    TextEntry::make('contact_email')
-                                    ->label('Email')
-                                    ->color('success'),
-                                    TextEntry::make('contact_phone')
-                                    ->label('Téléphone')
-                                    ->color('success'),
-                                ]),
+                                    ->columns(2)
+                                    ->columnSpan(['lg' => 1])
+                                    ->schema([
+                                        TextEntry::make('contact_name')
+                                            ->label('Nom')
+                                            ->color('success'),
+                                        TextEntry::make('contact_email')
+                                            ->label('Email')
+                                            ->color('success'),
+                                        TextEntry::make('contact_phone')
+                                            ->label('Téléphone')
+                                            ->color('success'),
+                                    ]),
 
                                 TextEntry::make('vu')
-                                ->label('Vue sur la carte')
-                                ->inlineLabel(),
+                                    ->label('Vue sur la carte')
+                                    ->inlineLabel(),
 
                                 \Filament\Infolists\Components\View::make('filament.infolist.components.map-pointer')
-                                ->label('')
-                                ->getStateUsing(function (Contract $record) {
-                                    return [
-                                        'lat' => $record->lat,
-                                        'lng' => $record->lng,
-                                    ];
-                                })
-                                ->extraAttributes(['class' => 'w-full d-flex justify-center'])
-                                ->columnSpanFull(),
-                                
-                             ])
-                 ]),
+                                    ->label('')
+                                    ->getStateUsing(function (Contract $record) {
+                                        return [
+                                            'lat' => $record->lat,
+                                            'lng' => $record->lng,
+                                        ];
+                                    })
+                                    ->extraAttributes(['class' => 'w-full d-flex justify-center'])
+                                    ->columnSpanFull(),
+
+                            ])
+                    ]),
             ]);
     }
 }

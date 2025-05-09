@@ -25,7 +25,7 @@ class WorkListResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Tâches de Maintenance';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

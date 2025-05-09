@@ -39,7 +39,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
@@ -54,6 +54,25 @@ return [
             'endpoint' => env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
+        ],
+        //Mes disc
+        'interventions' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/interventions'),
+            'url' => env('APP_URL') . '/storage/interventions',
+            'visibility' => 'public',
+        ],
+        'devis' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/devis'),
+            'url' => env('APP_URL') . '/storage/devis',
+            'visibility' => 'public',
+        ],
+        'bon_de_commande' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/bon_de_commande'),
+            'url' => env('APP_URL') . '/storage/bon_de_commande',
+            'visibility' => 'public',
         ],
 
     ],

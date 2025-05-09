@@ -23,7 +23,7 @@ $ring = match($generator->status) {
 
 <div class="rounded-md w-full">
     <div class="flex w-full">
-   
+
         <img src="{{asset('storage/' . $generator->image)}}" class="img overflow-hidden" alt="">
 
         <div class=" ml-10 justify-center text-xs w-full">
@@ -32,7 +32,9 @@ $ring = match($generator->status) {
                 {{$generator->power}}KVA
             </div>
 
-            <span class="inline-flex items-center rounded-md {{$bg}} px-2 py-1 text-xs font-medium {{$text}} ring-1 {{$ring}} ring-inset"> {{ \App\Enum\GeneratorStatus::from($generator->status)->label() }}</span>
+            <span
+                class="inline-flex items-center rounded-md {{$bg}} px-2 py-1 text-xs font-medium {{$text}} ring-1 {{$ring}} ring-inset">
+                {{ \App\Enum\GeneratorStatus::from($generator->status)->label() }}</span>
         </div>
     </div>
 </div>
@@ -45,7 +47,7 @@ $ring = match($generator->status) {
         object-fit: cover;
     }
 
-    .ml-10{
+    .ml-10 {
         margin-left: 1rem;
     }
 
@@ -60,38 +62,48 @@ $ring = match($generator->status) {
     .bg-green-50 {
         background-color: #f0fdf4;
     }
+
     .bg-yellow-50 {
         background-color: #fefcbf;
     }
+
     .bg-blue-50 {
         background-color: #eff6ff;
     }
+
     .bg-red-50 {
         background-color: #fee2e2;
     }
+
     .text-green-700 {
         color: #047857;
     }
+
     .text-yellow-700 {
         color: #ca8a04;
     }
+
     .text-blue-700 {
         color: #1d4ed8;
     }
+
     .text-red-700 {
         color: #b91c1c;
     }
+
     .ring-green-600\/10 {
         border: green 1px solid;
     }
+
     .ring-yellow-600\/10 {
-        border: yellow  1px solid;
-    }
-    .ring-blue-600\/10 {
-        border: blue  1px solid;
-    }
-    .ring-red-600\/10 {
-        border: red  1px solid;
+        border: yellow 1px solid;
     }
 
+    .ring-blue-600\/10 {
+        border: blue 1px solid;
+    }
+
+    .ring-red-600\/10 {
+        border: red 1px solid;
+    }
 </style>

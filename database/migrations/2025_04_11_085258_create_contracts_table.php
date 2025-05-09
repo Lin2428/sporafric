@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->boolean('is_active')->default(value: true);
+            $table->boolean('is_retired')->default(value: false);
             $table->integer('forfait')->nullable();
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();

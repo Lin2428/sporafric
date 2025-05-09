@@ -20,7 +20,7 @@ class TechnicienResource extends Resource
 {
     protected static ?string $model = Technicien::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+    protected static ?string $navigationIcon = 'heroicon-o-identification';
     protected static ?string $navigationGroup = 'Ronde';
     protected static ?string $navigationLabel = 'Techniciens';
     protected static ?int $navigationSort = 0;

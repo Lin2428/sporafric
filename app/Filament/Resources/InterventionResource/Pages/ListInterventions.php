@@ -16,7 +16,7 @@ class ListInterventions extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-            ->label('Nouvelle intervention'),
+                ->label('Nouvelle intervention'),
         ];
     }
 }

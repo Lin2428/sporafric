@@ -12,7 +12,12 @@ class Intervention extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'type_location',
         'contract_id',
+        'customer_id',
+        'generator',
+        'power',
+        'serial_number',
         'date_prise_appel',
         'date_planifiee',
         'type',
@@ -30,19 +35,33 @@ class Intervention extends Model
         'user_id',
     ];
 
-    protected $with = ['interventionTechniciens'];
+    protected $with = ['interventionTechniciens',];
 
     public function contract()
     {
         return $this->belongsTo(Contract::class);
+    }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function interventionTechniciens():BelongsToMany
+    public function interventionTechniciens(): BelongsToMany
     {
         return $this->belongsToMany(Technicien::class, 'intervention_techniciens');
+    }
+
+    public function pieces()
+    {
+        return $this->belongsToMany(Piece::class, 'intrvention_deliveries')->withPivot('qty');
+    }
+
+    public function infos()
+    {
+        return $this->hasOne(InterventionInfo::class, 'intervention_id');
     }
 }

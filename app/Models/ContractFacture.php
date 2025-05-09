@@ -12,6 +12,7 @@ class ContractFacture extends Model
     protected $fillable = [
         'contract_id',
         'intervention_id',
+        'intervention_id',
         'montant',
         'note',
         'is_paid',
@@ -19,7 +20,7 @@ class ContractFacture extends Model
         'end_date',
         'user_id',
     ];
-    
+
     protected $casts = [
         'montant' => 'integer',
         'is_paid' => 'boolean',
@@ -30,6 +31,7 @@ class ContractFacture extends Model
     protected $with = [
         'intervention',
     ];
+
 
     public function intervention()
     {
