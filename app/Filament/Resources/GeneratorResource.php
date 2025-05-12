@@ -40,9 +40,9 @@ class GeneratorResource extends Resource
     protected static ?string $model = Generator::class;
 
     protected static ?string $navigationIcon  = 'icon-generator';
-    protected static ?string $navigationGroup = 'Maintenance';
+    protected static ?string $navigationGroup = 'Global';
     protected static ?string $navigationLabel = 'Groupes Electrogènes';
-    protected static ?int $navigationSort     = 2;
+    protected static ?int $navigationSort     = 3;
 
     public static function getNavigationBadge(): ?string
     {
@@ -595,120 +595,120 @@ class GeneratorResource extends Resource
                                 // ...
                             ]),
 
-                        Tabs\Tab::make('Facturation')
-                            ->icon('heroicon-o-ticket')
-                            ->iconPosition(IconPosition::After)
-                            ->schema([
+                        // Tabs\Tab::make('Facturation')
+                        //     ->icon('heroicon-o-ticket')
+                        //     ->iconPosition(IconPosition::After)
+                        //     ->schema([
 
-                                \Filament\Infolists\Components\Actions::make([
-                                    \Filament\Infolists\Components\Actions\Action::make('facture')
-                                        ->label('Nouvelle facture')
-                                        ->modalActions()
-                                        ->modalHeading('Créer une nouvelle facture')
-                                        ->modalWidth('lg')
-                                        ->form([
-                                            Select::make('intervention_id')
-                                                ->label('Intervention')
-                                                ->relationship('contractGenerator.contract.interventions', 'identifiant')
-                                                ->searchable(),
-                                            TextInput::make('montant')
-                                                ->label('Montant (FCFA)')
-                                                ->numeric()
-                                                ->required()
-                                                ->minValue(0)
-                                                ->placeholder('Montant de la facture'),
+                        //         \Filament\Infolists\Components\Actions::make([
+                        //             \Filament\Infolists\Components\Actions\Action::make('facture')
+                        //                 ->label('Nouvelle facture')
+                        //                 ->modalActions()
+                        //                 ->modalHeading('Créer une nouvelle facture')
+                        //                 ->modalWidth('lg')
+                        //                 ->form([
+                        //                     Select::make('intervention_id')
+                        //                         ->label('Intervention')
+                        //                         ->relationship('contractGenerator.contract.interventions', 'identifiant')
+                        //                         ->searchable(),
+                        //                     TextInput::make('montant')
+                        //                         ->label('Montant (FCFA)')
+                        //                         ->numeric()
+                        //                         ->required()
+                        //                         ->minValue(0)
+                        //                         ->placeholder('Montant de la facture'),
 
-                                            DatePicker::make('start_date')
-                                                ->label('Date de paiement'),
+                        //                     DatePicker::make('start_date')
+                        //                         ->label('Date de paiement'),
 
-                                            DatePicker::make('end_date')
-                                                ->label('Date limite'),
+                        //                     DatePicker::make('end_date')
+                        //                         ->label('Date limite'),
 
-                                            Textarea::make('note')
-                                                ->label('Note')
-                                                ->rows(3),
-                                        ])
-                                        ->action(function (array $data, $record) {
+                        //                     Textarea::make('note')
+                        //                         ->label('Note')
+                        //                         ->rows(3),
+                        //                 ])
+                        //                 ->action(function (array $data, $record) {
 
-                                            ContractFacture::create([
-                                                'contract_id'     => $record->contractGenerator->contract->id,
-                                                'intervention_id' => $data['intervention_id'],
-                                                'montant'         => $data['montant'],
-                                                'start_date'      => $data['start_date'],
-                                                'end_date'        => $data['end_date'],
-                                                'note'            => $data['note'],
-                                                'is_paid'         => false,
-                                                'user_id'         => auth()->user()->id,
-                                            ]);
+                        //                     ContractFacture::create([
+                        //                         'contract_id'     => $record->contractGenerator->contract->id,
+                        //                         'intervention_id' => $data['intervention_id'],
+                        //                         'montant'         => $data['montant'],
+                        //                         'start_date'      => $data['start_date'],
+                        //                         'end_date'        => $data['end_date'],
+                        //                         'note'            => $data['note'],
+                        //                         'is_paid'         => false,
+                        //                         'user_id'         => auth()->user()->id,
+                        //                     ]);
 
-                                            Notification::make()
-                                                ->title('Facture créée avec succès')
-                                                ->success()
-                                                ->send();
-                                        }),
-                                ])->alignRight(),
+                        //                     Notification::make()
+                        //                         ->title('Facture créée avec succès')
+                        //                         ->success()
+                        //                         ->send();
+                        //                 }),
+                        //         ])->alignRight(),
 
-                                RepeatableEntry::make('contractGenerator.contract.factures')
-                                    ->hiddenLabel()
-                                    ->grid(2)
-                                    ->schema([
-                                        Grid::make(2)
-                                            ->schema([
-                                                TextEntry::make('is_paid')
-                                                    ->label('')
-                                                    ->getStateUsing(fn($record) => $record->is_paid ? 'Payée' : 'Non payée')
-                                                    ->badge()
-                                                    ->colors([
-                                                        'success' => 'Payée',
-                                                        'danger'  => 'Non payée',
-                                                    ]),
+                        //         RepeatableEntry::make('contractGenerator.contract.factures')
+                        //             ->hiddenLabel()
+                        //             ->grid(2)
+                        //             ->schema([
+                        //                 Grid::make(2)
+                        //                     ->schema([
+                        //                         TextEntry::make('is_paid')
+                        //                             ->label('')
+                        //                             ->getStateUsing(fn($record) => $record->is_paid ? 'Payée' : 'Non payée')
+                        //                             ->badge()
+                        //                             ->colors([
+                        //                                 'success' => 'Payée',
+                        //                                 'danger'  => 'Non payée',
+                        //                             ]),
 
-                                                \Filament\Infolists\Components\Actions::make([
-                                                    \Filament\Infolists\Components\Actions\Action::make('payment')
-                                                        ->label('Marquer comme payée')
-                                                        ->action(function (array $data, $record) {
-                                                            $record->update([
-                                                                'is_paid' => true,
-                                                            ]);
+                        //                         \Filament\Infolists\Components\Actions::make([
+                        //                             \Filament\Infolists\Components\Actions\Action::make('payment')
+                        //                                 ->label('Marquer comme payée')
+                        //                                 ->action(function (array $data, $record) {
+                        //                                     $record->update([
+                        //                                         'is_paid' => true,
+                        //                                     ]);
 
-                                                            Notification::make()
-                                                                ->title('Facture marquée comme payée')
-                                                                ->success()
-                                                                ->send();
-                                                        })
-                                                        ->color('success')
-                                                        ->size(ActionSize::Small)
-                                                        ->visible(fn($record) => !$record->is_paid),
-                                                ]),
+                        //                                     Notification::make()
+                        //                                         ->title('Facture marquée comme payée')
+                        //                                         ->success()
+                        //                                         ->send();
+                        //                                 })
+                        //                                 ->color('success')
+                        //                                 ->size(ActionSize::Small)
+                        //                                 ->visible(fn($record) => !$record->is_paid),
+                        //                         ]),
                                                 
-                                                TextEntry::make('created_at')
-                                                    ->label('Créé le')
-                                                    ->date('d/m/Y')
-                                                    ->color('success'),
+                        //                         TextEntry::make('created_at')
+                        //                             ->label('Créé le')
+                        //                             ->date('d/m/Y')
+                        //                             ->color('success'),
 
-                                                TextEntry::make('intervention_id')
-                                                    ->label('Intervention')
-                                                    ->getStateUsing(fn($record) => $record->intervention ? $record->intervention->identifiant : 'Pas d\'intervention')
-                                                    ->extraAttributes(['class' => 'font-bold']),
-                                                TextEntry::make('montant')
-                                                    ->label('Montant')
-                                                    ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
-                                                    ->extraAttributes(['class' => 'font-bold']),
-                                                TextEntry::make('start_date')
-                                                    ->label('Date de paiement')
-                                                    ->date('d/m/Y')
-                                                    ->color('success'),
-                                                TextEntry::make('end_date')
-                                                    ->label('Date limite')
-                                                    ->date('d/m/Y')
-                                                    ->color('danger'),
-                                                TextEntry::make('note')
-                                                    ->label('Note')
-                                                    ->color('secondary')
-                                                    ->columnSpanFull(),
-                                            ]),
-                                    ]),
-                            ])->columnSpanFull(),
+                        //                         TextEntry::make('intervention_id')
+                        //                             ->label('Intervention')
+                        //                             ->getStateUsing(fn($record) => $record->intervention ? $record->intervention->identifiant : 'Pas d\'intervention')
+                        //                             ->extraAttributes(['class' => 'font-bold']),
+                        //                         TextEntry::make('montant')
+                        //                             ->label('Montant')
+                        //                             ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
+                        //                             ->extraAttributes(['class' => 'font-bold']),
+                        //                         TextEntry::make('start_date')
+                        //                             ->label('Date de paiement')
+                        //                             ->date('d/m/Y')
+                        //                             ->color('success'),
+                        //                         TextEntry::make('end_date')
+                        //                             ->label('Date limite')
+                        //                             ->date('d/m/Y')
+                        //                             ->color('danger'),
+                        //                         TextEntry::make('note')
+                        //                             ->label('Note')
+                        //                             ->color('secondary')
+                        //                             ->columnSpanFull(),
+                        //                     ]),
+                        //             ]),
+                        //     ])->columnSpanFull(),
 
                         Tabs\Tab::make('Etat avant/après')
                             ->icon('heroicon-o-arrow-path')

@@ -1,10 +1,10 @@
-import './bootstrap';
 
 console.log('Hello from app.js');
 window.addEventListener('load', function () {
     const printReportButton = document.querySelector('#print-form-etat');
     if (printReportButton) {
         printReportButton.addEventListener('click', () => {
+            
             const printableArea = document.querySelector('#printable').innerHTML;
             const printWindow = window.open('', '', 'height=1200,width=800');
 

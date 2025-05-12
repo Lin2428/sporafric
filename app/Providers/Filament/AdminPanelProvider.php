@@ -41,6 +41,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 'Dashboard',
+                'Global',
                 'Location',
                 'Maintenance',
                 'Ronde',

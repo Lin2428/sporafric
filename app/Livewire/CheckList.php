@@ -37,7 +37,7 @@ class CheckList extends Component implements HasForms
                         ->schema([
                             Select::make('technician_id')
                             ->options(fn () => Technicien::all()->pluck('name', 'id'))
-                            ->label('Technicien')
+                            ->label('Technicien(e)')
                             ->required()
                             ->searchable()
                             ->placeholder('Sélectionner un(e) technicien(e)')
@@ -59,14 +59,14 @@ class CheckList extends Component implements HasForms
                                 'is_legal' => 'Légal',
                             ]),
                         ])
-                        ->columnSpan(['lg' => 1]),
+                        ->columnSpan(1),
 
                     Section::make('Etat après location')
                     ->columns(2)
                     ->schema([
                         Select::make('technician_id')
                         ->options(fn () => Technicien::all()->pluck('name', 'id'))
-                        ->label('Technicien')
+                        ->label('Technicien(e)')
                         ->required()
                         ->searchable()
                         ->placeholder('Sélectionner un(e) technicien(e)')
@@ -88,7 +88,7 @@ class CheckList extends Component implements HasForms
                             'is_legal' => 'Légal',
                         ]),
                     ])
-                    ->columnSpan(['lg' => 1]),
+                    ->columnSpan(1),
                 ])
             ]);
     }
