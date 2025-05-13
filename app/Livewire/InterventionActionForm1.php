@@ -4,11 +4,15 @@ namespace App\Livewire;
 
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
-use App\Models\InterventionDelivery;
+use App\Models\InterventionPieces;
 use App\Models\Piece;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Filament\Forms\Components\TextInput;
@@ -35,8 +39,18 @@ class InterventionActionForm1 extends Component implements HasForms, HasActions
             return [
                 'piece_id' => $piece->pivot->piece_id,
                 'qty' => $piece->pivot->qty,
+                'price' => $piece->pivot->price,
             ];
         })->toArray();
+
+        $onUpdate = function(Set $set, Get $get) {
+            $pieces = $get('../../pieces');
+            foreach ($pieces as $piece) {
+                $price = Piece::find($piece['piece_id'])->pv;
+
+                $set('price', $price?? 0);
+            }
+        };
 
         return Action::make('edit')
             ->label('Modifier')
@@ -61,16 +75,23 @@ class InterventionActionForm1 extends Component implements HasForms, HasActions
                     ->default($pieces)
                     ->addActionLabel('Ajouter une pièce')
                     ->schema([
-                        WidgetUtils::pieceSelectWidget()
-                            ->columnSpan(['lg' => 2])
+                        WidgetUtils::pieceSelectWidget($onUpdate)
+                            ->columnSpanFull()
+                            ->reactive()
                             ->required(),
                         TextInput::make('qty')
-                            ->label('Quantité')
+                        ->label('Quantité')
+                        ->numeric()
+                        ->minValue(1)
+                        ->default(1)
+                        ->required(),
+                        TextInput::make('price')
+                            ->label('Prix unitaire')
                             ->numeric()
-                            ->minValue(1)
-                            ->default(1)
+                            ->minValue(0)
+                            ->reactive()
                             ->required(),
-                    ])->columns(3)
+                    ])->columns(2)
                     ->grid(2)
             ])
             ->action(function (array $data) {
@@ -82,17 +103,26 @@ class InterventionActionForm1 extends Component implements HasForms, HasActions
                 $this->record->pieces()->whereNotIn('piece_id', $existingIds)->delete(); // suppression des anciens
 
                 foreach ($pieces as $piece) {
-                    InterventionDelivery::updateOrCreate(
+                    InterventionPieces::updateOrCreate(
                         [
-                            'intervention_id' => $this->record->id,
+                            'intrvention_id' => $this->record->id,
                             'piece_id' => $piece['piece_id'],
+                            'generator_id' => $this->record->contract->generator_id,
                         ],
                         [
                             'piece_id' => $piece['piece_id'],
                             'qty' => $piece['qty'],
+                            'price' => $piece['price'],
+                            'generator_id' => $this->record->contract->generator_id,
                         ]
                     );
                 }
+
+                Notification::make()
+                    ->title('Intervention modifiée')
+                    ->success()
+                    ->body('L\'intervention a été modifiée avec succès.')
+                    ->send();
 
                 return redirect(request()->header('Referer'));
             });

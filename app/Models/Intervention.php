@@ -35,7 +35,7 @@ class Intervention extends Model
         'user_id',
     ];
 
-    protected $with = ['interventionTechniciens',];
+    protected $with = ['interventionTechniciens', 'pieces'];
 
     public function contract()
     {
@@ -57,7 +57,7 @@ class Intervention extends Model
 
     public function pieces()
     {
-        return $this->belongsToMany(Piece::class, 'intrvention_deliveries')->withPivot('qty');
+        return $this->belongsToMany(Piece::class, 'intervention_pieces', 'intrvention_id', 'piece_id')->withPivot(['qty', 'price']);
     }
 
     public function infos()

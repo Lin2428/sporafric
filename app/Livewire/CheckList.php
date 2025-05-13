@@ -27,6 +27,7 @@ class CheckList extends Component implements HasForms
 
     public function form(Form $form): Form
     {
+        $techniciens = Technicien::all()->pluck('name', 'id');
         return $form
             ->schema([
                 Group::make()
@@ -36,7 +37,7 @@ class CheckList extends Component implements HasForms
                         ->columns(2)
                         ->schema([
                             Select::make('technician_id')
-                            ->options(fn () => Technicien::all()->pluck('name', 'id'))
+                            ->options($techniciens)
                             ->label('Technicien(e)')
                             ->required()
                             ->searchable()
@@ -65,7 +66,7 @@ class CheckList extends Component implements HasForms
                     ->columns(2)
                     ->schema([
                         Select::make('technician_id')
-                        ->options(fn () => Technicien::all()->pluck('name', 'id'))
+                        ->options($techniciens)
                         ->label('Technicien(e)')
                         ->required()
                         ->searchable()

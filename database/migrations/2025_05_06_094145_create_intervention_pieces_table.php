@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('intervention_pieces', function (Blueprint $table) {
             $table->id();
             $table->foreignId('intrvention_id');
+            $table->foreignId('generator_id');
             $table->foreignId('piece_id');
+            $table->integer('qty')->default(1);
+            $table->integer('price')->nullable();
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

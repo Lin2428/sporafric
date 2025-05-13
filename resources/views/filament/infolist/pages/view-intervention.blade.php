@@ -111,7 +111,7 @@
     }
 </style>
 <span class="text-red-800">
-    {{$getRecord()->type_location == 1 ? "Sous contrat":"Hors contrat"}}
+    {{$getRecord()->type_location == 1 ? "Maintenance":"Location"}}
 </span>
 <br>
 <br>

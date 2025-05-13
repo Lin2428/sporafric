@@ -43,4 +43,9 @@ class Generator extends Model
     {
         return $this->hasOne(ContractGenerator::class)->where('status', true);
     }
+
+    public function pieces()
+    {
+        return $this->hasMany(InterventionPieces::class);
+    }
 }
