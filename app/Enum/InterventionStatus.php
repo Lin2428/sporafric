@@ -6,8 +6,8 @@ enum InterventionStatus: string
 {
     case NON_COMMENCE = '0';
     case EN_COURS = '1';
-    case TERMINEE = '3';
-    case ANNULEE = '4';
+    case TERMINEE = '2';
+    case ANNULEE = '3';
 
     public function label(): string
     {

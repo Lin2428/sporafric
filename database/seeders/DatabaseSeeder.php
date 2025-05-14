@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Generator;
+use App\Models\Intervention;
 use App\Models\Piece;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,7 +17,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Piece::factory(5)->create();
+        Intervention::factory(50)->create();
+        //Piece::factory(5)->create();
         // User::factory(10)->create();
         //Generator::factory(10)->create();
         //$this->call(CustomerSeeder::class); 

@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('intervention_infos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('intervention_id');
-            $table->string('devis_numero');
-            $table->date('devis_date');
-            $table->integer('devis_montant');
-            $table->string('devis_fiche');
-            $table->string('bc_numero');
-            $table->date('bc_date');
-            $table->string('bc_fiche');
+            $table->string('devis_numero')->nullable();
+            $table->date('devis_date')->nullable();
+            $table->integer('devis_montant')->nullable();
+            $table->string('devis_fiche')->nullable();
+            $table->string('bc_numero')->nullable();
+            $table->date('bc_date')->nullable();
+            $table->string('bc_fiche')->nullable();
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

@@ -7,6 +7,7 @@ use App\Models\Intervention;
 use App\Models\InterventionInfo;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Filament\Actions\Contracts\HasActions;
@@ -71,6 +72,7 @@ class InterventionActionForm2 extends Component implements HasForms, HasActions
                                         TextInput::make('devis_montant')
                                             ->label('Montant')
                                             ->numeric()
+                                            ->default(0)
                                             ->default($this->record->infos?->devis_montant)
                                             ->columnSpanFull(),
                                         FileUpload::make('devis_fiche')
@@ -133,6 +135,13 @@ class InterventionActionForm2 extends Component implements HasForms, HasActions
                         "bc_fiche" => $data['bc_fiche'],
                     ]
                 );
+
+                Notification::make()
+                ->title('Intervention modifiée')
+                ->success()
+                ->body('L\'intervention a été modifiée avec succès.')
+                ->send();
+
                 return redirect(request()->header('Referer'));
             });
     }

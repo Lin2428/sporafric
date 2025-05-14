@@ -23,7 +23,7 @@ class ReportPage extends Page implements HasForms
     protected static ?string $navigationGroup = 'Dashboard';
     protected static ?string $title = 'Rapports';
     protected static string $view = 'filament.pages.report-page';
-    public $results, $start_date, $end_date, $generator_id, $customer_id, $month;
+    public $results, $start_date, $end_date, $contract_id, $generator_id, $customer_id, $month;
 
     protected function getFormSchema(): array
     {
@@ -80,7 +80,7 @@ class ReportPage extends Page implements HasForms
                                         Action::make('submit2')
                                             ->hiddenLabel()
                                             ->icon('heroicon-m-magnifying-glass')
-                                            ->action(fn($state) => $this->submitTab4())
+                                            ->action(fn($state) => null)
                                     ])->alignRight(),
                                 ]),
                         ]),
@@ -92,9 +92,9 @@ class ReportPage extends Page implements HasForms
                                 ->columnSpanFull()
                                 ->schema([
                                     WidgetUtils::generatorSelectWidget(isDispo: false),
-                                    WidgetUtils::customerSelectWidget(),
+                                    WidgetUtils::contractSelectWidget(),
                                     Actions::make([
-                                        Action::make('submit2')
+                                        Action::make('submit3')
                                             ->hiddenLabel()
                                             ->icon('heroicon-m-magnifying-glass')
                                             ->action(fn($state) => $this->submitTab4())
@@ -138,27 +138,25 @@ class ReportPage extends Page implements HasForms
     {
         $this->results = [];
         $interventions = Intervention::query();
-        $interventions->whereHas('contract', function ($query) {
+        $interventions->orWhereHas('contract', function ($query) {
             if ($this->generator_id) {
                 $query->where('generator_id', $this->generator_id);
             }
-            if ($this->customer_id) {
-                $query->where('customer_id', $this->customer_id);
-            }
         });
 
-        if ($this->customer_id && $this->generator_id == null) {
-            $interventions->orWhere(function ($query) {
-                $query->whereNull('contract_id');
-                if ($this->customer_id !== null) {
-                    $query->where('customer_id', $this->customer_id);
-                }
-            });
+        if ($this->contract_id) {
+            $interventions->where('contract_id', $this->contract_id);
         }
 
 
-        if (($this->customer_id && $this->generator_id)  !== null) {
-            $this->results = $interventions->get();
+        if (($this->contract_id || $this->generator_id)  !== null) {
+            $this->results = $interventions
+            ->groupBy('contract_id')
+            //->selectRaw('count(*) as total_interventions')
+            ->get();
         }
+
+        dd($this->results);
+      
     }
 }

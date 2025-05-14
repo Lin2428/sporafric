@@ -51,12 +51,12 @@ class CheckList extends Component implements HasForms
                             ->required()
                             ->options([
                                 'is_clean' => 'Propre',
-                                'is_functional' => 'Fonctionnel',
-                                'is_complete' => 'Complet',
+                                'is_functional' => 'Démarre',
+                                'is_complete' => 'Grandeur électrique',
                                 'is_maintained' => 'Bien entretenu',
-                                'is_usable' => 'Utilisable',
-                                'is_acceptable' => 'Acceptable',
-                                'is_safe' => 'Sûr',
+                                'is_usable' => 'Grandeur mécanique',
+                                'is_acceptable' => 'Nb heures',
+                                'is_safe' => 'Prochaine vidange',
                                 'is_legal' => 'Légal',
                             ]),
                         ])
@@ -80,12 +80,12 @@ class CheckList extends Component implements HasForms
                         ->required()
                         ->options([
                             'is_clean' => 'Propre',
-                            'is_functional' => 'Fonctionnel',
-                            'is_complete' => 'Complet',
+                            'is_functional' => 'Démarre',
+                            'is_complete' => 'Grandeur électrique',
                             'is_maintained' => 'Bien entretenu',
-                            'is_usable' => 'Utilisable',
-                            'is_acceptable' => 'Acceptable',
-                            'is_safe' => 'Sûr',
+                            'is_usable' => 'Grandeur mécanique',
+                            'is_acceptable' => 'Nb heures',
+                            'is_safe' => 'Prochaine vidange',
                             'is_legal' => 'Légal',
                         ]),
                     ])
