@@ -9,29 +9,18 @@
         <div class="flex gap-8">
             <div class="flex items-center gap-4">
                 <span class="text-sm">Contrat :</span>
-                <div class="no-print">
-                    <x-filament::input.wrapper>
-                        <x-filament::input.select wire:model.live="contractId" searchable>
-                            @foreach($contracts as $contract)
-                                <option value="{{ $contract->id }}">
-                                    {{ $contract->customer->name }} - {{ $contract->number}} -
-                                    {{ $contract->site }} -
-                                    {{ $contract->customerAdress->city->name }}
-                                </option> 
-                            @endforeach
-                            </x-filament::input.select>
-                        </x-filament::input.wrapper>
+                <div class="w-[300px]">
+                    {{ $this->form }}
                 </div>
             </div>
 
             <div class="flex items-center gap-4">
-                <span class="text-sm">GE : </span>
+                <span class="text-sm">Par : </span>
                 <div class="no-print">
                     <x-filament::input.wrapper>
-                        <x-filament::input.select wire:model.live="cityId">
-                            {{-- @foreach($cities as $city)
-                                <option value="{{ $city->id }}">{{ $city->name }}</option>
-                            @endforeach --}}
+                        <x-filament::input.select wire:model.live="type" searchable>
+                            <option value="0">Contrat</option>
+                            <option value="1">Groupe électrogene</option>
                         </x-filament::input.select>
                     </x-filament::input.wrapper>
                 </div>

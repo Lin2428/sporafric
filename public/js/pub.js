@@ -10,7 +10,7 @@ window.addEventListener('load', function () {
 
             printWindow.document.write('<html lang="fr"><head>');
             // Ajoute les styles CSS pour le format de papier
-            printWindow.document.write('<style>@media print { /*@page { margin: 0; } body { margin: 1cm; }*/ .no-print { display: none !important; } } </style>');
+            printWindow.document.write('<style>@media print {tfoot { display: table-footer-group;} /*@page { margin: 0; } body { margin: 1cm; }*/ .no-print { display: none !important; } } </style>');
             // Copie le contenu de la balise <head> actuelle
             printWindow.document.write(document.head.innerHTML);
             printWindow.document.write('</head><body>');

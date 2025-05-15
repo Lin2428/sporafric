@@ -16,7 +16,7 @@ return new class extends Migration
 SELECT
     i.id,
     i.contract_id,
-    i.identifiant AS identifiants,
+    i.identifiant AS identifiant,
     i.created_at,
     i.type AS type_intervention,
     inf.devis_montant,
@@ -30,7 +30,7 @@ SELECT
     IFNULL(techs.techniciens, '') AS techniciens,
     TIMESTAMPDIFF(MONTH, c.start_date, c.end_date) AS duree_contrat,
     TIMESTAMPDIFF(MONTH, c.start_date, NOW()) AS mois_ecoules,
-    TIMESTAMPDIFF(MONTH, c.start_date, NOW()) * c.forfait AS montant_deja_paye
+    TIMESTAMPDIFF(MONTH, c.start_date, NOW()) * c.forfait AS montant_paye
 FROM interventions i
 LEFT JOIN contracts c ON c.id = i.contract_id
 LEFT JOIN customers cu ON cu.id = c.customer_id
@@ -59,7 +59,7 @@ LEFT JOIN (
     GROUP BY it.intervention_id
 ) AS techs ON techs.intervention_id = i.id
 
-WHERE i.type_location = 1;
+WHERE i.type_location = 1 
         ");
     }
 

@@ -12,8 +12,6 @@ abstract class DailyReportPage extends Page
 
     public function mount(): void
     {
-        $this->contractId = 1;
-
         $this->refresh();
     }
 

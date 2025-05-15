@@ -96,9 +96,9 @@ class WidgetUtils
         return $select;
     }
 
-    public static function contractSelectWidget(): Select
+    public static function contractSelectWidget(string|null $name): Select
     {
-        $select = Select::make('contract_id')
+        $select = Select::make($name ??'contract_id')
             ->relationship('contract', 'name')
             ->searchable()
             ->required()
