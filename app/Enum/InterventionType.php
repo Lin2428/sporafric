@@ -9,6 +9,7 @@ enum InterventionType: string
     case MAINTENANCE_PRE    = '2';
     case MAINTENANCE_CUR   = '3';
     case RETRAIT = '4';
+    case RONDE = '5';
 
     public function label(): string
     {
@@ -18,6 +19,7 @@ enum InterventionType: string
             self::MAINTENANCE_PRE => 'Maintenance préventive',
             self::MAINTENANCE_CUR => 'Maintenance curative',
             self::RETRAIT => 'Retrait',
+            self::RONDE => 'Ronde',
         };
     }
 }

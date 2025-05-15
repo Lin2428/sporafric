@@ -23,7 +23,7 @@ class WorkListResource extends Resource
     protected static ?string $model = WorkList::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
-    protected static ?string $navigationGroup = 'Maintenance';
+    protected static ?string $navigationGroup = 'Global';
     protected static ?string $navigationLabel = 'Tâches de Maintenance';
     protected static ?int $navigationSort = 3;
 

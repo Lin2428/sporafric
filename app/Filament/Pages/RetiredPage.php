@@ -26,8 +26,9 @@ class RetiredPage extends Page implements HasForms, HasTable
     use InteractsWithTable;
     protected static ?string $model = Intervention::class;
     protected static ?string $navigationIcon = 'heroicon-o-truck';
-    protected static ?string $navigationGroup = 'Ronde';
+    protected static ?string $navigationGroup = 'Location';
     protected static ?string $title = 'Retrait';
+    protected static ?int $navigationSort = 2;
 
     protected static string $view = 'filament.pages.retired-page';
 

@@ -20,7 +20,7 @@ class ReportPage extends Page implements HasForms
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
-    protected static ?string $navigationGroup = 'Dashboard';
+    protected static ?string $navigationGroup = 'Rapport';
     protected static ?string $title = 'Rapports';
     protected static string $view = 'filament.pages.report-page';
     public $results, $start_date, $end_date, $contract_id, $generator_id, $customer_id, $month;

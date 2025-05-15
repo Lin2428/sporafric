@@ -21,9 +21,9 @@ class TechnicienResource extends Resource
     protected static ?string $model = Technicien::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-identification';
-    protected static ?string $navigationGroup = 'Ronde';
+    protected static ?string $navigationGroup = 'Global';
     protected static ?string $navigationLabel = 'Techniciens';
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

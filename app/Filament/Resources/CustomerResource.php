@@ -34,7 +34,7 @@ class CustomerResource extends Resource
 
     protected static ?string $navigationGroup = 'Global';
     protected static ?string $navigationLabel = 'Clients';
-    //protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 0;
 
     public static function form(Form $form): Form
     {

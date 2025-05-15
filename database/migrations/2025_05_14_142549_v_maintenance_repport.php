@@ -14,38 +14,52 @@ return new class extends Migration
         DB::statement("
         CREATE OR REPLACE VIEW v_maintenance_repport AS
 SELECT
-    COUNT(DISTINCT interventions.id) AS total_intevention,
-    interventions.contract_id,
-    GROUP_CONCAT(DISTINCT interventions.identifiant SEPARATOR ', ') AS identifiants,
-    contracts.code_site,
-    contracts.forfait,
-    customers.name AS customer_name,
-    generators.name AS generator_name,
-    SUM(DISTINCT intervention_pieces.qty) AS total_pieces,
-    SUM(DISTINCT intervention_pieces.qty * intervention_pieces.price) AS montant_piece,
-    GROUP_CONCAT(DISTINCT CONCAT(pieces.reference, '(', intervention_pieces.qty, ')') SEPARATOR ', ') AS pieces,
-    GROUP_CONCAT(DISTINCT techniciens.name SEPARATOR ', ') AS techniciens,
-    TIMESTAMPDIFF(MONTH, contracts.start_date, contracts.end_date) AS duree_contrat,
-    TIMESTAMPDIFF(MONTH, contracts.start_date, NOW()) AS mois_ecoules,
-    TIMESTAMPDIFF(MONTH, contracts.start_date, NOW()) * contracts.forfait AS montant_deja_paye
-FROM interventions 
-LEFT JOIN contracts ON contracts.id = interventions.contract_id
-LEFT JOIN intervention_infos ON intervention_infos.intervention_id = interventions.id
-LEFT JOIN intervention_pieces ON intervention_pieces.intrvention_id = interventions.id
-LEFT JOIN intervention_techniciens ON intervention_techniciens.intervention_id = interventions.id
-LEFT JOIN techniciens ON techniciens.id = intervention_techniciens.technicien_id
-LEFT JOIN pieces ON pieces.id = intervention_pieces.piece_id
-LEFT JOIN customers ON customers.id = contracts.customer_id
-LEFT JOIN generators ON generators.id = contracts.generator_id
-WHERE interventions.type_location = 1
-GROUP BY 
-    interventions.contract_id,
-    contracts.code_site,
-    contracts.forfait,
-    customers.name,
-    generators.name,
-    contracts.start_date,
-    contracts.end_date
+    i.id,
+    i.contract_id,
+    i.identifiant AS identifiants,
+    i.created_at,
+    i.type AS type_intervention,
+    inf.devis_montant,
+    c.code_site,
+    c.forfait,
+    cu.name AS customer_name,
+    g.name AS generator_name,
+    IFNULL(pieces_data.total_pieces, 0) AS total_pieces,
+    IFNULL(pieces_data.montant_piece, 0) AS montant_piece,
+    IFNULL(pieces_data.pieces, '') AS pieces,
+    IFNULL(techs.techniciens, '') AS techniciens,
+    TIMESTAMPDIFF(MONTH, c.start_date, c.end_date) AS duree_contrat,
+    TIMESTAMPDIFF(MONTH, c.start_date, NOW()) AS mois_ecoules,
+    TIMESTAMPDIFF(MONTH, c.start_date, NOW()) * c.forfait AS montant_deja_paye
+FROM interventions i
+LEFT JOIN contracts c ON c.id = i.contract_id
+LEFT JOIN customers cu ON cu.id = c.customer_id
+LEFT JOIN generators g ON g.id = c.generator_id
+LEFT JOIN intervention_infos inf ON inf.id = i.id 
+
+-- Sous-requête pour les pièces
+LEFT JOIN (
+    SELECT
+        ip.intrvention_id AS intervention_id,
+        SUM(ip.qty) AS total_pieces,
+        SUM(ip.qty * ip.price) AS montant_piece,
+        GROUP_CONCAT(DISTINCT CONCAT(p.reference, '(', ip.qty, ')') SEPARATOR ', ') AS pieces
+    FROM intervention_pieces ip
+    LEFT JOIN pieces p ON p.id = ip.piece_id
+    GROUP BY ip.intrvention_id
+) AS pieces_data ON pieces_data.intervention_id = i.id
+
+-- Sous-requête pour les techniciens
+LEFT JOIN (
+    SELECT
+        it.intervention_id,
+        GROUP_CONCAT(DISTINCT t.name SEPARATOR ', ') AS techniciens
+    FROM intervention_techniciens it
+    LEFT JOIN techniciens t ON t.id = it.technicien_id
+    GROUP BY it.intervention_id
+) AS techs ON techs.intervention_id = i.id
+
+WHERE i.type_location = 1;
         ");
     }
 

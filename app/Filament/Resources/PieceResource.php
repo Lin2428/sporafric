@@ -25,7 +25,7 @@ class PieceResource extends Resource
     protected static ?string $model = Piece::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-8-tooth';
-    protected static ?string $navigationGroup = 'Maintenance';
+    protected static ?string $navigationGroup = 'Global';
     protected static ?string $navigationLabel = 'Pièces de Réchange';
     protected static ?int $navigationSort = 2;
 

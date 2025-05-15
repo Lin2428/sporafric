@@ -7,7 +7,7 @@ class NumberUtils
     public static function format(int|float|null $number, int $decimals = 2, string $decimalSeparator = ',', bool $currency = false): string
     {
         if ($number == null) {
-            return "";
+            return "0";
         }
         if (!($number - floor($number) > 0)) {
             $decimals = 0;

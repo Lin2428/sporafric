@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Filament\Admin\Pages;
+use App\Models\City;
+use App\Models\Contract;
+use App\Models\Generator;
+use Filament\Pages\Page;
+abstract class DailyReportPage extends Page
+{
+    public  $contractId;
+    public $generatorId;
+
+    public function mount(): void
+    {
+        $this->contractId = 1;
+
+        $this->refresh();
+    }
+
+    public function updatedDate(): void
+    {
+        $this->refresh();
+    }
+
+    public function updatedContractId(): void
+    {
+        $this->refresh();
+    }
+
+    protected abstract function refresh();
+
+    protected abstract function viewData(): array;
+
+    protected function getViewData(): array
+    {
+        return [
+            'contractId' => $this->contractId,
+            'contracts' => Contract::all(),
+            'generator' => $this->generatorId,
+            ...$this->viewData(),
+        ];
+    }
+}
