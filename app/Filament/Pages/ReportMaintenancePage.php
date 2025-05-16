@@ -10,50 +10,79 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Illuminate\Database\Eloquent\Collection;
 
 class ReportMaintenancePage extends DailyReportPage implements HasForms
 {
     use InteractsWithForms;
-    protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationGroup = 'Rapport';
     protected static ?string $title = 'Rapports des maintenances';
 
     protected static string $view = 'filament.pages.report-maintenance';
 
     private $data;
+    public $type;
 
     protected function refresh(): void
     {
-        if($this->contractId == null) {
-            $data = null;
+        if (empty($this->contractId) && empty($this->generatorId)) {
+            $this->data = collect();
             return;
         }
-        $contract = Contract::find($this->contractId);
-        $query = ReportMaintenance::where('contract_id', $contract->id);
-
-        $data = $query->get();
-
-        $this->data = $data;
+        
+        
+        $query = ReportMaintenance::query();
+        
+        if (!empty($this->contractId)) {
+            $query->where('contract_id', $this->contractId);
+        }
+        
+        if (!empty($this->generatorId)) {
+            $query->orWhere('generator_id', $this->generatorId);
+        }
+        
+        $this->data = $query->get();
+       
     }
 
     public function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                // Select::make('contractId')
-                // ->label('Contrat')
-                // ->searchable()
-                // ->options(Contract::all()->pluck('number', 'id'))
-                // ->live()
-               WidgetUtils::contractSelectWidget("contractId")
-               ->hiddenLabel()
-               ->afterStateUpdated(function ($state) {
-                $this->contractId = $state;
-                $this->refresh();
-            })->live(true),
-            ]);
-    }
+{
+    return $form
+        ->schema([
+
+            WidgetUtils::contractSelectWidget("contractId")
+                ->afterStateUpdated(function ($state) {
+                    $this->generatorId = null;
+                    $this->contractId = $state;
+                    $this->refresh();
+                })
+                ->live(true)
+                ->required(false)
+                ->visible(fn(callable $get) => $get('type') == '0'),
+
+            WidgetUtils::generatorSelectWidget(name:"generatorId", isDispo:false)
+                ->afterStateUpdated(function ($state) {
+                    $this->contractId = null;
+                    $this->generatorId = $state;
+                    $this->refresh();
+                })
+                ->live(true)
+                ->required(false)
+                ->visible(fn(callable $get) => $get('type') == '1'),
+
+                Select::make('type')
+                ->label('Type de rapport')
+                ->options([
+                    '0' => 'Contrat',
+                    '1' => 'Groupe électrogène',
+                ])
+                ->reactive()
+                ->extraAttributes(['class' => 'no-print']),
+        ])
+        ->columns(2);
+}
+
+  
 
     protected function viewData(): array
     {

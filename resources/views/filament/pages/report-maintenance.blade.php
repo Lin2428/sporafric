@@ -1,6 +1,30 @@
 @php
-    $total1 = $data != null ? $data->sum('devis_montant') + $data->sum('montant_piece') : 0;
-    $total2 = $data != null ? $total1 + $data->first()->montant_paye : 0;
+    if($data == null){
+        $data = collect();
+    }
+    $workDays = 0;
+    $txOcupation = 0;
+    $total1 = 0;
+    $total2 = 0;
+    $revenuContrat = 0;
+
+    if($data->isNotEmpty()){
+        $total1 = $data->sum('devis_montant') + $data->sum('montant_piece');
+        $total2 = $total1 + $data->first()->montant_paye;
+
+        $workDays = $data->first()->occupation;
+
+        $workDays +=  collect($data)
+            ->unique('contract_id') 
+            ->where('occupation', 0)
+            ->sum(fn($report) => (int) -(now()->diffInDay($report->contract_start_at)));
+
+        $txOcupation = ($workDays / 360) * 100;
+        $revenuContrat = $data
+            ->unique('contract_id') 
+            ->sum('montant_paye');
+    }
+
 @endphp
 <x-filament-panels::page>
     <script src="{{ asset('css/pub.css') }}"></script>
@@ -33,7 +57,7 @@
             </thead>
             <tbody>
 
-                @if ($data !== null)
+                @if ($data->isNotEmpty())
                     @foreach ($data as $intervention)
                         <tr class="border-b border-slate-400">
                             {{-- <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">{{ \App\Utils\DateUtils::format($intervention->date) }}</td> --}}
@@ -67,13 +91,13 @@
                     </th>
 
                     <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">
-                        {{ \App\Utils\NumberUtils::format($data != null ? $data->sum('total_pieces') : 0) }}
+                        {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('total_pieces') : 0) }}
                     </th>
                     <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">
-                        {{ \App\Utils\NumberUtils::format(number: $data != null ? $data->sum('montant_piece'): 0)  }}
+                        {{ \App\Utils\NumberUtils::format(number: $data->isNotEmpty() ? $data->sum('montant_piece'): 0)  }}
                     </th>
                     <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">
-                        {{ \App\Utils\NumberUtils::format($data != null ? $data->sum('devis_montant') :0)  }}
+                        {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('devis_montant') :0)  }}
                     </th>
                     <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($total1) }}
@@ -82,6 +106,7 @@
             </tfoot>
         </table>
 
+        @if($type === '0')
         <h3 class="text-lg font-semibold pt-5 mb-3">Récaputilatif du contrat</h3>
         <table class="min-w-full border border-slate-400 divide-y divide-slate-300">
             <thead>
@@ -102,19 +127,19 @@
             <tbody>
                 <tr>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ $data != null ? $data->first()->duree_contrat : "" }} mois
+                        {{ $data->isNotEmpty() ? $data->first()->duree_contrat : "" }} mois
                     </td>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ $data != null ? $data->first()->mois_ecoules :"" }} mois
+                        {{ $data->isNotEmpty() ? $data->first()->mois_ecoules :"" }} mois
                     </td>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ $data != null ? $data->count() :"" }}
+                        {{ $data->isNotEmpty() ? $data->count() :"" }}
                     </td>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ $data != null ? \App\Utils\NumberUtils::format($data->first()->forfait) :"" }}
+                        {{ $data->isNotEmpty() ? \App\Utils\NumberUtils::format($data->first()->forfait) :"" }}
                     </td>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ $data != null ? \App\Utils\NumberUtils::format($data->first()->montant_paye) :"" }}
+                        {{ $data->isNotEmpty() ? \App\Utils\NumberUtils::format($data->first()->montant_paye) :"" }}
                     </td>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($total2) }} FCFA
@@ -122,7 +147,54 @@
                 </tr>
             </tbody>
         </table>
+        @endif
+
+
+        @if($type === '1')
+        <h3 class="text-lg font-semibold pt-5 mb-3">Récaputilatif du Groupe Electrogène</h3>
+        <table class="min-w-full border border-slate-400 divide-y divide-slate-300">
+            <thead>
+                <tr>
+                    <th class="px-3 py-4 text-sm font-bold text-center text-slate-800 border border-slate-400">Activité
+                    </th>
+                    <th class="px-3 py-4 text-sm font-bold text-center text-slate-800 border border-slate-400">Tx Occupation
+                    </th>
+                    <th class="px-3 py-4 text-sm font-bold text-center text-slate-800 border border-slate-400">Interventions
+                        
+                    </th>
+                    <th class="px-3 py-4 text-sm font-bold text-center text-slate-800 border border-slate-400">Revenu Contrats
+                    </th>
+                    <th class="px-3 py-4 text-sm font-bold text-center text-slate-800 border border-slate-400">Total
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                        {{ \App\Utils\NumberUtils::format((int)$workDays) }} jours
+                    </td>
+                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                        {{ \App\Utils\NumberUtils::format($txOcupation) }}%
+                    </td>
+                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                        {{ $data->isNotEmpty() ? $data->count() :"" }}
+                    </td>
+                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                        {{ \App\Utils\NumberUtils::format($revenuContrat)}}
+                    </td>
+                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                        {{ $data->isNotEmpty() ? \App\Utils\NumberUtils::format($data->first()->montant_paye) :"" }}
+                    </td>
+                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                        {{ \App\Utils\NumberUtils::format($total1 + $revenuContrat) }} FCFA
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        @endif
     </div>
+
+    
 
     <x-filament::button id="print-form-etat">Imprimer</x-filament::button>
 

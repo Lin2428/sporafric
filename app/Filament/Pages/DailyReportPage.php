@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Filament\Admin\Pages;
-use App\Models\City;
 use App\Models\Contract;
 use App\Models\Generator;
 use Filament\Pages\Page;
@@ -35,6 +34,7 @@ abstract class DailyReportPage extends Page
             'contractId' => $this->contractId,
             'contracts' => Contract::all(),
             'generator' => $this->generatorId,
+            "generators" => Generator::all(),
             ...$this->viewData(),
         ];
     }

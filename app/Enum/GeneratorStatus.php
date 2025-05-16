@@ -4,7 +4,7 @@ namespace App\Enum;
 enum GeneratorStatus: string
 {
     case DISPONIBLE = '0';
-    case EN_MAINTENANCE = '1';
+    case EN_REVU = '1';
     case EN_LOCATION = '2';
     case INDISPONIBLE = '3';
 
@@ -12,7 +12,7 @@ enum GeneratorStatus: string
     {
         return match ($this) {
             self::DISPONIBLE => 'Disponible',
-            self::EN_MAINTENANCE => 'En maintenance',
+            self::EN_REVU => 'En révision',
             self::EN_LOCATION => 'En location',
             self::INDISPONIBLE => 'Indisponible',
         };

@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 class WidgetUtils
 {
-    public static function generatorSelectWidget(?Closure $onUpdate = null, ?Closure $callback = null, bool $isDispo = true): Select
+    public static function generatorSelectWidget(?Closure $onUpdate = null, ?string $name = 'generator_id', bool $isDispo = true): Select
     {
-        $select = Select::make('generator_id')
+        $select = Select::make($name)
             ->relationship('generator', 'name')
             ->allowHtml()
             ->getSearchResultsUsing(function (string $search) use ($isDispo) {
@@ -96,9 +96,9 @@ class WidgetUtils
         return $select;
     }
 
-    public static function contractSelectWidget(string|null $name): Select
+    public static function contractSelectWidget(string $name = "contract_id"): Select
     {
-        $select = Select::make($name ??'contract_id')
+        $select = Select::make($name)
             ->relationship('contract', 'name')
             ->searchable()
             ->required()
@@ -108,6 +108,7 @@ class WidgetUtils
                 $users = Contract::where('site', 'like', "%$search%")
                     ->orWhere('contact_phone', 'like', "$search%")
                     ->orWhere('contact_email', 'like', "$search%")
+                    ->orWhere('number', 'like', "$search%")
                     ->orWhereHas('customer', function ($query) use ($search) {
                         $query->where('name', 'like', "$search%");
                         $query->orWhere('contact_c_phone', 'like', "$search%");

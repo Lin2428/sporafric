@@ -33,7 +33,7 @@ $ring = match($generator->status) {
             </div>
 
             <span
-                class="inline-flex items-center rounded-md {{$bg}} px-2 py-1 text-xs font-medium {{$text}} ring-1 {{$ring}} ring-inset">
+                class="no-print inline-flex items-center rounded-md {{$bg}} px-2 py-1 text-xs font-medium {{$text}} ring-1 {{$ring}} ring-inset">
                 {{ \App\Enum\GeneratorStatus::from($generator->status)->label() }}</span>
         </div>
     </div>

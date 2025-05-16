@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\GeneratorStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -38,35 +39,39 @@ class Contract extends Model
     protected static function booted()
     {
         static::created(function ($model) {
+           if($model->generator_id != null){
+            // Update the generator status to EN_LOCATION
+            Generator::where('id', $model->generator_id)
+            ->update(['status' =>  GeneratorStatus::EN_LOCATION->value]); 
+           }
+
             ContractGenerator::create([
                 'contract_id' => $model->id,
                 'generator_id' => $model->generator_id,
-                'status' => true,
+                'status' => $model->is_active,
                 'user_id' => auth()->user()->id,
+                'created_at' => $model->start_date,
             ]);
         });
 
         static::updating(function ($model) {
-            if ($model->isDirty('generator_id')) {
-                $oldGenerator = $model->getOriginal('generator_id');
-                $newGenerator = $model->generator_id;
+            $statusOld = $model->getOriginal('is_active');
+            $statusNew = $model->is_active;
 
-                if ($oldGenerator !== $newGenerator) {
+            if ($model->isDirty('generator_id') ||($statusOld != $statusNew)) {
+                $oldGenerator = $model->getOriginal('generator_id');
+          
                     ContractGenerator::where('contract_id', $model->id)
                         ->where('generator_id', $oldGenerator)
-                        ->update(['status' => false]);
-
-                    ContractGenerator::updateOrCreate(
-                        [
-                            'contract_id' => $model->id,
-                            'generator_id' => $newGenerator,
-                        ],
-                        ['status' => true, 'user_id' => auth()->user()->id]
-                    );
-                }
+                        ->update(['status' => $statusNew]);
+            }
+            if(($statusOld != $statusNew) && $statusNew == 0){
+                Generator::where('id', $model->generator_id)
+                    ->update(['status' =>  GeneratorStatus::EN_REVU->value]); 
             }
         });
     }
+    
     public function customer()
     {
         return $this->belongsTo(Customer::class);
@@ -89,10 +94,5 @@ class Contract extends Model
     public function interventions()
     {
         return $this->hasMany(Intervention::class);
-    }
-
-    public function factures()
-    {
-        return $this->hasMany(ContractFacture::class);
     }
 }
