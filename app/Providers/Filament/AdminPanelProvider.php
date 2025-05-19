@@ -48,6 +48,7 @@ class AdminPanelProvider extends PanelProvider
                 'Localisation',
                 'Système',
             ])
+            ->sidebarCollapsibleOnDesktop()
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,

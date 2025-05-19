@@ -62,10 +62,10 @@
                         <tr class="border-b border-slate-400">
                             {{-- <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">{{ \App\Utils\DateUtils::format($intervention->date) }}</td> --}}
                             <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">
-                                <a href="{{ url('/interventions/' . $intervention->id) }}" class="text-blue-600 hover:text-blue-800">
-                                    {{ $intervention->identifiant }}
+                                <a href="{{ url('/interventions/' . $intervention->id) }}" class="text-blue-600 ">
+                                    #{{ $intervention->identifiant }}
                                 </a></td>
-                            <td class="px-3 py-4 text-blue-600 text-sm text-left text-slate-800 border border-slate-400">
+                            <td class="px-3 py-4 text-blue-600 text-sm text-left border border-slate-400">
                                 {{ \App\Enum\InterventionType::from($intervention->type_intervention)->label() }}</td>
                             {{-- <td class="px-3 py-4 text-[12px] text-left text-slate-800 border border-slate-400">
                                 {{ $intervention->techniciens }}</td> --}}
@@ -73,11 +73,11 @@
                                 {{ $intervention->pieces }}</td>
                             <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">
                                 {{ $intervention->total_pieces }}</td>
-                            <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">
+                            <td class="px-3 py-4 text-sm text-right text-slate-800 border border-slate-400">
                                 {{ \App\Utils\NumberUtils::format($intervention->montant_piece) }}</td>
-                            <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">
+                            <td class="px-3 py-4 text-sm text-right text-slate-800 border border-slate-400">
                                 {{ \App\Utils\NumberUtils::format($intervention->devis_montant) }}</td>
-                            <td class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">
+                            <td class="px-3 py-4 text-sm text-right font-bold text-slate-800 border border-slate-400">
                                 {{ \App\Utils\NumberUtils::format($intervention->devis_montant + $intervention->montant_piece) }}
                             </td>
                         </tr>
@@ -90,16 +90,16 @@
                         Total
                     </th>
 
-                    <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">
+                    <th class="px-3 py-4 text-sm text-right font-bold text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('total_pieces') : 0) }}
                     </th>
-                    <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">
+                    <th class="px-3 py-4 text-sm text-right font-bold text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format(number: $data->isNotEmpty() ? $data->sum('montant_piece'): 0)  }}
                     </th>
-                    <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">
+                    <th class="px-3 py-4 text-sm text-right font-bold text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('devis_montant') :0)  }}
                     </th>
-                    <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">
+                    <th class="px-3 py-4 text-sm text-right font-bold text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($total1) }}
                     </th>
                 </tr>
@@ -181,9 +181,6 @@
                     </td>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($revenuContrat)}}
-                    </td>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ $data->isNotEmpty() ? \App\Utils\NumberUtils::format($data->first()->montant_paye) :"" }}
                     </td>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($total1 + $revenuContrat) }} FCFA
