@@ -69,4 +69,9 @@
         @livewire(\App\Filament\Widgets\ContractExpiredTable::class)
         @livewire(\App\Filament\Widgets\LocationExipiredTable::class)
     </div>
+    <div class="grid grid-cols-2 gap-4 mt-4">
+        {{-- Widget stat 2 --}}
+        @livewire(\App\Filament\Widgets\InterventionTypeChart::class)
+        @livewire(\App\Filament\Widgets\RevenuMonsuelChart::class)
+    </div>
 </x-filament-panels::page>
