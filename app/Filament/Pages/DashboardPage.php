@@ -14,7 +14,7 @@ class DashboardPage extends Page
 
     protected static ?string $navigationGroup = 'Dashboard';
 
-    protected static ?string $title = 'Locations';
+    protected static ?string $title = 'Dashboard';
 
     protected static string $view = 'filament.pages.dashboard-page';
 

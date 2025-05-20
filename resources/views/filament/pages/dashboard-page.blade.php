@@ -5,10 +5,15 @@
         <div class="col-span-2">
             @livewire(\App\Filament\Widgets\GeneratorStats::class)
             <br>
-            <span class="text-3xl font-bold">Intervention de Location</span>
+            <span class="text-3xl font-bold">Interventions de Location</span>
             <br>
             <br>
             @livewire(\App\Filament\Widgets\InterventionLocationStats::class)
+            <br>
+            <span class="text-3xl font-bold">Interventions de Maintenance</span>
+            <br>
+            <br>
+            @livewire(\App\Filament\Widgets\InterventionMaintenanceStats::class)
         </div>
 
         {{-- Bloc HTML perso --}}
@@ -58,5 +63,10 @@
                 @endforeach
             </div>
         </x-filament::card>
+    </div>
+    <div class="grid grid-cols-2 gap-4 mt-4">
+        {{-- Widget stat 2 --}}
+        @livewire(\App\Filament\Widgets\ContractExpiredTable::class)
+        @livewire(\App\Filament\Widgets\LocationExipiredTable::class)
     </div>
 </x-filament-panels::page>

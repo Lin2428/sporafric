@@ -62,7 +62,7 @@
                         <tr class="border-b border-slate-400">
                             {{-- <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">{{ \App\Utils\DateUtils::format($intervention->date) }}</td> --}}
                             <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">
-                                <a href="{{ url('/interventions/' . $intervention->id) }}" class="text-blue-600 ">
+                                <a target="_blank" href="{{ url('/admin/interventions/' . $intervention->id) }}" class="text-blue-600 ">
                                     #{{ $intervention->identifiant }}
                                 </a></td>
                             <td class="px-3 py-4 text-blue-600 text-sm text-left border border-slate-400">

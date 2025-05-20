@@ -24,6 +24,7 @@ class WidgetUtils
                         $query
                             ->where('name', 'like', "%{$search}%")
                             ->orWhere('modele', 'like', "%{$search}%")
+                            ->orWhere('serial_number', 'like', "%{$search}%")
                             ->when(intval($search), fn(Builder $query) => $query->orWhere('id', intval($search)));
                     });
 
