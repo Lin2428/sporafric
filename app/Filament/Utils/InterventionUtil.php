@@ -102,8 +102,15 @@ class InterventionUtil
 
             TextColumn::make('client') // Nom arbitraire, car on utilise getStateUsing
                 ->label('Client')
-                ->searchable()
-                ->sortable()
+                ->searchable(true, function($search) {
+                    return fn($query, $search) => $query
+                        ->whereHas('customer', function ($query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('contract.customer', function ($query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        });
+                })
                 ->getStateUsing(function (Intervention $record) {
                     return $record->contract
                         ? optional($record->contract->customer)->name
@@ -115,8 +122,17 @@ class InterventionUtil
 
             TextColumn::make('groupe')
                 ->label('Groupe Électrogène')
-                ->searchable()
-                ->sortable()
+                ->searchable(false, function($search) {
+                    return fn($query, $search) => $query
+                        ->whereHas('generator', function ($query) use ($search) {
+                            $query->where('modele', 'like', "%{$search}%")
+                                ->orWhere('serial_number', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('contract.generator', function ($query) use ($search) {
+                            $query->where('modele', 'like', "%{$search}%")
+                                ->orWhere('serial_number', 'like', "%{$search}%");
+                        });
+                })
                 ->getStateUsing(function (Intervention $record) {
                     return $record->contract
                         ? optional($record->contract->generator)->name

@@ -10,6 +10,7 @@ use App\Livewire\CheckList;
 use App\Models\ContractFacture;
 use App\Models\Generator;
 use App\Utils\NumberUtils;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -32,8 +33,10 @@ use Filament\Support\Enums\IconPosition;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class GeneratorResource extends Resource
 {
@@ -116,7 +119,7 @@ class GeneratorResource extends Resource
                                     ->default(now()),
 
                                 Select::make('status')
-                                    ->options(collect(GeneratorStatus::cases())
+                                    ->options( collect(GeneratorStatus::cases())
                                         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
                                         ->toArray())
                                     ->searchable()
@@ -202,7 +205,6 @@ class GeneratorResource extends Resource
 
                 TextColumn::make('next_vidange')
                     ->label('Prochaine vidange')
-                    ->date('d/m/Y')
                     ->sortable()
                     ->searchable(),
 
@@ -219,7 +221,22 @@ class GeneratorResource extends Resource
 
             ])
             ->filters([
-                SelectFilter::make('is_active'),
+                Filter::make('status')
+                ->form([
+                    CheckboxList::make('status')
+                    ->options( 
+                        collect(GeneratorStatus::cases())
+                             ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                             ->toArray()
+                        )
+                        
+                ])
+                ->query(
+                    fn (Builder $query, array $data): Builder => $query
+                        ->when($data['status'], function (Builder $query, array $status) {
+                            return $query->whereIn('status', $status);
+                        })
+                ),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

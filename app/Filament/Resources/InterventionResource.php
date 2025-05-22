@@ -2,12 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
 use App\Filament\Resources\InterventionResource\Pages;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -20,7 +22,9 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 class InterventionResource extends Resource
 {
     protected static ?string $model = Intervention::class;
@@ -116,7 +120,32 @@ class InterventionResource extends Resource
         ->query(static::getEloquentQuery()->where('type_location', 1))
             ->columns(InterventionUtil::table())
             ->filters([
-                //
+                Filter::make('status')
+                ->form([
+                    CheckboxList::make('status')
+                    ->options(collect(InterventionStatus::cases())
+                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                        ->toArray()),
+
+                    DatePicker::make('date_planifiee')
+                        ->label('Date planifiée'),
+
+                    DatePicker::make('date_prise_appel')
+                        ->label('Date de prise d\'appel'),
+
+                    Select::make('type')
+                        ->label('Type')
+                        ->options(collect(InterventionType::cases())
+                            ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                            ->toArray()),
+                ])
+                ->query(
+                    fn (Builder $query, array $data) => $query
+                        ->when($data['status'] ?? null, fn (Builder $query, array $status) => $query->whereIn('status', $status))
+                        ->when($data['date_planifiee'] ?? null, fn (Builder $query, string $date) => $query->whereDate('date_planifiee', '=', $date))
+                        ->when($data['date_prise_appel'] ?? null, fn (Builder $query, string $date) => $query->whereDate('date_prise_appel', '=', $date))
+                        ->when($data['type'] ?? null, fn (Builder $query, string $type) => $query->where('type', '=', $type))
+                )
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

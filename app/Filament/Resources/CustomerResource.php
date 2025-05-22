@@ -157,7 +157,6 @@ class CustomerResource extends Resource
                 TextColumn::make('name')
                     ->label('Nom')
                     ->searchable()
-                    ->sortable()
                     ->limit(50),
 
                 ToggleColumn::make('is_active')
@@ -170,28 +169,28 @@ class CustomerResource extends Resource
                 TextColumn::make('contact_c_name')
                     ->label('Contact Commercial')
                     ->searchable()
-                    ->sortable()
                     ->limit(50),
+
                 TextColumn::make('contact_c_email')
                     ->label('Email Commercial')
                     ->searchable()
-                    ->sortable()
                     ->limit(50),
+
                 TextColumn::make('contact_c_phone')
                     ->label('Téléphone Commercial')
                     ->searchable()
-                    ->sortable()
                     ->limit(50),
+
                 TextColumn::make('contact_l_name')
                     ->label('Contact Logistique')
                     ->searchable()
-                    ->sortable()
                     ->limit(50),
+
                 TextColumn::make('contact_l_email')
                     ->label('Email Logistique')
                     ->searchable()
-                    ->sortable()
                     ->limit(50),
+
                 TextColumn::make('contact_l_phone')
                     ->label('Téléphone Logistique')
                     ->searchable()

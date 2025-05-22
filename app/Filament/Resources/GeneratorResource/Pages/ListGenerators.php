@@ -30,12 +30,12 @@ class ListGenerators extends ListRecords
 
             Tab::make("Actifs")->query(
                 fn($query) =>
-                $query->where('status', '<>', GeneratorStatus::INDISPONIBLE->value)
+                $query->where('status', '=', GeneratorStatus::EN_LOCATION->value)
             ),
 
             Tab::make("Inactifs")->query(
                 fn($query) =>
-                $query->where('status', '=', GeneratorStatus::INDISPONIBLE->value)
+                $query->where('status', '<>', GeneratorStatus::EN_LOCATION->value)
             ),
 
 

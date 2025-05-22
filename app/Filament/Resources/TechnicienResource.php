@@ -77,19 +77,16 @@ class TechnicienResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nom & Prénom')
                     ->searchable()
-                    ->sortable()
                     ->limit(50),
 
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Téléphone')
                     ->searchable()
-                    ->sortable()
                     ->limit(50),
 
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email')
                     ->searchable()
-                    ->sortable()
                     ->limit(50),
 
                 Tables\Columns\BooleanColumn::make('is_active')

@@ -26,7 +26,6 @@ class InterventionTypeChart extends ChartWidget
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'Total',
                     'data' => $values,
                     'backgroundColor' => [
                         'rgba(255, 99, 132, 0.2)',
@@ -47,6 +46,7 @@ class InterventionTypeChart extends ChartWidget
                       ],
                 ],
             ],
+            
         ];
     }
 

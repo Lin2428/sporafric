@@ -100,18 +100,20 @@ class PieceResource extends Resource
                     ->label('Designation')
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
+
                 TextColumn::make('pr')
                     ->label('Prix d\'achat')
                     ->getStateUsing(fn($record) => NumberUtils::format($record->pr) . " FCFA")
                     ->searchable(),
+
                 TextColumn::make('pv')
                     ->label('Prix de vente')
                     ->getStateUsing(fn($record) => NumberUtils::format($record->pr) . " FCFA")
                     ->searchable(),
+
                 TextColumn::make('duree_vie')
                     ->label('Durée de vie')
-                    ->getStateUsing(fn($record) => NumberUtils::format($record->duree_vie) . "h")
-                    ->searchable(),
+                    ->getStateUsing(fn($record) => NumberUtils::format($record->duree_vie) . "h"),
             ])
             ->filters([
                 //

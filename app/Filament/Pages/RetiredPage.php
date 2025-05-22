@@ -2,11 +2,16 @@
 
 namespace App\Filament\Pages;
 
+use App\Enum\InterventionType;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Contract;
 use App\Models\Intervention;
+use App\Utils\NumberUtils;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -14,7 +19,9 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -64,21 +71,39 @@ class RetiredPage extends Page implements HasForms, HasTable
                                 ])->columnSpan(['lg' => 1]),
                             InterventionUtil::infoInterne()->columnSpan(['lg' => 1]),
                         ])
-                ])->action(function (array $data) {})
+                ])->action(function (array $data) {
+                    $contract = Contract::find($data['contract_id']);
+                    $contract->update(['is_retired' => true]);
+                    $data['type_location'] = 2;
+                    $data['type'] = InterventionType::RETRAIT;
+                    $data['identifiant'] = NumberUtils::generate();
+                    $contract->interventions()->create($data);
+                    
+                    Notification::make()
+                        ->title('Retrait enregistré')
+                        ->success()
+                        ->send();
+                })
         ];
     }
     public function table(Table $table): Table
     {
         return $table
-            ->query(Contract::query()->where('is_retired', true))
-            ->columns([
-                TextColumn::make('customer.name'),
-            ])
+            ->query(Intervention::query()->where('type', InterventionType::RETRAIT))
+            ->columns(InterventionUtil::table())
             ->filters([
                 // ...
             ])
             ->actions([
-                // ...
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    Action::make('cancel')
+                    ->label("Annuler")
+                    ->color('danger')
+                    ->icon('heroicon-o-x-circle')
+                    ->requiresConfirmation(),
+                ]), 
             ])
             ->bulkActions([
                 // ...
