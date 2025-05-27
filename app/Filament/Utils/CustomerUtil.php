@@ -63,63 +63,63 @@ class CustomerUtil
 
                 ])->columnSpan(['lg' => 2]),
 
-            Group::make()
-                ->schema([
-                    Repeater::make('customerAdresses')
-                        ->relationship('customerAdresses')
-                        ->label('Adresses')
-                        ->createItemButtonLabel('Ajouter une adresse')
-                        ->columns(1)
-                        ->schema([
-                            Select::make('country_id')
-                                ->relationship('country', 'name')
-                                ->searchable()
-                                ->preload()
-                                ->label("Pays")
-                                ->reactive()
-                                ->required(),
+            // Group::make()
+            //     ->schema([
+            //         Repeater::make('customerAdresses')
+            //             ->relationship('customerAdresses')
+            //             ->label('Adresses')
+            //             ->createItemButtonLabel('Ajouter une adresse')
+            //             ->columns(1)
+            //             ->schema([
+            //                 Select::make('country_id')
+            //                     ->relationship('country', 'name')
+            //                     ->searchable()
+            //                     ->preload()
+            //                     ->label("Pays")
+            //                     ->reactive()
+            //                     ->required(),
 
-                            Select::make('city_id')
-                                ->options(function (callable $get) {
-                                    $countryId = $get('country_id');
-                                    return City::where('country_id', $countryId)->pluck('name', 'id');
-                                })
-                                ->searchable()
-                                ->preload()
-                                ->reactive()
-                                ->label("Ville")
-                                ->required(),
+            //                 Select::make('city_id')
+            //                     ->options(function (callable $get) {
+            //                         $countryId = $get('country_id');
+            //                         return City::where('country_id', $countryId)->pluck('name', 'id');
+            //                     })
+            //                     ->searchable()
+            //                     ->preload()
+            //                     ->reactive()
+            //                     ->label("Ville")
+            //                     ->required(),
 
-                            Select::make('district_id')
-                                ->options(function (callable $get) {
-                                    $cityId = $get('city_id');
-                                    return $cityId ? District::where('city_id', $cityId)->pluck('name', 'id') : [];
-                                })
-                                ->searchable()
-                                ->preload()
-                                ->reactive()
-                                ->label("Arrondissement"),
+            //                 Select::make('district_id')
+            //                     ->options(function (callable $get) {
+            //                         $cityId = $get('city_id');
+            //                         return $cityId ? District::where('city_id', $cityId)->pluck('name', 'id') : [];
+            //                     })
+            //                     ->searchable()
+            //                     ->preload()
+            //                     ->reactive()
+            //                     ->label("Arrondissement"),
 
-                            Select::make('quartier_id')
-                                ->options(function (callable $get) {
-                                    $districtId = $get('district_id');
-                                    return $districtId ? Quartier::where('district_id', $districtId)->pluck('name', 'id') : [];
-                                })
-                                ->searchable()
-                                ->preload()
-                                ->reactive()
-                                ->label("Quartier"),
+            //                 Select::make('quartier_id')
+            //                     ->options(function (callable $get) {
+            //                         $districtId = $get('district_id');
+            //                         return $districtId ? Quartier::where('district_id', $districtId)->pluck('name', 'id') : [];
+            //                     })
+            //                     ->searchable()
+            //                     ->preload()
+            //                     ->reactive()
+            //                     ->label("Quartier"),
 
-                            TextInput::make('address')
-                                ->label('Adresse'),
+            //                 TextInput::make('address')
+            //                     ->label('Adresse'),
 
-                            TextInput::make('postal_code')
-                                ->label('Code postal'),
-                        ])->columns(1),
+            //                 TextInput::make('postal_code')
+            //                     ->label('Code postal'),
+            //             ])->columns(1),
 
-                ])->columnSpan([
-                    'lg' => 1,
-                ]),
+            //     ])->columnSpan([
+            //         'lg' => 1,
+            //     ]),
 
         ];
     }

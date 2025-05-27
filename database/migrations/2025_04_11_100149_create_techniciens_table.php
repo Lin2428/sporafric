@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('phone');
             $table->string('email')->nullable();
             $table->string('photo')->nullable();
-            $table->boolean('is_active');
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

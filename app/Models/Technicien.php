@@ -14,7 +14,6 @@ class Technicien extends Model
         'phone',
         'email',
         'photo',
-        'is_active',
         'user_id',
     ];
 }

@@ -8,7 +8,7 @@ use Filament\Pages\Page;
 class CanlendarPage extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-     protected static ?string $title = 'Calendrier';
+     protected static ?string $title = 'Planing des interventions';
     protected static ?string $navigationGroup = 'Dashboard';
     protected static ?int $navigationSort = 2;
 

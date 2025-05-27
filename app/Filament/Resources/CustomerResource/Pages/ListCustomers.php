@@ -15,9 +15,17 @@ class ListCustomers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->label('Ajouter un client')
-                ->modalActions(),
+            // Actions\CreateAction::make()
+            //     ->label('Ajouter un client')
+            //     ->modalActions(),
+            Actions\Action::make('sync')
+                ->label('Synchroniser')
+                ->icon('heroicon-o-arrow-path')
+                ->action(function () {
+             
+                })
+                ->requiresConfirmation()
+                ->color('primary'),
         ];
     }
 }

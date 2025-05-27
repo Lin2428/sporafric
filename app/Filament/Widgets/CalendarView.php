@@ -12,7 +12,7 @@ use Illuminate\Support\HtmlString;
 class CalendarView extends CalendarWidget
 {
    //protected string $calendarView = 'resourceTimeGridWeek';
-   //protected string $heading = 'My Calendar';
+    protected string|\Closure|HtmlString|null $heading = 'Calendrier';
     
   protected bool $dateClickEnabled = true;
   protected bool $dateSelectEnabled = true;
@@ -27,6 +27,7 @@ class CalendarView extends CalendarWidget
    public function getOptions(): array
     {
         return [
+            'title' => 'Planing',
             'nowIndicator' => true,
             'slotDuration' => '00:15:00'
         ];

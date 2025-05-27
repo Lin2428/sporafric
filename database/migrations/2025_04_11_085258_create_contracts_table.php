@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('number')->unique();
             $table->string('site');
             $table->string(column: 'code_site')->unique();
+            $table->string('adress')->nullable();
             $table->date('start_date');
             $table->date('end_date');
             $table->boolean('is_active')->default(value: true);

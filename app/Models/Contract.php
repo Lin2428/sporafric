@@ -22,6 +22,7 @@ class Contract extends Model
         'is_retired',
         'forfait',
         'user_id',
+        'adress',
         'customer_adresse_id',
         'contact_name',
         'contact_phone',

@@ -21,12 +21,12 @@ class InterventionLocationStats extends BaseWidget
                 ->color('success'),
 
             Stat::make('En cours', $data->en_cours)
-                ->description(number_format($txEnCours, 2) . ' %')
+                ->description($txEnCours != 0 ? number_format($txEnCours, 2) . ' %' : "")
                 ->icon('heroicon-o-cube')
                 ->color('success'),
 
             Stat::make('Annulée', $data->annulee)
-                ->description(number_format($txAnnulee, 2) . ' %')
+                ->description($txAnnulee != 0 ? number_format($txAnnulee, 2) . ' %' : "")
                 ->icon('heroicon-o-cube')
                 ->color('danger'),
         ];

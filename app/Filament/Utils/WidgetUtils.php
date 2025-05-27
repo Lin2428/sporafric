@@ -145,64 +145,64 @@ class WidgetUtils
         return $select;
     }
 
-    public static function adresseSelectWidget(): Select
-    {
-        $select = Select::make('customer_adresse_id')
-            ->options(function (callable $get) {
-                $customerId = $get('customer_id');
-                $adresse = CustomerAdress::where('customer_id', $customerId)->get();
-                return $adresse
-                    ->mapWithKeys(function ($user) {
-                        return [$user->id => static::getAdresseSelect($user)];
-                    })
-                    ->toArray();
-            })
-            ->searchable()
-            ->required()
-            ->preload()
-            ->allowHtml()
-            ->label('Adresse du client')
-            ->getSearchResultsUsing(function (string $search, callable $get) {
-                $customerId = $get('customer_id');
-                $adresse = CustomerAdress::where('customer_id', '=', $customerId)
-                    ->whereHas('city', function ($query) use ($search) {
-                        $query->where('name', 'like', "%$search%");
-                    })
-                    ->orWhereHas('district', function ($query) use ($search) {
-                        $query->where('name', 'like', "%$search%");
-                    })
-                    ->orWhereHas('quartier', function ($query) use ($search) {
-                        $query->where('name', 'like', "%$search%");
-                    })
-                    ->limit(50)
-                    ->get();
+    // public static function adresseSelectWidget(): Select
+    // {
+    //     $select = Select::make('customer_adresse_id')
+    //         ->options(function (callable $get) {
+    //             $customerId = $get('customer_id');
+    //             $adresse = CustomerAdress::where('customer_id', $customerId)->get();
+    //             return $adresse
+    //                 ->mapWithKeys(function ($user) {
+    //                     return [$user->id => static::getAdresseSelect($user)];
+    //                 })
+    //                 ->toArray();
+    //         })
+    //         ->searchable()
+    //         ->required()
+    //         ->preload()
+    //         ->allowHtml()
+    //         ->label('Adresse du client')
+    //         ->getSearchResultsUsing(function (string $search, callable $get) {
+    //             $customerId = $get('customer_id');
+    //             $adresse = CustomerAdress::where('customer_id', '=', $customerId)
+    //                 ->whereHas('city', function ($query) use ($search) {
+    //                     $query->where('name', 'like', "%$search%");
+    //                 })
+    //                 ->orWhereHas('district', function ($query) use ($search) {
+    //                     $query->where('name', 'like', "%$search%");
+    //                 })
+    //                 ->orWhereHas('quartier', function ($query) use ($search) {
+    //                     $query->where('name', 'like', "%$search%");
+    //                 })
+    //                 ->limit(50)
+    //                 ->get();
 
-                return $adresse
-                    ->mapWithKeys(function ($user) {
-                        return [$user->id => static::getAdresseSelect($user)];
-                    })
-                    ->toArray();
-            })
-            ->getOptionLabelUsing(function ($value) {
-                $adresse = CustomerAdress::where('id', $value)
-                    ->firstOrFail();
+    //             return $adresse
+    //                 ->mapWithKeys(function ($user) {
+    //                     return [$user->id => static::getAdresseSelect($user)];
+    //                 })
+    //                 ->toArray();
+    //         })
+    //         ->getOptionLabelUsing(function ($value) {
+    //             $adresse = CustomerAdress::where('id', $value)
+    //                 ->firstOrFail();
 
-                return WidgetUtils::getAdresseSelect($adresse);
-            })
-            ->createOptionModalHeading('Nouveau client')
-            ->createOptionUsing(function ($data) {
-                $customer = Customer::make($data);
+    //             return WidgetUtils::getAdresseSelect($adresse);
+    //         })
+    //         ->createOptionModalHeading('Nouveau client')
+    //         ->createOptionUsing(function ($data) {
+    //             $customer = Customer::make($data);
 
-                if (mb_strlen($customer->email ?? '') === 0) {
-                    $customer->email = null;
-                }
+    //             if (mb_strlen($customer->email ?? '') === 0) {
+    //                 $customer->email = null;
+    //             }
 
-                $customer->save();
-            });
-        //->createOptionForm([Grid::make(2)->schema(CustomerUtils::form())]);
+    //             $customer->save();
+    //         });
+    //     //->createOptionForm([Grid::make(2)->schema(CustomerUtils::form())]);
 
-        return $select;
-    }
+    //     return $select;
+    // }
 
     public static function pieceSelectWidget(?Closure $onUpdate = null, ?Closure $callback = null, bool $isDispo = true): Select
     {

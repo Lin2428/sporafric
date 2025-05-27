@@ -44,13 +44,11 @@ class InterventionUtil
 
     public static function customerColumn(Intervention $record): HtmlString
     {
-        $district = $record->customer?->customerAdresses->isNotEmpty() ? $record->customer?->customerAdresses->first()->district->name : "";
-        $city= $record->customer?->customerAdresses->isNotEmpty() ? $record->customer?->customerAdresses->first()->city->name : "";
+        // $district = $record->customer?->customerAdresses->isNotEmpty() ? $record->customer?->customerAdresses->first()->district->name : "";
+        // $city= $record->customer?->customerAdresses->isNotEmpty() ? $record->customer?->customerAdresses->first()->city->name : "";
         $html = "
                 <div class='flex flex-col text-xs' style='line-height: 1.2;'>
                     <span class='text-[13px]'>{$record->contract?->customer->contact_c_phone}{$record->customer?->contact_c_phone}</span>
-                    <span class='font-normal'>{$record->contract?->customerAdress?->district?->name}{$district}</span>
-                    <span class='font-normal' style='color: orange;'>{$record->contract?->customerAdress->city?->name}{$city}</span>
                 </div>
             ";
 

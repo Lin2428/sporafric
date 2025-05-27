@@ -15,12 +15,7 @@ class CustomerAdress extends Model
 
     protected $fillable = [
         'customer_id',
-        'country_id',
-        'city_id',
-        'district_id',
-        'quartier_id',
         'address',
-        'postal_code',
         'user_id',
     ];
 
@@ -28,25 +23,25 @@ class CustomerAdress extends Model
         'deleted_at' => 'datetime',
     ];
 
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class);
-    }
+    // public function customer()
+    // {
+    //     return $this->belongsTo(Customer::class);
+    // }
 
-    public function country()
-    {
-        return $this->belongsTo(Country::class);
-    }
-    public function city()
-    {
-        return $this->belongsTo(City::class);
-    }
-    public function district()
-    {
-        return $this->belongsTo(District::class);
-    }
-    public function quartier()
-    {
-        return $this->belongsTo(Quartier::class);
-    }
+    // public function country()
+    // {
+    //     return $this->belongsTo(Country::class);
+    // }
+    // public function city()
+    // {
+    //     return $this->belongsTo(City::class);
+    // }
+    // public function district()
+    // {
+    //     return $this->belongsTo(District::class);
+    // }
+    // public function quartier()
+    // {
+    //     return $this->belongsTo(Quartier::class);
+    // }
 }

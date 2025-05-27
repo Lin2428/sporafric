@@ -24,12 +24,12 @@ class GeneratorStats extends BaseWidget
                 ->color('success'),
 
             Stat::make('En location', $data->total_location)
-                ->description(NumberUtils::format($txLocation, 2).' %')
+                ->description($txLocation != 0 ? NumberUtils::format($txLocation, 2).' %' : "")
                 ->icon('heroicon-o-cube')
                 ->color('success'),
 
             Stat::make('En panne', $data->indisponible)
-                ->description(NumberUtils::format($txIndisponible, 2).' %')
+                ->description($txIndisponible != 0 ? NumberUtils::format($txIndisponible, 2).' %': "")
                 ->icon('heroicon-o-cube')
                 ->color('danger'),
         ];

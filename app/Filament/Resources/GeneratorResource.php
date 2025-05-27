@@ -7,8 +7,10 @@ use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\GeneratorResource\Pages;
 use App\Livewire\CheckList;
+use App\Livewire\InterventionHistory;
 use App\Models\ContractFacture;
 use App\Models\Generator;
+use App\Models\Intervention;
 use App\Utils\NumberUtils;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -320,30 +322,30 @@ class GeneratorResource extends Resource
 
                                                 TextEntry::make('power')
                                                     ->label('Puissance')
-                                                    ->color('success'),
+                                                   ->extraAttributes([ 'class' => 'font-bold']),
 
                                                 TextEntry::make('fuel_type')
                                                     ->label('Type de carburant')
-                                                    ->color('success'),
+                                                   ->extraAttributes([ 'class' => 'font-bold']),
 
                                                 TextEntry::make('houres')
                                                     ->label('Heures de fonc.')
-                                                    ->color('success'),
+                                                   ->extraAttributes([ 'class' => 'font-bold']),
 
                                                 TextEntry::make('next_vidange')
                                                     ->getStateUsing(fn($record) => NumberUtils::format($record->next_vidange) . ' h')
                                                     ->label('Prochaine vidange')
-                                                    ->color('success'),
+                                                   ->extraAttributes([ 'class' => 'font-bold']),
 
                                                 TextEntry::make('start-up')
                                                     ->label('Mise en service')
                                                     ->date('d/m/Y')
-                                                    ->color('success'),
+                                                   ->extraAttributes([ 'class' => 'font-bold']),
 
                                                 TextEntry::make('created_at')
                                                     ->label('Ajouté le')
                                                     ->date('d/m/Y')
-                                                    ->color('success'),
+                                                   ->extraAttributes([ 'class' => 'font-bold']),
                                             ]),
                                     ]),
 
@@ -386,17 +388,17 @@ class GeneratorResource extends Resource
 
                                                 TextEntry::make('contractGenerator.contract.site')
                                                     ->label('Site')
-                                                    ->color('success'),
+                                                   ->extraAttributes([ 'class' => 'font-bold']),
                                                 TextEntry::make('contractGenerator.contract.code_site')
                                                     ->label('Code')
-                                                    ->color('success'),
+                                                   ->extraAttributes([ 'class' => 'font-bold']),
                                                 TextEntry::make('contractGenerator.contract.start_date')
                                                     ->date('d/m/Y')
                                                     ->label('A debuter le')
-                                                    ->color('success'),
+                                                   ->extraAttributes([ 'class' => 'font-bold']),
                                                 TextEntry::make('contractGenerator.contract.end_date')
                                                     ->date('d/m/Y')
-                                                    ->label('Se terminer le')
+                                                    ->label('Se termine le')
                                                     ->color('danger'),
 
                                             ]),
@@ -409,58 +411,38 @@ class GeneratorResource extends Resource
                                         \Filament\Infolists\Components\Section::make('Detail du contrat')
                                             ->columns(2)
                                             ->schema([
-                                                \Filament\Infolists\Components\Section::make("Localisation")
-                                                    ->columns(2)
-                                                    ->columnSpan(['lg' => 1])
-                                                    ->schema([
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.country.name')
-                                                            ->label('Pays')
-                                                            ->color('success'),
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.city.name')
-                                                            ->label('Ville')
-                                                            ->color('success'),
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.district.name')
-                                                            ->label('Arrondissement')
-                                                            ->color('success'),
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.quartier.name')
-                                                            ->label('Quartier')
-                                                            ->color('success'),
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.address')
-                                                            ->label('Adresse')
-                                                            ->columnSpanFull(),
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.postal_code')
-                                                            ->label('Code postal')
-                                                            ->color('success'),
-                                                    ]),
+                                            TextEntry::make('contractGenerator.contract.adress')
+                                                        ->label('Adresse')
+                                                        ->columnSpanFull(),
 
                                                 \Filament\Infolists\Components\Section::make('Contact commercial')
                                                     ->columns(2)
                                                     ->columnSpan(['lg' => 1])
                                                     ->schema([
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.customer.contact_c_name')
+                                                        TextEntry::make('contractGenerator.contract.customer.contact_c_name')
                                                             ->label('Nom')
-                                                            ->color('success'),
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.customer.contact_c_email')
+                                                           ->extraAttributes([ 'class' => 'font-bold']),
+                                                        TextEntry::make('contractGenerator.contract.customer.contact_c_email')
                                                             ->label('Email')
-                                                            ->color('success'),
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.customer.contact_c_phone')
+                                                           ->extraAttributes([ 'class' => 'font-bold']),
+                                                        TextEntry::make('contractGenerator.contract.customer.contact_c_phone')
                                                             ->label('Téléphone')
-                                                            ->color('success'),
+                                                           ->extraAttributes([ 'class' => 'font-bold']),
                                                     ]),
 
                                                 \Filament\Infolists\Components\Section::make('Contact logistique')
                                                     ->columns(2)
                                                     ->columnSpan(['lg' => 1])
                                                     ->schema([
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.customer.contact_l_name')
+                                                        TextEntry::make('contractGenerator.contract.customer.contact_l_name')
                                                             ->label('Nom')
-                                                            ->color('success'),
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.customer.contact_l_email')
+                                                           ->extraAttributes([ 'class' => 'font-bold']),
+                                                        TextEntry::make('contractGenerator.contract.customer.contact_l_email')
                                                             ->label('Email')
-                                                            ->color('success'),
-                                                        TextEntry::make('contractGenerator.contract.customerAdress.customer.contact_l_phone')
+                                                           ->extraAttributes([ 'class' => 'font-bold']),
+                                                        TextEntry::make('contractGenerator.contract.customer.contact_l_phone')
                                                             ->label('Téléphone')
-                                                            ->color('success'),
+                                                           ->extraAttributes([ 'class' => 'font-bold']),
                                                     ]),
 
                                                 \Filament\Infolists\Components\Section::make('Contact sur site')
@@ -469,18 +451,19 @@ class GeneratorResource extends Resource
                                                     ->schema([
                                                         TextEntry::make('contractGenerator.contract.contact_name')
                                                             ->label('Nom')
-                                                            ->color('success'),
+                                                           ->extraAttributes([ 'class' => 'font-bold']),
                                                         TextEntry::make('contractGenerator.contract.contact_email')
                                                             ->label('Email')
-                                                            ->color('success'),
+                                                           ->extraAttributes([ 'class' => 'font-bold']),
                                                         TextEntry::make('contractGenerator.contract.contact_phone')
                                                             ->label('Téléphone')
-                                                            ->color('success'),
+                                                           ->extraAttributes([ 'class' => 'font-bold']),
                                                     ]),
 
                                                 TextEntry::make('vu')
                                                     ->label('Vue sur la carte')
-                                                    ->inlineLabel(),
+                                                    ->inlineLabel()
+                                                    ->columnSpanFull(),
 
                                                 \Filament\Infolists\Components\View::make('filament.infolist.components.map-pointer')
                                                     ->label('')
@@ -496,14 +479,26 @@ class GeneratorResource extends Resource
                                             ]),
                                     ]),
                             ]),
-                        Tabs\Tab::make('Interventions')
+                        Tabs\Tab::make('Interventions du contrat en cours')
 
                             ->icon('heroicon-o-wrench-screwdriver')
                             ->iconPosition(IconPosition::After)
                             ->schema([
                                 RepeatableEntry::make("contractGenerator.contract.interventions")
-                                    ->label('Interventions de la location en cours')
+                                    ->label('')
+                                   ->contained(false)
                                     ->schema([
+                                        \Filament\Infolists\Components\Section::make()
+                                        ->collapsible()
+                                        ->collapsed(function (Intervention $record) {
+                                            if($record->status == InterventionStatus::EN_COURS->value || $record->status == InterventionStatus::NON_COMMENCE->value){
+                                                return false;
+                                            }
+                                            return true;
+                                        })
+                                        ->extraAlpineAttributes(['class' => 'border-b border-gray-200'])
+                                        ->schema([
+                                            
                                         \Filament\Infolists\Components\Group::make()
                                         ->columns(2)
                                         ->schema([
@@ -558,7 +553,7 @@ class GeneratorResource extends Resource
                                                 TextEntry::make('date_prise_appel')
                                                     ->label('Date de prise d’appel')
                                                     ->date('d/m/Y')
-                                                    ->color('success'),
+                                                   ->extraAttributes([ 'class' => 'font-bold']),
 
                                                 TextEntry::make('date_planifiee')
                                                     ->label('Date planifiée')
@@ -568,7 +563,7 @@ class GeneratorResource extends Resource
                                                 TextEntry::make('start_date')
                                                     ->label('Date début')
                                                     ->date('d/m/Y')
-                                                    ->color('success'),
+                                                   ->extraAttributes([ 'class' => 'font-bold']),
 
                                                 TextEntry::make('end_date')
                                                     ->label('Date limite')
@@ -583,90 +578,90 @@ class GeneratorResource extends Resource
                                         //         ])
                                         //         ->columnSpanFull(),
 
-                                        \Filament\Infolists\Components\Group::make()
-                                            ->columnSpanFull()
-                                            ->schema([
-                                                RepeatableEntry::make('interventionTechniciens')
-                                                    ->alignCenter()
-                                                    ->extraAttributes(['class' => 'border-0 shadow-none p-0 bg-transparent'])
-                                                    ->grid(2)
-                                                    ->schema([
-                                                        Grid::make()
-                                                            ->columns(2)
-                                                            ->schema([
-                                                                ImageEntry::make("photo")
-                                                                    ->hiddenLabel()
-                                                                    ->inlineLabel()
-                                                                    ->circular()
-                                                                    ->size(100)
-                                                                    ->height(100),
-                                                                \Filament\Infolists\Components\Group::make()
-                                                                    ->columnSpan(['lg' => 1])
-                                                                    ->schema([
-                                                                        TextEntry::make('name')
-                                                                            ->hiddenLabel()
-                                                                            ->extraAttributes(['class' => 'mb-0 gap-y-0 p-0']),
-                                                                        TextEntry::make('email')
-                                                                            ->hiddenLabel()
-                                                                            ->inlineLabel()
-                                                                            ->extraAttributes(['class' => 'mb-0 gap-y-0 p-0']),
-                                                                        TextEntry::make('phone')
-                                                                            ->hiddenLabel()
-                                                                            ->inlineLabel()
-                                                                            ->extraAttributes(['class' => 'mb-0 gap-y-0 p-0']),
-                                                                    ]),
-                                                            ]),
-                                                    ])
-                                                    ->label('Liste des techniciens'),
-                                            ]),
-
+                                        // \Filament\Infolists\Components\Group::make()
+                                        //     ->columnSpanFull()
+                                        //     ->schema([
+                                        //         RepeatableEntry::make('interventionTechniciens')
+                                        //             ->alignCenter()
+                                        //             ->extraAttributes(['class' => 'border-0 shadow-none p-0 bg-transparent'])
+                                        //             ->grid(2)
+                                        //             ->schema([
+                                        //                 Grid::make()
+                                        //                     ->columns(2)
+                                        //                     ->schema([
+                                        //                         ImageEntry::make("photo")
+                                        //                             ->hiddenLabel()
+                                        //                             ->inlineLabel()
+                                        //                             ->circular()
+                                        //                             ->size(100)
+                                        //                             ->height(100),
+                                        //                         \Filament\Infolists\Components\Group::make()
+                                        //                             ->columnSpan(['lg' => 1])
+                                        //                             ->schema([
+                                        //                                 TextEntry::make('name')
+                                        //                                     ->hiddenLabel()
+                                        //                                     ->extraAttributes(['class' => 'mb-0 gap-y-0 p-0']),
+                                        //                                 TextEntry::make('email')
+                                        //                                     ->hiddenLabel()
+                                        //                                     ->inlineLabel()
+                                        //                                     ->extraAttributes(['class' => 'mb-0 gap-y-0 p-0']),
+                                        //                                 TextEntry::make('phone')
+                                        //                                     ->hiddenLabel()
+                                        //                                     ->inlineLabel()
+                                        //                                     ->extraAttributes(['class' => 'mb-0 gap-y-0 p-0']),
+                                        //                             ]),
+                                        //                     ]),
+                                        //             ])
+                                        //             ->label('Liste des techniciens'),
+                                        //     ]),
+                                         ])
                                     ]),
                             ]),
-                        Tabs\Tab::make('Pièces de rechange')
+                        // Tabs\Tab::make('Pièces de rechange')
 
-                            ->icon('heroicon-o-cog-8-tooth')
-                            ->iconPosition(IconPosition::After)
-                            ->schema([
-                                RepeatableEntry::make('pieces')
-                                    ->label('Pièces de rechange')
-                                    ->schema([
-                                        \Filament\Infolists\Components\Group::make()
-                                            ->columns(3)
-                                            ->schema([
-                                                ImageEntry::make('piece.image')
-                                                ->label('')
-                                                ->columnSpanFull()
-                                                ->extraAttributes(['class' => 'w-full d-flex justify-center']),
+                        //     ->icon('heroicon-o-cog-8-tooth')
+                        //     ->iconPosition(IconPosition::After)
+                        //     ->schema([
+                        //         RepeatableEntry::make('pieces')
+                        //             ->label('Pièces de rechange')
+                        //             ->schema([
+                        //                 \Filament\Infolists\Components\Group::make()
+                        //                     ->columns(3)
+                        //                     ->schema([
+                        //                         ImageEntry::make('piece.image')
+                        //                         ->label('')
+                        //                         ->columnSpanFull()
+                        //                         ->extraAttributes(['class' => 'w-full d-flex justify-center']),
 
-                                                TextEntry::make('piece.reference')
-                                                    ->label('Pièce')
-                                                    ->extraAttributes(['class' => 'font-bold']),
+                        //                         TextEntry::make('piece.reference')
+                        //                             ->label('Pièce')
+                        //                             ->extraAttributes(['class' => 'font-bold']),
                                                     
-                                                TextEntry::make('piece.designation')
-                                                    ->label('Désignation')
-                                                    ->extraAttributes(['class' => 'font-bold']),
+                        //                         TextEntry::make('piece.designation')
+                        //                             ->label('Désignation')
+                        //                             ->extraAttributes(['class' => 'font-bold']),
                                                 
-                                                    TextEntry::make('qty')
-                                                    ->label('Quantité')
-                                                    ->extraAttributes(['class' => 'font-bold']),
+                        //                             TextEntry::make('qty')
+                        //                             ->label('Quantité')
+                        //                             ->extraAttributes(['class' => 'font-bold']),
 
                                                 
-                                                    TextEntry::make(name: 'intervention.identifiant')
-                                                    ->label('Intervention')
-                                                    ->color('success')
-                                                    ->url(fn($record) => url('admin/interventions/'.$record->intervention->id)),
+                        //                             TextEntry::make(name: 'intervention.identifiant')
+                        //                             ->label('Intervention')
+                        //                             ->color('success')
+                        //                             ->url(fn($record) => url('admin/interventions/'.$record->intervention->id)),
 
-                                                TextEntry::make('price')
-                                                    ->label('Prix unitaire')
-                                                    ->inlineLabel()
-                                                    ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
-                                                    ->extraAttributes(['class' => 'font-bold'])
-                                                    ->columnSpan(['lg' => 2]),
-                                            ]),
-                                    ])
-                                    ->grid(2)
-                                    ->columnSpanFull(),
-                            ]),
+                        //                         TextEntry::make('price')
+                        //                             ->label('Prix unitaire')
+                        //                             ->inlineLabel()
+                        //                             ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
+                        //                             ->extraAttributes(['class' => 'font-bold'])
+                        //                             ->columnSpan(['lg' => 2]),
+                        //                     ]),
+                        //             ])
+                        //             ->grid(2)
+                        //             ->columnSpanFull(),
+                        //     ]),
 
                         Tabs\Tab::make('Etat avant/après')
                             ->icon('heroicon-o-arrow-path')
@@ -674,7 +669,18 @@ class GeneratorResource extends Resource
                             ->schema([
                                 Livewire::make(CheckList::class),
                             ]),
+                            Tabs\Tab::make('Historique des interventions')
+                            ->icon('heroicon-o-arrow-path')
+                            ->iconPosition(IconPosition::After)
+                            ->schema([
+                                 Livewire::make(InterventionHistory::class)
+                                    ->data([
+                                        'generatorId' => $infolist->getRecord()->id,
+                                    ]),
+                            ]),
                     ]),
+
+                    
             ]);
     }
 }

@@ -54,13 +54,6 @@ class TechnicienResource extends Resource
                     ->enableDownload()
                     ->preserveFilenames()
                     ->columnSpanFull(),
-
-                Toggle::make('is_active')
-                    ->label('Actif')
-                    ->onIcon('heroicon-o-check-circle')
-                    ->offIcon('heroicon-o-x-circle')
-                    ->onColor('success')
-                    ->offColor('danger'),
             ]);
     }
 
@@ -88,23 +81,20 @@ class TechnicienResource extends Resource
                     ->label('Email')
                     ->searchable()
                     ->limit(50),
-
-                Tables\Columns\BooleanColumn::make('is_active')
-                    ->label('Actif')
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make()
+                // Tables\Actions\ActionGroup::make([
+                //     Tables\Actions\ViewAction::make()
+                //     ->modalWidth('md'),
+                //     Tables\Actions\EditAction::make()
+                //     ->modalWidth('md'),
+                //     Tables\Actions\DeleteAction::make(),
+                // ]),
+                Tables\Actions\ViewAction::make()
                     ->modalWidth('md'),
-                    Tables\Actions\EditAction::make()
-                    ->modalWidth('md'),
-                    Tables\Actions\DeleteAction::make(),
-                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

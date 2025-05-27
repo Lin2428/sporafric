@@ -29,13 +29,6 @@ class ViewGenerator extends ViewRecord
                     ->label('Modifier le groupe electrogene')
                     ->icon('heroicon-o-pencil'),
 
-                Actions\Action::make('history')
-                    ->label('Historique')
-                    ->icon('heroicon-o-circle-stack')
-                    ->color('primary')
-                    //->url($this->record->generator ? route('filament.resources.contracts.history', $this->record) : route('filament.resources.contracts.history', $this->record))
-                    ->openUrlInNewTab(),
-
                 Actions\DeleteAction::make()
                     ->label('Supprimer le groupe electrogene')
                     ->icon('heroicon-o-trash'),

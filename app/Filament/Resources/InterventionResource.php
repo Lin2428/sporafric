@@ -52,6 +52,7 @@ class InterventionResource extends Resource
                                 Select::make('type_location')
                                     ->label("Location ou Maintenance ?")
                                     ->options(["1" => "Maintenance", "0" => "Location"])
+                                    
                                     ->columnSpanFull()
                                     ->reactive()
                                     ->required(),

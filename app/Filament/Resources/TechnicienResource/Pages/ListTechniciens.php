@@ -13,11 +13,20 @@ class ListTechniciens extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-            ->label('Ajouter un technicien')
-                ->modalHeading('Ajouter un technicien')
-                ->modalActions()
-                ->modalWidth('md'),
+            // Actions\CreateAction::make()
+            // ->label('Ajouter un technicien')
+            //     ->modalHeading('Ajouter un technicien')
+            //     ->modalActions()
+            //     ->modalWidth('md'),
+
+            Actions\Action::make('sync')
+                ->label('Synchroniser')
+                ->icon('heroicon-o-arrow-path')
+                ->action(function() {
+
+                })
+                ->requiresConfirmation()
+                ->color('primary'),
         ];
     }
 }

@@ -5,12 +5,12 @@
         <div class="col-span-2">
             @livewire(\App\Filament\Widgets\GeneratorStats::class)
             <br>
-            <span class="text-3xl font-bold">Interventions de Location</span>
+            <span class="text-3xl font-bold">Interventions sur les locations</span>
             <br>
             <br>
             @livewire(\App\Filament\Widgets\InterventionLocationStats::class)
             <br>
-            <span class="text-3xl font-bold">Interventions de Maintenance</span>
+            <span class="text-3xl font-bold">Interventions sur les maintenances</span>
             <br>
             <br>
             @livewire(\App\Filament\Widgets\InterventionMaintenanceStats::class)

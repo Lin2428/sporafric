@@ -11,6 +11,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\View;
@@ -122,7 +123,10 @@ class ContractResource extends Resource
                         Section::make('Données de la carte')
                             ->columns(2)
                             ->schema([
-                                WidgetUtils::adresseSelectWidget()
+                               Textarea::make('adress')
+                                    ->label('Adresse')
+                                    ->rows(2)
+                                    ->required()
                                     ->columnSpanFull(),
 
                                 TextInput::make('lat')
@@ -370,7 +374,7 @@ class ContractResource extends Resource
                                     ->color('success'),
                                 TextEntry::make('end_date')
                                     ->date('d/m/Y')
-                                    ->label('Se terminer le')
+                                    ->label('Se termine le')
                                     ->color('danger'),
 
                             ])
@@ -383,27 +387,12 @@ class ContractResource extends Resource
                         \Filament\Infolists\Components\Section::make('Detail du contrat')
                             ->columns(2)
                             ->schema([
-                                \Filament\Infolists\Components\Section::make("Localisation")
+                                \Filament\Infolists\Components\Section::make("Adresse")
                                     ->columns(2)
                                     ->columnSpan(['lg' => 1])
                                     ->schema([
-                                        TextEntry::make('customerAdress.country.name')
-                                            ->label('Pays')
-                                            ->color('success'),
-                                        TextEntry::make('customerAdress.city.name')
-                                            ->label('Ville')
-                                            ->color('success'),
-                                        TextEntry::make('customerAdress.district.name')
-                                            ->label('Arrondissement')
-                                            ->color('success'),
-                                        TextEntry::make('customerAdress.quartier.name')
-                                            ->label('Quartier')
-                                            ->color('success'),
-                                        TextEntry::make('customerAdress.address')
-                                            ->label('Adresse')
-                                            ->columnSpanFull(),
-                                        TextEntry::make('customerAdress.postal_code')
-                                            ->label('Code postal')
+                                        TextEntry::make('adress')
+                                            ->hiddenLabel()
                                             ->color('success'),
                                     ]),
 
@@ -411,13 +400,13 @@ class ContractResource extends Resource
                                     ->columns(2)
                                     ->columnSpan(['lg' => 1])
                                     ->schema([
-                                        TextEntry::make('customerAdress.customer.contact_c_name')
+                                        TextEntry::make('customer.contact_c_name')
                                             ->label('Nom')
                                             ->color('success'),
-                                        TextEntry::make('customerAdress.customer.contact_c_email')
+                                        TextEntry::make('customer.contact_c_email')
                                             ->label('Email')
                                             ->color('success'),
-                                        TextEntry::make('customerAdress.customer.contact_c_phone')
+                                        TextEntry::make('customer.contact_c_phone')
                                             ->label('Téléphone')
                                             ->color('success'),
                                     ]),
@@ -426,13 +415,13 @@ class ContractResource extends Resource
                                     ->columns(2)
                                     ->columnSpan(['lg' => 1])
                                     ->schema([
-                                        TextEntry::make('customerAdress.customer.contact_l_name')
+                                        TextEntry::make('customer.contact_l_name')
                                             ->label('Nom')
                                             ->color('success'),
-                                        TextEntry::make('customerAdress.customer.contact_l_email')
+                                        TextEntry::make('customer.contact_l_email')
                                             ->label('Email')
                                             ->color('success'),
-                                        TextEntry::make('customerAdress.customer.contact_l_phone')
+                                        TextEntry::make('customer.contact_l_phone')
                                             ->label('Téléphone')
                                             ->color('success'),
                                     ]),

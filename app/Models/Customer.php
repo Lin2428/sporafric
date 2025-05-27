@@ -23,39 +23,20 @@ class Customer extends Model
         'contact_l_email',
         'contact_l_phone',
         'logo',
-        'is_active',
         'user_id',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
         'deleted_at' => 'datetime',
     ];
-    protected $with = ['customerAdresses'];
+    // protected $with = ['customerAdresses'];
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /*public function country()
-    {
-        return $this->belongsTo(Country::class);
-    }
-    public function city()
-    {
-        return $this->belongsTo(City::class);
-    }
-    public function district()
-    {
-        return $this->belongsTo(District::class);
-    }
-    public function quartier()
-    {
-        return $this->belongsTo(Quartier::class);
-    }*/
-
-    public function customerAdresses()
-    {
-        return $this->hasMany(CustomerAdress::class, 'customer_id');
-    }
+    // public function customerAdresses()
+    // {
+    //     return $this->hasMany(CustomerAdress::class, 'customer_id');
+    // }
 }

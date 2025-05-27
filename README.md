@@ -1,66 +1,66 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<p align="center"><a href="https://www.motors-congo.com/" target="_blank"><img src="https://www.google.com/imgres?q=sporafric%20motors&imgurl=http%3A%2F%2Fwww.motors-congo.com%2Fimages%2Flogo_grasset_sporafric_motors.png&imgrefurl=http%3A%2F%2Fwww.motors-congo.com%2F&docid=ixNRkoSLRuAZ6M&tbnid=rQ2WiUFtdm8NhM&vet=12ahUKEwiugoTP7sONAxWkYEEAHRYwCvUQM3oECHAQAA..i&w=5655&h=951&hcb=2&ved=2ahUKEwiugoTP7sONAxWkYEEAHRYwCvUQM3oECHAQAA" width="400" alt="Laravel Logo"></a></p>
+# 🛠️ GMAO - Sporafric Motor
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**GMAO** (Gestion de la Maintenance Assistée par Ordinateur) pour **Sporafric Motor** est une application web développée pour faciliter la planification, le suivi et la gestion des interventions de maintenance sur les équipements et les véhicules de l'entreprise.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Fonctionnalités principales
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- 🔧 **Gestion des interventions**
+  - Création, mise à jour et clôture des interventions
+  - Historique complet par contrat ou équipement
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- 📝 **Gestion des contrats**
+  - Suivi des contrats de maintenance (code site, prix mensuel, etc.)
+  - Liaison des interventions aux contrats
 
-## Learning Laravel
+- 📊 **Suivi des pièces utilisées**
+  - Ajout des pièces consommées par intervention
+  - Calcul du coût des pièces
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- 👷‍♂️ **Gestion des techniciens**
+  - Attribution des interventions
+  - Historique des interventions par technicien
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- 📅 **Planification & Statuts**
+  - Suivi des statuts : planifié, en cours, terminé, annulé
+  - Types d'intervention : préventive, curative, contrôle, etc.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🖼️ Vue synthétique des interventions
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Une vue regroupe les interventions par contrat avec les informations suivantes :
 
-### Premium Partners
+- 📅 Date de l’intervention  
+- 🆔 Identifiant de l’intervention  
+- 🏢 Code du site (provenant du contrat)  
+- 🛠️ Statut de l’intervention  
+- 📘 Type d’intervention  
+- 🔩 Nombre total de pièces utilisées  
+- 💵 Montant de l’intervention  
+- 🧾 Prix mensuel du contrat  
+- 👷 Techniciens associés  
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## 🧰 Technologies utilisées
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- **Backend** : Laravel 11
+- **Frontend** : Laravel Blade + Filament 3
+- **Base de données** : MySQL
+- **Langage** : PHP 8.2
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## ⚙️ Installation
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+git clone https://github.com/ton-utilisateur/gmao-sporafric_motor.git
+cd gmao-sporafric_motor
+cp .env.example .env
+composer install
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve 
