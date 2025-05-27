@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Enum\InterventionStatus;
+use App\Enum\InterventionType;
+use Guava\Calendar\Contracts\Eventable;
+use Guava\Calendar\ValueObjects\CalendarEvent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Intervention extends Model
+class Intervention extends Model implements Eventable
 {
     use SoftDeletes, HasFactory;
 
@@ -64,5 +68,24 @@ class Intervention extends Model
     public function infos()
     {
         return $this->hasOne(InterventionInfo::class, 'intervention_id');
+    }
+
+    public function toCalendarEvent(): CalendarEvent|array
+    {
+        return CalendarEvent::make($this)
+            ->title(InterventionType::from($this->type)->label())
+            ->start($this->start_date)
+            ->end($this->end_date)
+            ->backgroundColor(
+                match ($this->status) {
+                (int) InterventionStatus::NON_COMMENCE->value => '#3b82f6', 
+                (int) InterventionStatus::EN_COURS->value => '#f59e0b', // amber-500
+                (int) InterventionStatus::ANNULEE->value => '#ef4444', // red-500
+                (int) InterventionStatus::TERMINEE->value => '#6b7280', // gray-500 
+                default => '#3b82f6', // default to blue-500
+                }
+            )
+            ->extendedProp('intervention', 'lon')
+            ->key($this->id);
     }
 }
