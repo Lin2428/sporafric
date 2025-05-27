@@ -61,6 +61,7 @@ git clone https://github.com/ton-utilisateur/gmao-sporafric_motor.git
 cd gmao-sporafric_motor
 cp .env.example .env
 composer install
+npm install (si vous êtes en local)
 php artisan key:generate
-php artisan migrate --seed
 php artisan serve 
+
