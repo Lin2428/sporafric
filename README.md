@@ -50,7 +50,7 @@ Une vue regroupe les interventions par contrat avec les informations suivantes :
 - **Backend** : Laravel 11
 - **Frontend** : Laravel Blade + Filament 3
 - **Base de données** : MySQL
-- **Langage** : PHP 8.2
+- **Langage** : PHP 8.3
 
 ---
 

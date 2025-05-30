@@ -11,6 +11,7 @@ use App\Livewire\InterventionHistory;
 use App\Models\ContractFacture;
 use App\Models\Generator;
 use App\Models\Intervention;
+use App\Utils\DateUtils;
 use App\Utils\NumberUtils;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -488,7 +489,7 @@ class GeneratorResource extends Resource
                                     ->label('')
                                    ->contained(false)
                                     ->schema([
-                                        \Filament\Infolists\Components\Section::make()
+                                        \Filament\Infolists\Components\Section::make(fn(Intervention $record) => InterventionType::from($record->type)->label(). " du " . DateUtils::format($record->date_planifiee))
                                         ->collapsible()
                                         ->collapsed(function (Intervention $record) {
                                             if($record->status == InterventionStatus::EN_COURS->value || $record->status == InterventionStatus::NON_COMMENCE->value){
@@ -515,7 +516,7 @@ class GeneratorResource extends Resource
 
                                             \Filament\Infolists\Components\Actions::make([
                                                 \Filament\Infolists\Components\Actions\Action::make('view')
-                                                    ->label('Voir')
+                                                    ->label('Détail')
                                                     ->url(fn($record) => url('admin/interventions/'.$record->id))
                                                     ->icon('heroicon-o-eye')
                                                     ->color('gray')

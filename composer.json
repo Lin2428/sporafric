@@ -5,7 +5,7 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.0",
         "filament/filament": "3.3",
         "guava/calendar": "^1.14",
         "laravel/framework": "^11.0",

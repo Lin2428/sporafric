@@ -297,30 +297,30 @@ class ContractResource extends Resource
 
                                 TextEntry::make('generator.power')
                                     ->label('Puissance')
-                                    ->color('success'),
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                 TextEntry::make('generator.fuel_type')
                                     ->label('Type de carburant')
-                                    ->color('success'),
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                 TextEntry::make('generator.houres')
                                     ->label('Heures de fonc.')
-                                    ->color('success'),
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                 TextEntry::make('generator.next_vidange')
                                     ->date('d/m/Y')
                                     ->label('Prochaine vidange')
-                                    ->color('success'),
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                 TextEntry::make('generator.start-up')
                                     ->label('Mise en service')
                                     ->date('d/m/Y')
-                                    ->color('success'),
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                 TextEntry::make('generator.created_at')
                                     ->label('Ajouté le')
                                     ->date('d/m/Y')
-                                    ->color('success'),
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
                             ])
                     ]),
 
@@ -364,14 +364,14 @@ class ContractResource extends Resource
 
                                 TextEntry::make('site')
                                     ->label('Site')
-                                    ->color('success'),
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
                                 TextEntry::make('code_site')
                                     ->label('Code')
-                                    ->color('success'),
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
                                 TextEntry::make('start_date')
                                     ->date('d/m/Y')
                                     ->label('A debuter le')
-                                    ->color('success'),
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
                                 TextEntry::make('end_date')
                                     ->date('d/m/Y')
                                     ->label('Se termine le')
@@ -386,15 +386,12 @@ class ContractResource extends Resource
                     ->schema([
                         \Filament\Infolists\Components\Section::make('Detail du contrat')
                             ->columns(2)
+                            ->collapsible()
                             ->schema([
-                                \Filament\Infolists\Components\Section::make("Adresse")
-                                    ->columns(2)
-                                    ->columnSpan(['lg' => 1])
-                                    ->schema([
-                                        TextEntry::make('adress')
-                                            ->hiddenLabel()
-                                            ->color('success'),
-                                    ]),
+                           
+                                TextEntry::make('adress')
+                                            ->label('adresse')
+                                            ->columnSpanFull(),
 
                                 \Filament\Infolists\Components\Section::make('Contact commercial')
                                     ->columns(2)
@@ -402,13 +399,13 @@ class ContractResource extends Resource
                                     ->schema([
                                         TextEntry::make('customer.contact_c_name')
                                             ->label('Nom')
-                                            ->color('success'),
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_c_email')
                                             ->label('Email')
-                                            ->color('success'),
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_c_phone')
                                             ->label('Téléphone')
-                                            ->color('success'),
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                     ]),
 
                                 \Filament\Infolists\Components\Section::make('Contact logistique')
@@ -417,13 +414,13 @@ class ContractResource extends Resource
                                     ->schema([
                                         TextEntry::make('customer.contact_l_name')
                                             ->label('Nom')
-                                            ->color('success'),
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_l_email')
                                             ->label('Email')
-                                            ->color('success'),
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_l_phone')
                                             ->label('Téléphone')
-                                            ->color('success'),
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                     ]),
 
                                 \Filament\Infolists\Components\Section::make('Contact sur site')
@@ -432,17 +429,18 @@ class ContractResource extends Resource
                                     ->schema([
                                         TextEntry::make('contact_name')
                                             ->label('Nom')
-                                            ->color('success'),
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('contact_email')
                                             ->label('Email')
-                                            ->color('success'),
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('contact_phone')
                                             ->label('Téléphone')
-                                            ->color('success'),
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                     ]),
 
                                 TextEntry::make('vu')
                                     ->label('Vue sur la carte')
+                                    ->columnSpanFull()
                                     ->inlineLabel(),
 
                                 \Filament\Infolists\Components\View::make('filament.infolist.components.map-pointer')

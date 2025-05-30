@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::redirect('/', '/admin');
+
+//Route::get('/admin')->name('admin');
 
 Route::get('/impression-form-etat', function () {
     return view('impression.form-etat');
