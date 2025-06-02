@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('quartiers', function (Blueprint $table) {
+        Schema::create('devis_generators', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('district_id');
+            $table->foreignId('devis_id')->constrained();
+            $table->foreignId('generator_id')->nullable();
+            $table->boolean('status')->default(false);
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('quartiers');
+        Schema::dropIfExists('devis_generators');
     }
 };

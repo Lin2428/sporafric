@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OdooController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/admin');
@@ -11,3 +12,10 @@ Route::get('/impression-form-etat', function () {
 })->name('impression.etat');
 
 Route::get("/admin/interventions/{id}")->name("admin.interventions");
+
+Route::get('/odoo', [OdooController::class, 'index']);
+
+Route::get('/test', function () {
+    $data = Http::post("https://demo.odoo.com/start");
+    dd($data);
+});

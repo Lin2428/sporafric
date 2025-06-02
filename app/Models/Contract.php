@@ -23,7 +23,6 @@ class Contract extends Model
         'forfait',
         'user_id',
         'adress',
-        'customer_adresse_id',
         'contact_name',
         'contact_phone',
         'contact_email',
@@ -33,7 +32,6 @@ class Contract extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
-        'is_fixed' => 'boolean',
         'deleted_at' => 'datetime',
     ];
 
@@ -85,11 +83,6 @@ class Contract extends Model
     public function contractGenerator()
     {
         return $this->hasOne(ContractGenerator::class)->where('status', true);
-    }
-
-    public function customerAdress()
-    {
-        return $this->belongsTo(CustomerAdress::class, 'customer_adresse_id', 'id');
     }
 
     public function interventions()

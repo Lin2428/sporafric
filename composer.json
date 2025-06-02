@@ -6,8 +6,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.0",
+        "darkaonline/ripcord": "^0.3.0",
         "filament/filament": "3.3",
         "guava/calendar": "^1.14",
+        "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
         "savannabits/filament-flatpickr": "*"

@@ -15,6 +15,7 @@ class DashboardPage extends Page
     protected static ?string $navigationGroup = 'Dashboard';
 
     protected static ?string $title = 'Groupes électrogènes';
+    protected static ?string $navigationLabel = 'Tableau ed bord';
     protected static ?int $navigationSort = 1;
 
     protected static string $view = 'filament.pages.dashboard-page';

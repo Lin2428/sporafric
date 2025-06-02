@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('generator_id')->nullable();
             $table->string('number')->unique();
             $table->string('site');
-            $table->string(column: 'code_site')->unique();
+            $table->string('code_site')->unique();
             $table->string('adress')->nullable();
             $table->date('start_date');
             $table->date('end_date');
