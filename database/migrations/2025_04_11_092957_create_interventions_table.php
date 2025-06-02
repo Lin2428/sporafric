@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('type_location');
             $table->foreignId('contract_id')->nullable();
+                 $table->foreignId('devis_id')->nullable();
             $table->foreignId('customer_id')->nullable();
             $table->date('date_prise_appel');
             $table->date('date_planifiee');

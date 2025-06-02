@@ -5,6 +5,7 @@ namespace App\Filament\Utils;
 use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\CustomerAdress;
+use App\Models\Devis;
 use App\Models\Generator;
 use App\Models\Piece;
 use Closure;
@@ -100,14 +101,17 @@ class WidgetUtils
     public static function contractSelectWidget(string $name = "contract_id"): Select
     {
         $select = Select::make($name)
-            ->relationship('contract', 'name')
+            ->relationship($name == 'contract_id' ? 'contract' : 'devis', 'name')
             ->searchable()
             ->required()
             ->allowHtml()
             ->label('Contrat')
-            ->getSearchResultsUsing(function (string $search) {
-                $users = Contract::where('site', 'like', "%$search%")
-                    ->orWhere('contact_phone', 'like', "$search%")
+            ->getSearchResultsUsing(function (string $search) use($name) {
+                $model = Contract::where('site', 'like', "%$search%");
+                if($name != 'contract_id'){
+                    $model = Devis::where('site', 'like', "%$search%");
+                }
+                $users = $model->orWhere('contact_phone', 'like', "$search%")
                     ->orWhere('contact_email', 'like', "$search%")
                     ->orWhere('number', 'like', "$search%")
                     ->orWhereHas('customer', function ($query) use ($search) {
@@ -257,19 +261,19 @@ class WidgetUtils
             ->render();
     }
 
-    public static function getContractSelect(Contract $model): string
+    public static function getContractSelect(Contract|Devis $model): string
     {
         return view('filament.forms.components.select-contract-result')
             ->with('contract', $model)
             ->render();
     }
 
-    public static function getAdresseSelect(CustomerAdress $model): string
-    {
-        return view('filament.forms.components.select-adresse-result')
-            ->with('adresse', $model)
-            ->render();
-    }
+    // public static function getAdresseSelect(CustomerAdress $model): string
+    // {
+    //     return view('filament.forms.components.select-adresse-result')
+    //         ->with('adresse', $model)
+    //         ->render();
+    // }
 
     public static function getPieceSelect(Piece $model): string
     {

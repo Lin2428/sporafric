@@ -19,6 +19,7 @@ class Intervention extends Model implements Eventable
     protected $fillable = [
         'type_location',
         'contract_id',
+        'devis_id',
         'customer_id',
         'generator',
         'power',
@@ -45,6 +46,11 @@ class Intervention extends Model implements Eventable
     public function contract()
     {
         return $this->belongsTo(Contract::class);
+    }
+
+    public function devis()
+    {
+        return $this->belongsTo(Devis::class);
     }
     public function customer()
     {

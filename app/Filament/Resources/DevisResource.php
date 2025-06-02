@@ -192,12 +192,6 @@ class DevisResource extends Resource
                     ->sortable()
                     ->limit(50),
 
-                TextColumn::make('customerAdress.city.name')
-                    ->label('Ville')
-                    ->searchable()
-                    ->sortable()
-                    ->limit(50),
-
                 TextColumn::make('generator.name')
                     ->label('GE')
                     ->searchable()
@@ -399,9 +393,11 @@ class DevisResource extends Resource
                                     ->schema([
                                         TextEntry::make('customer.contact_c_name')
                                             ->label('Nom')
+                                            ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_c_email')
                                             ->label('Email')
+                                            ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_c_phone')
                                             ->label('Téléphone')
@@ -414,9 +410,11 @@ class DevisResource extends Resource
                                     ->schema([
                                         TextEntry::make('customer.contact_l_name')
                                             ->label('Nom')
+                                            ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_l_email')
                                             ->label('Email')
+                                            ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_l_phone')
                                             ->label('Téléphone')
@@ -429,9 +427,11 @@ class DevisResource extends Resource
                                     ->schema([
                                         TextEntry::make('contact_name')
                                             ->label('Nom')
+                                            ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('contact_email')
                                             ->label('Email')
+                                            ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('contact_phone')
                                             ->label('Téléphone')

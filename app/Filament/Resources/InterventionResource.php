@@ -61,21 +61,25 @@ class InterventionResource extends Resource
                                     ->columnSpanFull()
                                     ->visible(fn(callable $get) => $get('type_location') == "1"),
 
-                                Section::make('Information sur le client')
-                                    ->columns(2)
-                                    ->schema([
-                                        WidgetUtils::customerSelectWidget()
-                                            ->columnSpanFull(),
+                                WidgetUtils::contractSelectWidget('devis_id')
+                                    ->columnSpanFull()
+                                    ->visible(fn(callable $get) => $get('type_location') == "0")
+                                    ->label("Devis"),
+                                // Section::make('Information sur le client')
+                                //     ->columns(2)
+                                //     ->schema([
+                                //         WidgetUtils::customerSelectWidget()
+                                //             ->columnSpanFull(),
 
-                                        TextInput::make('generator')
-                                            ->label("Marque du GE")
-                                            ->required(),
-                                        TextInput::make('power')
-                                            ->label("Puissance (KVA)")
-                                            ->numeric(),
-                                        TextInput::make('serial_number')
-                                            ->label("Numéro de série")->columnSpanFull(),
-                                    ])->visible(fn(callable $get) => $get('type_location') == "0"),
+                                //         TextInput::make('generator')
+                                //             ->label("Marque du GE")
+                                //             ->required(),
+                                //         TextInput::make('power')
+                                //             ->label("Puissance (KVA)")
+                                //             ->numeric(),
+                                //         TextInput::make('serial_number')
+                                //             ->label("Numéro de série")->columnSpanFull(),
+                                //     ])->visible(fn(callable $get) => $get('type_location') == "0"),
 
                                 DatePicker::make('date_prise_appel')
                                     ->label('Date de prise d’appel')
@@ -189,7 +193,7 @@ class InterventionResource extends Resource
 
                 TextEntry::make('generator')
                     ->getStateUsing(function (Intervention $record) {
-                        return $record->contract != null ? $record->contract->generator->name . '-' . $record->contract->generator->modele . ' ' . $record->contract->generator->power . 'KVA - N/S: ' . $record->contract->generator->serial_number : $record->generator . '-' . $record->power . 'KVA ' . $record->serial_number;
+                        return $record->contract != null ? $record->contract->generator->name . '-' . $record->contract->generator->modele . ' ' . $record->contract->generator->power . 'KVA - N/S: ' . $record->contract->generator->serial_number : $record->devis->generator->name . '-' . $record->devis->generator->power . 'KVA ' . $record->devis->generator->serial_number;
                     })->hiddenLabel()
                     ->size(10)
                     ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])

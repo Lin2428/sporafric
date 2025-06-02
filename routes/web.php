@@ -14,8 +14,3 @@ Route::get('/impression-form-etat', function () {
 Route::get("/admin/interventions/{id}")->name("admin.interventions");
 
 Route::get('/odoo', [OdooController::class, 'index']);
-
-Route::get('/test', function () {
-    $data = Http::post("https://demo.odoo.com/start");
-    dd($data);
-});

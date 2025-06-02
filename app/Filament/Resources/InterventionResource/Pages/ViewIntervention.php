@@ -15,13 +15,11 @@ class ViewIntervention extends ViewRecord
 
     public function getTitle(): string | Htmlable
     {
-        $img = $this->record->contract != null
-            ? $this->record->contract->customer->logo
-            : $this->record->customer->logo;
 
-        $name = $this->record->contract != null
-            ? $this->record->contract->customer->name . " - " . $this->record->contract->site
-            : $this->record->customer->name . " - " . $this->record->identifiant;
+        $img = $this->record->contract?->customer?->logo ?? $this->record->devis?->customer->logo;
+
+        $name = $this->record->contract != null ? $this->record->contract?->customer?->name . " - " . $this->record->contract?->site
+            : $this->record->devis?->customer?->name . " - " . $this->record->devis?->site;
 
         $title = '
         <div class="flex items-center space-x-4">
