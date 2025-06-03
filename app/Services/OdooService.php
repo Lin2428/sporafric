@@ -82,6 +82,6 @@ class OdooService
 
     public function getCompany()
     {
-        return $this->searchRead('res.company', [], ['id', 'name', 'partner_id']);
+        return $this->searchRead('res.partner', [], [ 'name', 'phone']);
     }
 }

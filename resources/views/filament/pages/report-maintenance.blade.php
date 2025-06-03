@@ -31,7 +31,7 @@
     <div id="printable" style="font-family: Helvetica, Arial, sans-serif;">
         <x-report-header />
 
-        <x-daily-report-header title="Rapport des maintenances" :contracts="$contracts" city="Brazzaville" />
+        <x-daily-report-header title="Rapport de maintenance" :contracts="$contracts" />
 
         <h3 class="text-lg font-semibold mb-2">Interventions</h3>
         <table class="min-w-full divide-y divide-slate-800">

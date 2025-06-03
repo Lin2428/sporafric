@@ -2,11 +2,15 @@
 
 namespace App\Filament\Admin\Pages;
 use App\Models\Contract;
+use App\Models\Devis;
 use App\Models\Generator;
 use Filament\Pages\Page;
 abstract class DailyReportPage extends Page
 {
     public  $contractId;
+
+    public $devisId;
+
     public $generatorId;
 
     public function mount(): void
@@ -33,6 +37,8 @@ abstract class DailyReportPage extends Page
         return [
             'contractId' => $this->contractId,
             'contracts' => Contract::all(),
+            'devisId' => $this->devisId,
+            'devis' => Devis::all(),
             'generator' => $this->generatorId,
             "generators" => Generator::all(),
             ...$this->viewData(),

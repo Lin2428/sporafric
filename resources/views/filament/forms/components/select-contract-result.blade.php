@@ -1,7 +1,8 @@
 <div class="rounded-md relative">
     <div class="flex">
 
-        <img src="{{asset('storage/'.$contract->customer->logo)}} " class=" img overflow-hidden rounded-3xl" alt="">
+        <img src="{{asset($contract->customer->logo ?'storage/'.$contract->customer->logo: "storage/contrat.png
+        ")}} " class=" img overflow-hidden rounded-3xl" alt="">
 
         <div class="flex flex-col ml-3 text-xs">
             <span class="font-medium">Client: {{$contract->customer->name}}</span>

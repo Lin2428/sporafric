@@ -14,4 +14,21 @@ class OdooController extends Controller
         
         return $companies;
     }
+
+    public static function syncronizeClient()
+    {
+        $odoo = new OdooService();
+        $companies = $odoo->searchRead('res.partner',
+         [
+            (['is_company', '=', true])
+        ], 
+        [
+            'name',
+            'phone',
+            'email',
+            'city',
+        ]);
+        
+        return $companies;
+    }
 }

@@ -102,14 +102,19 @@ class WidgetUtils
     public static function contractSelectWidget(string $name = "contract_id"): Select
     {
         $select = Select::make($name)
-            ->relationship($name == 'contract_id' ? 'contract' : 'devis', 'name')
+            ->relationship(function () use ($name) {
+                if(str_contains($name, 'devis')) {
+                    return 'devis';
+                }
+                return 'contract';
+            },'name')
             ->searchable()
             ->required()
             ->allowHtml()
             ->label('Contrat')
             ->getSearchResultsUsing(function (string $search) use($name) {
                 $model = Contract::where('site', 'like', "%$search%");
-                if($name != 'contract_id'){
+                if(str_contains($name, 'devis')) {
                     $model = Devis::where('site', 'like', "%$search%");
                 }
                 $users = $model->orWhere('contact_phone', 'like', "$search%")

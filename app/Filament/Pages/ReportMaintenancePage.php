@@ -16,7 +16,7 @@ class ReportMaintenancePage extends DailyReportPage implements HasForms
     use InteractsWithForms;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationGroup = 'Rapport';
-    protected static ?string $title = 'Rapports des maintenances';
+    protected static ?string $title = 'Rapports de maintenance';
 
     protected static string $view = 'filament.pages.report-maintenance';
 
