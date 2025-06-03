@@ -15,7 +15,7 @@ class DevisGenerator extends Model
         'user_id',
     ];
 
-    public function contract()
+    public function devis()
     {
         return $this->belongsTo(Devis::class);
     }

@@ -63,6 +63,12 @@ class Contract extends Model
                     ContractGenerator::where('contract_id', $model->id)
                         ->where('generator_id', $oldGenerator)
                         ->update(['status' => $statusNew]);
+
+                     Generator::where('id', $oldGenerator)
+                    ->update(['status' =>  GeneratorStatus::DISPONIBLE->value]);
+                    
+                     Generator::where('id', $model->generator_id)
+                    ->update(['status' =>  GeneratorStatus::EN_LOCATION->value]);
             }
             if(($statusOld != $statusNew) && $statusNew == 0){
                 Generator::where('id', $model->generator_id)

@@ -1,8 +1,8 @@
 <div wire:ignore>
     <div id="map" style="height: 400px; width: 100%; border-radius: 10px;"></div>
     <script>
-        const lat = parseFloat(@json($getRecord()->lat ?? $getRecord()->contractGenerator->contract->lat ?? null));
-        const lng = parseFloat(@json($getRecord()->lng ?? $getRecord()->contractGenerator->contract->lng ?? null));
+        const lat = parseFloat(@json($getRecord()->lat ?? $getRecord()->contractGenerator->contract->lat ?? $getRecord()->devisGenerator->devis->lat ?? null));
+        const lng = parseFloat(@json($getRecord()->lng ?? $getRecord()->contractGenerator->contract->lng ?? $getRecord()->devisGenerator->devis->lng ?? null));
         
         function initMap() {
             

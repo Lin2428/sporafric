@@ -81,11 +81,6 @@ class InterventionUtil
                 ->sortable()
                 ->limit(50),
 
-            TextColumn::make('type_location')
-                ->label('Type')
-                ->getStateUsing(fn($record) => $record->type_location == 1 ? "Maintenance" : "Location")
-                ->extraAttributes(['class' => 'font-bold']),
-
             TextColumn::make('status')
                 ->label('Statut')
                 ->badge()
@@ -102,7 +97,7 @@ class InterventionUtil
                 ->label('Client')
                 ->searchable(true, function($search) {
                     return fn($query, $search) => $query
-                        ->whereHas('customer', function ($query) use ($search) {
+                        ->whereHas('devis.customer', function ($query) use ($search) {
                             $query->where('name', 'like', "%{$search}%");
                         })
                         ->orWhereHas('contract.customer', function ($query) use ($search) {
@@ -112,7 +107,7 @@ class InterventionUtil
                 ->getStateUsing(function (Intervention $record) {
                     return $record->contract
                         ? optional($record->contract->customer)->name
-                        : optional($record->customer)->name;
+                        : optional($record->devis->customer)->name;
                 })
                 ->description(fn(Intervention $record) => static::customerColumn($record))
                 ->extraAttributes(['class' => 'font-bold'])
@@ -122,7 +117,7 @@ class InterventionUtil
                 ->label('Groupe Électrogène')
                 ->searchable(false, function($search) {
                     return fn($query, $search) => $query
-                        ->whereHas('generator', function ($query) use ($search) {
+                        ->whereHas('devis.generator', function ($query) use ($search) {
                             $query->where('modele', 'like', "%{$search}%")
                                 ->orWhere('serial_number', 'like', "%{$search}%");
                         })
@@ -134,7 +129,7 @@ class InterventionUtil
                 ->getStateUsing(function (Intervention $record) {
                     return $record->contract
                         ? optional($record->contract->generator)->name
-                        : $record->generator;
+                        : optional($record->devis->generator)->name;
                 })
                 ->description(fn(Intervention $record) => static::generatorColumn($record))
                 ->extraAttributes(['class' => 'font-bold'])

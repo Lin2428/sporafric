@@ -6,8 +6,8 @@
         let marker;
 
         function initMap() {
-            const defaultLat = parseFloat(document.querySelector('input[id="data.lat"]')?.value) || -4.2634;
-            const defaultLng = parseFloat(document.querySelector('input[id="data.lng"]')?.value) || 15.2429;
+            const defaultLat = parseFloat(document.querySelector('input[id="data.lat"]')?.value) || -4.7692;
+            const defaultLng = parseFloat(document.querySelector('input[id="data.lng"]')?.value) || 11.8661;
 
 
 

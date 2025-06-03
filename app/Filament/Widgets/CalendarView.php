@@ -61,7 +61,7 @@ class CalendarView extends CalendarWidget
      */
     public function onDateClick(array $info = []): void
     {
-        dd($info);
+        
     }
 
     /**
@@ -72,7 +72,7 @@ class CalendarView extends CalendarWidget
      */
     public function onDateSelect(array $info = []): void
     {
-        dd($info);
+        
     }
 
     /**
@@ -83,7 +83,7 @@ class CalendarView extends CalendarWidget
      */
     public function onNoEventsClick($info): void
     {
-        dd($info);
+        
     }
 
     public function getEventContent(): null|string|array

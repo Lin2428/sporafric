@@ -311,6 +311,7 @@ class GeneratorResource extends Resource
 
                                                 TextEntry::make('name')
                                                     ->label('GE')
+                                                    ->columnSpan(2)
                                                     ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                                 TextEntry::make('modele')
@@ -319,6 +320,7 @@ class GeneratorResource extends Resource
 
                                                 TextEntry::make('serial_number')
                                                     ->label('Numéro de série')
+                                                    ->columnSpanFull()
                                                     ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                                 TextEntry::make('power')
@@ -354,51 +356,154 @@ class GeneratorResource extends Resource
                                     ->columnSpan(3)
                                     ->columns(2)
                                     ->schema([
-                                        \Filament\Infolists\Components\Section::make('Contrat en cours')
+                                        \Filament\Infolists\Components\Section::make(function(Generator $record){
+                                            if($record->contractGenerator){
+                                                return 'Contrat en cours';
+                                            }
+
+                                            if($record->devisGenerator){
+                                                return 'Devis en cours';
+                                            }
+
+                                            return 'Pas de contrat';
+                                        })
                                             ->columns(2)
                                             ->schema([
                                                 TextEntry::make('is_active')
                                                     ->label('')
                                                     ->badge()
                                                     ->getStateUsing(function (Generator $record) {
-                                                        return $record->contractGenerator ? $record->contractGenerator->contract->is_active ? 'En cours' : 'Terminé' : 'Pas de contrat';
+                                                        if($record->contractGenerator){
+                                                            return $record->contractGenerator->contract->is_active ? 'En cours' : 'Terminé';
+                                                        }
+                                                        if($record->devisGenerator){
+                                                            return $record->devisGenerator->devis->is_active ? 'En cours' : 'Terminé';
+                                                        }
+                                                        return 'Pas de contrat';
                                                     })
                                                     ->colors([
                                                         'success' => 'En cours',
                                                         'danger'  => 'Terminé',
                                                     ]),
 
-                                                ImageEntry::make('contractGenerator.contract.customer.logo')
+                                                ImageEntry::make('logo')
                                                     ->label('')
+                                                    ->getStateUsing(function (Generator $record) {
+                                                        if($record->contractGenerator){
+                                                            return $record->contractGenerator->contract->customer->logo ?? "customer.png";
+                                                        }
+                                                        if($record->devisGenerator){
+                                                            return $record->devisGenerator->devis->customer->logo ?? "customer.png";
+                                                        }
+                                                        return null;
+                                                    })
                                                     ->columnSpanFull()
                                                     ->extraAttributes(['class' => 'w-full d-flex justify-center']),
 
-                                                TextEntry::make('contractGenerator.contract.number')
-                                                    ->label('N° contrat')
+                                                TextEntry::make('number')
+                                                    ->label(function (Generator $record) {
+                                                        if($record->contractGenerator){
+                                                            return 'N° Contrat';
+                                                        }
+                                                        if($record->devisGenerator){
+                                                            return 'N° Devis';
+                                                        }
+                                                        return null;
+                                                    })
+                                                     ->getStateUsing(function (Generator $record) {
+                                                        if($record->contractGenerator){
+                                                            return $record->contractGenerator->contract->number;
+                                                        }
+                                                        if($record->devisGenerator){
+                                                            return $record->devisGenerator->devis->number;
+                                                        }
+                                                        return null;
+                                                    })
                                                     ->extraAttributes(['class' => 'font-bold']),
 
-                                                TextEntry::make('contractGenerator.contract.customer.name')
+                                                TextEntry::make('customer-name')
                                                     ->label('Client')
+                                                     ->getStateUsing(function (Generator $record) {
+                                                        if($record->contractGenerator){
+                                                            return $record->contractGenerator->contract->customer->name;
+                                                        }
+                                                        if($record->devisGenerator){
+                                                            return $record->devisGenerator->devis->customer->name;
+                                                        }
+                                                        return null;
+                                                    })
                                                     ->extraAttributes(['class' => 'font-bold']),
 
-                                                TextEntry::make('contractGenerator.contract.forfait')
-                                                    ->label('Forfait de maintenance mensuel')
+                                                TextEntry::make('forfait')
+                                                    ->label(function (Generator $record) {
+                                                        if($record->contractGenerator){
+                                                            return 'Forfait mensuel';
+                                                        }
+                                                        if($record->devisGenerator){
+                                                            return 'Coût total du devis';
+                                                        }
+                                                    })
+                                                      ->getStateUsing(function (Generator $record) {
+                                                        if($record->contractGenerator){
+                                                            return $record->contractGenerator->contract->forfait;
+                                                        }
+                                                        if($record->devisGenerator){
+                                                            return $record->devisGenerator->devis->forfait;
+                                                        }
+                                                        return null;
+                                                    })
                                                     ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
                                                     ->extraAttributes(['class' => 'font-bold'])
                                                     ->columnSpanFull(),
 
-                                                TextEntry::make('contractGenerator.contract.site')
+                                                TextEntry::make('site')
                                                     ->label('Site')
+                                                    ->getStateUsing(function (Generator $record) {
+                                                        if($record->contractGenerator){
+                                                            return $record->contractGenerator->contract->site;
+                                                        }
+                                                        if($record->devisGenerator){
+                                                            return $record->devisGenerator->devis->site;
+                                                        }
+                                                        return null;
+                                                    })
                                                    ->extraAttributes([ 'class' => 'font-bold']),
-                                                TextEntry::make('contractGenerator.contract.code_site')
+                                                TextEntry::make('code_site')
                                                     ->label('Code')
+                                                    ->getStateUsing(function (Generator $record) {
+                                                        if($record->contractGenerator){
+                                                            return $record->contractGenerator->contract->code_site;
+                                                        }
+                                                        if($record->devisGenerator){
+                                                            return $record->devisGenerator->devis->code_site;
+                                                        }
+                                                        return null;
+                                                    })
                                                    ->extraAttributes([ 'class' => 'font-bold']),
-                                                TextEntry::make('contractGenerator.contract.start_date')
+                                                TextEntry::make('start_date')
                                                     ->date('d/m/Y')
+                                                    ->getStateUsing(function (Generator $record) {
+                                                        if($record->contractGenerator){
+                                                            return $record->contractGenerator->contract->start_date;
+                                                        }
+                                                        if($record->devisGenerator){
+                                                            return $record->devisGenerator->devis->start_date;
+                                                        }
+                                                        return null;
+                                                    })
                                                     ->label('A debuter le')
                                                    ->extraAttributes([ 'class' => 'font-bold']),
-                                                TextEntry::make('contractGenerator.contract.end_date')
+                                                TextEntry::make('end_date')
                                                     ->date('d/m/Y')
+                                                    ->getStateUsing(function (Generator $record) {
+                                                        if($record->contractGenerator){
+                                                            return $record->contractGenerator->contract->end_date;
+                                                        }
+                                                        if($record->devisGenerator){
+                                                            return $record->devisGenerator->devis->end_date;
+                                                        }
+                                                        return null;
+                                                    })
                                                     ->label('Se termine le')
                                                     ->color('danger'),
 
@@ -409,56 +514,160 @@ class GeneratorResource extends Resource
                                     ->columnSpan(7)
                                     ->columns(2)
                                     ->schema([
-                                        \Filament\Infolists\Components\Section::make('Detail du contrat')
+                                        \Filament\Infolists\Components\Section::make(function (Generator $record) {
+                                            if($record->contractGenerator){
+                                                return 'Details du contrat';
+                                            }
+                                            if($record->devisGenerator){
+                                                return 'Details du devis';
+                                            }
+                                            return "Aucun Details";
+                                        })
                                             ->columns(2)
                                             ->schema([
-                                            TextEntry::make('contractGenerator.contract.adress')
+                                            TextEntry::make('adress')
                                                         ->label('Adresse')
+                                                        ->getStateUsing(function (Generator $record) {
+                                                            if($record->contractGenerator){
+                                                                return $record->contractGenerator->contract->adress;
+                                                            }
+                                                            if($record->devisGenerator){
+                                                                return $record->devisGenerator->devis->adress;
+                                                            }
+                                                            return null;
+                                                        })
                                                         ->columnSpanFull(),
 
                                                 \Filament\Infolists\Components\Section::make('Contact commercial')
                                                     ->columns(2)
                                                     ->columnSpan(['lg' => 1])
                                                     ->schema([
-                                                        TextEntry::make('contractGenerator.contract.customer.contact_c_name')
+                                                        TextEntry::make('contact_c_name')
                                                             ->label('Nom')
-                                                           ->extraAttributes([ 'class' => 'font-bold']),
-                                                        TextEntry::make('contractGenerator.contract.customer.contact_c_email')
-                                                            ->label('Email')
-                                                           ->extraAttributes([ 'class' => 'font-bold']),
-                                                        TextEntry::make('contractGenerator.contract.customer.contact_c_phone')
+                                                            ->getStateUsing(function (Generator $record) {
+                                                            if($record->contractGenerator){
+                                                                return $record->contractGenerator->contract->customer->contact_c_name;
+                                                            }
+                                                            if($record->devisGenerator){
+                                                                return $record->devisGenerator->devis->customer->contact_c_name;
+                                                            }
+                                                            return null;
+                                                        })
+                                                        ->extraAttributes([ 'class' => 'font-bold']),
+                                                        TextEntry::make('contact_c_phone')
                                                             ->label('Téléphone')
+                                                             ->getStateUsing(function (Generator $record) {
+                                                            if($record->contractGenerator){
+                                                                return $record->contractGenerator->contract->customer->contact_c_phone;
+                                                            }
+                                                            if($record->devisGenerator){
+                                                                return $record->devisGenerator->devis->customer->contact_c_phone;
+                                                            }
+                                                            return null;
+                                                        })
                                                            ->extraAttributes([ 'class' => 'font-bold']),
+
+                                                           TextEntry::make('contact_c_email')
+                                                            ->label('Email')
+                                                             ->getStateUsing(function (Generator $record) {
+                                                            if($record->contractGenerator){
+                                                                return $record->contractGenerator->contract->customer->contact_c_email;
+                                                            }
+                                                            if($record->devisGenerator){
+                                                                return $record->devisGenerator->devis->customer->contact_c_email;
+                                                            }
+                                                            return null;
+                                                        })
+                                                           ->extraAttributes([ 'class' => 'font-bold'])
+                                                           ->columnSpanFull(),
                                                     ]),
 
                                                 \Filament\Infolists\Components\Section::make('Contact logistique')
                                                     ->columns(2)
                                                     ->columnSpan(['lg' => 1])
                                                     ->schema([
-                                                        TextEntry::make('contractGenerator.contract.customer.contact_l_name')
+                                                       TextEntry::make('contact_c_name')
                                                             ->label('Nom')
-                                                           ->extraAttributes([ 'class' => 'font-bold']),
-                                                        TextEntry::make('contractGenerator.contract.customer.contact_l_email')
-                                                            ->label('Email')
-                                                           ->extraAttributes([ 'class' => 'font-bold']),
-                                                        TextEntry::make('contractGenerator.contract.customer.contact_l_phone')
+                                                            ->getStateUsing(function (Generator $record) {
+                                                            if($record->contractGenerator){
+                                                                return $record->contractGenerator->contract->customer->contact_l_name;
+                                                            }
+                                                            if($record->devisGenerator){
+                                                                return $record->devisGenerator->devis->customer->contact_l_name;
+                                                            }
+                                                            return null;
+                                                        })
+                                                        ->extraAttributes([ 'class' => 'font-bold']),
+                                                        TextEntry::make('contact_c_phone')
                                                             ->label('Téléphone')
+                                                             ->getStateUsing(function (Generator $record) {
+                                                            if($record->contractGenerator){
+                                                                return $record->contractGenerator->contract->customer->contact_l_phone;
+                                                            }
+                                                            if($record->devisGenerator){
+                                                                return $record->devisGenerator->devis->customer->contact_l_phone;
+                                                            }
+                                                            return null;
+                                                        })
                                                            ->extraAttributes([ 'class' => 'font-bold']),
+
+                                                           TextEntry::make('contact_c_email')
+                                                            ->label('Email')
+                                                             ->getStateUsing(function (Generator $record) {
+                                                            if($record->contractGenerator){
+                                                                return $record->contractGenerator->contract->customer->contact_l_email;
+                                                            }
+                                                            if($record->devisGenerator){
+                                                                return $record->devisGenerator->devis->customer->contact_l_email;
+                                                            }
+                                                            return null;
+                                                        })
+                                                           ->extraAttributes([ 'class' => 'font-bold'])
+                                                           ->columnSpanFull(),
                                                     ]),
 
                                                 \Filament\Infolists\Components\Section::make('Contact sur site')
                                                     ->columns(2)
                                                     ->columnSpan(['lg' => 1])
                                                     ->schema([
-                                                        TextEntry::make('contractGenerator.contract.contact_name')
+                                                        TextEntry::make('contact_c_name')
                                                             ->label('Nom')
-                                                           ->extraAttributes([ 'class' => 'font-bold']),
-                                                        TextEntry::make('contractGenerator.contract.contact_email')
-                                                            ->label('Email')
-                                                           ->extraAttributes([ 'class' => 'font-bold']),
-                                                        TextEntry::make('contractGenerator.contract.contact_phone')
+                                                            ->getStateUsing(function (Generator $record) {
+                                                            if($record->contractGenerator){
+                                                                return $record->contractGenerator->contract->contact_name;
+                                                            }
+                                                            if($record->devisGenerator){
+                                                                return $record->devisGenerator->devis->contact_name;
+                                                            }
+                                                            return null;
+                                                        })
+                                                        ->extraAttributes([ 'class' => 'font-bold']),
+                                                        TextEntry::make('contact_c_phone')
                                                             ->label('Téléphone')
+                                                             ->getStateUsing(function (Generator $record) {
+                                                            if($record->contractGenerator){
+                                                                return $record->contractGenerator->contract->contact_phone;
+                                                            }
+                                                            if($record->devisGenerator){
+                                                                return $record->devisGenerator->devis->contact_phone;
+                                                            }
+                                                            return null;
+                                                        })
                                                            ->extraAttributes([ 'class' => 'font-bold']),
+
+                                                           TextEntry::make('contact_c_email')
+                                                            ->label('Email')
+                                                             ->getStateUsing(function (Generator $record) {
+                                                            if($record->contractGenerator){
+                                                                return $record->contractGenerator->contract->contact_email;
+                                                            }
+                                                            if($record->devisGenerator){
+                                                                return $record->devisGenerator->devis->contact_email;
+                                                            }
+                                                            return null;
+                                                        })
+                                                           ->extraAttributes([ 'class' => 'font-bold'])
+                                                           ->columnSpanFull(),
                                                     ]),
 
                                                 TextEntry::make('vu')
@@ -469,9 +678,15 @@ class GeneratorResource extends Resource
                                                 \Filament\Infolists\Components\View::make('filament.infolist.components.map-pointer')
                                                     ->label('')
                                                     ->getStateUsing(function (Generator $record) {
-                                                        return [
+                                                        if($record->contractGenerator){
+                                                            return [
                                                             'lat' => $record->contractGenerator->contract->lat,
                                                             'lng' => $record->contractGenerator->contract->lng,
+                                                            ];
+                                                        }
+                                                        return [
+                                                            'lat' => $record->devisGenerator->devis->lat,
+                                                            'lng' => $record->devisGenerator->devis->lng,
                                                         ];
                                                     })
                                                     ->extraAttributes(['class' => 'w-full d-flex justify-center'])

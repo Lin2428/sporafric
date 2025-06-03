@@ -64,7 +64,7 @@ class InterventionActionForm1 extends Component implements HasForms, HasActions
                     ->getUploadedFileNameForStorageUsing(function ($file) {
                         $record = $this->record;
 
-                        $customerName = Str::slug($record->contract?->customer?->name ?? 'client');
+                        $customerName = Str::slug($record->contract?->customer?->name ?? $record->devis?->customer?->name ?? 'client');
                         $date = now()->format('Y-m-d');
 
 
@@ -103,17 +103,18 @@ class InterventionActionForm1 extends Component implements HasForms, HasActions
                 $this->record->pieces()->whereNotIn('piece_id', $existingIds)->delete(); // suppression des anciens
 
                 foreach ($pieces as $piece) {
+                    $generatorId = $this->record->contract?->generator_id ?? $this->record->devis?->generator_id;
                     InterventionPieces::updateOrCreate(
                         [
                             'intrvention_id' => $this->record->id,
                             'piece_id' => $piece['piece_id'],
-                            'generator_id' => $this->record->contract->generator_id,
+                            'generator_id' => $generatorId,
                         ],
                         [
                             'piece_id' => $piece['piece_id'],
                             'qty' => $piece['qty'],
                             'price' => $piece['price'],
-                            'generator_id' => $this->record->contract->generator_id,
+                            'generator_id' => $generatorId,
                         ]
                     );
                 }

@@ -68,6 +68,7 @@ class WidgetUtils
                 $users = Customer::where('name', 'like', "%$search%")
                     ->orWhere('contact_c_phone', 'like', "$search%")
                     ->orWhere('contact_c_email', 'like', "$search%")
+                    ->where('is_active', '=', 1)
                     ->limit(50)
                     ->get();
 

@@ -8,7 +8,7 @@ use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
 use App\Filament\Resources\InterventionResource\Pages\EditIntervention;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
-use App\Models\Contract;
+use App\Models\Devis;
 use App\Models\Intervention;
 use App\Utils\NumberUtils;
 use Filament\Actions\Action;
@@ -26,6 +26,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -57,8 +58,9 @@ class RetiredPage extends Page implements HasForms, HasTable
                             Section::make('Informations sur le retrait')
                                 ->columns(2)
                                 ->schema([
-                                    WidgetUtils::contractSelectWidget()
-                                        ->columnSpanFull(),
+                                    WidgetUtils::contractSelectWidget('devis_id')
+                                        ->columnSpanFull()
+                                        ->label("Devis"),
                                     DatePicker::make('date_prise_appel')
                                         ->label('Date de prise d’appel')
                                         ->required(),
@@ -100,19 +102,19 @@ class RetiredPage extends Page implements HasForms, HasTable
                         ])
                 ])->action(function (array $data) {
                     
-                    $contract = Contract::find($data['contract_id']);
-                    $contract->update(['is_retired' => true]);
+                    $devis = Devis::find($data['devis_id']);
+                    $devis->update(['is_retired' => true]);
                     $data['type_location'] = '0';
                     $data['type'] = InterventionType::RETRAIT->value;
                     $data['identifiant'] = NumberUtils::generate();
                     
-                    $intervention = $contract->interventions()->create($data);
+                    $intervention = $devis->interventions()->create($data);
 
                     $technicians = $data['technicien_id'] ?? [];
 
                     $intervention->interventionTechniciens()->sync($technicians);
 
-                    $contract->update(['is_retired' => true]);
+                    $devis->update(['is_retired' => true]);
 
                     
                     Notification::make()
@@ -129,7 +131,64 @@ class RetiredPage extends Page implements HasForms, HasTable
             ->where('type', InterventionType::RETRAIT)
             ->where('type_location', '=', 0)
             )
-            ->columns(InterventionUtil::table())
+            ->columns([
+                
+            TextColumn::make('number')
+                    ->label('N° contrat')
+                    ->searchable()
+                    ->sortable()
+                    ->extraAttributes(['style' => 'font-weight: bold;'])
+                    ->limit(50),
+
+                TextColumn::make('is_active')
+                    ->label('Statut')
+                    ->badge()
+                    ->getStateUsing(fn(Devis $record): string => $record->is_active ? 'En cours' : 'Terminé')
+                    ->colors([
+                        'success' => 'En cours',
+                        'danger' => 'Terminé',
+                    ]),
+
+                TextColumn::make('customer.name')
+                    ->label('Client')
+                    ->searchable()
+                    ->sortable()
+                    ->extraAttributes(['style' => 'font-weight: bold;'])
+                    ->limit(50),
+
+                ImageColumn::make('customer.logo')
+                    ->label('Logo')
+                    ->circular()
+                    ->rounded()
+                    ->size(50)
+                    ->default('https://ui-avatars.com/api/?name=Logo&background=random'),
+
+                TextColumn::make('site')
+                    ->label('Site')
+                    ->searchable()
+                    ->sortable()
+                    ->limit(50),
+
+                TextColumn::make('generator.name')
+                    ->label('GE')
+                    ->searchable()
+                    ->sortable()
+                    ->extraAttributes(['style' => 'font-weight: bold;'])
+                    ->limit(50),
+
+                TextColumn::make('generator.modele')
+                    ->label('Modèle')
+                    ->searchable()
+                    ->sortable()
+                    ->extraAttributes(['style' => 'font-weight: bold;'])
+                    ->limit(50),
+
+                ImageColumn::make('generator.image')
+                    ->label('Image')
+                    ->circular()
+                    ->rounded()
+                    ->size(50),
+            ])
             ->recordUrl(fn($record) => url('admin/interventions/'.$record->id))
             ->filters([
                 // ...

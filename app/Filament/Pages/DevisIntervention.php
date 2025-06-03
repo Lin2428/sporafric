@@ -2,11 +2,16 @@
 
 namespace App\Filament\Pages;
 
+use App\Enum\InterventionStatus;
+use App\Enum\InterventionType;
 use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
 use App\Filament\Resources\InterventionResource\Pages\CreateIntervention;
 use App\Filament\Resources\InterventionResource\Pages\EditIntervention;
 use App\Filament\Utils\InterventionUtil;
 use App\Models\Intervention;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Pages\Actions\CreateAction;
 use Filament\Pages\Page;
 use Filament\Tables\Actions\Action;
@@ -17,6 +22,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -62,7 +68,27 @@ class DevisIntervention extends Page implements HasTable
             ->defaultSort('created_at', 'desc')
             ->columns(InterventionUtil::table())
             ->recordUrl(fn($record) => url('admin/interventions/'.$record->id))
-            ->filters([])
+            ->filters([
+                 Filter::make('status')
+                ->form([
+                    CheckboxList::make('status')
+                    ->options(collect(InterventionStatus::cases())
+                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                        ->toArray()),
+
+                    DatePicker::make('date_planifiee')
+                        ->label('Date planifiée'),
+
+                    DatePicker::make('date_prise_appel')
+                        ->label('Date de prise d\'appel'),
+
+                    Select::make('type')
+                        ->label('Type')
+                        ->options(collect(InterventionType::cases())
+                            ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                            ->toArray()),
+                ])
+            ])
             ->actions([
                 ActionGroup::make([
                    ViewAction::make()
