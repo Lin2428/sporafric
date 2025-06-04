@@ -198,8 +198,8 @@ class ContractResource extends Resource
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50),
 
-                TextColumn::make('generator.modele')
-                    ->label('Modèle')
+                TextColumn::make('generator.reference')
+                    ->label('referencee')
                     ->searchable()
                     ->sortable()
                     ->extraAttributes(['style' => 'font-weight: bold;'])
@@ -281,8 +281,8 @@ class ContractResource extends Resource
                                     ->label('GE')
                                     ->extraAttributes(['class' => 'font-bold text-danger']),
 
-                                TextEntry::make('generator.modele')
-                                    ->label('Modèle')
+                                TextEntry::make('generator.reference')
+                                    ->label('referencee')
                                     ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                 TextEntry::make('generator.serial_number')

@@ -23,7 +23,7 @@
     </div>
 
     <div class="mb-6 space-y-2">
-        <p><span class="font-semibold">Modèle du GE :</span> ______________________________________</p>
+        <p><span class="font-semibold">referencee du GE :</span> ______________________________________</p>
         <p><span class="font-semibold">N/S :</span> _____________________________________________</p>
     </div>
 

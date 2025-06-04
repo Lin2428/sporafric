@@ -10,9 +10,10 @@ class Generator extends Model
 {
     use SoftDeletes, HasFactory;
     protected $fillable = [
+        'odoo_id',
         'name',
         'image',
-        'modele',
+        'reference',
         'power',
         'voltage',
         'frequency',

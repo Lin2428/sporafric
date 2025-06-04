@@ -71,8 +71,8 @@ class GeneratorResource extends Resource
                                     ->columnSpanFull()
                                     ->required(),
 
-                                TextInput::make('modele')
-                                    ->label('Modèle')
+                                TextInput::make('reference')
+                                    ->label('referencee')
                                     ->required()
                                     ->columnSpanFull(),
 
@@ -163,8 +163,8 @@ class GeneratorResource extends Resource
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
-                TextColumn::make('modele')
-                    ->label('Modèle')
+                TextColumn::make('reference')
+                    ->label('referencee')
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
@@ -314,8 +314,8 @@ class GeneratorResource extends Resource
                                                     ->columnSpan(2)
                                                     ->extraAttributes(['class' => 'font-bold text-danger']),
 
-                                                TextEntry::make('modele')
-                                                    ->label('Modèle')
+                                                TextEntry::make('reference')
+                                                    ->label('referencee')
                                                     ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                                 TextEntry::make('serial_number')

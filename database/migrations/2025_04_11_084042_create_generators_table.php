@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('generators', function (Blueprint $table) {
             $table->id();
+            $table->integer('odoo_id');
             $table->string('name')->nullable();
             $table->string('image')->nullable();
-            $table->string('modele');
-            $table->double('power');
+            $table->string('reference')->nullable();
+            $table->double('power')->nullable();
             $table->double('voltage')->nullable();
             $table->double('frequency')->nullable();
             $table->string('serial_number')->nullable();

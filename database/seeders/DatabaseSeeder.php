@@ -6,7 +6,7 @@ use App\Models\Generator;
 use App\Models\Intervention;
 use App\Models\Piece;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+// use Illuminate\Database\Console\Seeds\Withoutreferencevents;
 use Database\Factories\PieceFactory;
 use Illuminate\Database\Seeder;
 

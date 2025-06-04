@@ -18,8 +18,8 @@ class GeneratorFactory extends Factory
     public function definition(): array
     {
         return [
-            'modele' => $this->faker->randomElement(['SDMO', 'Kohler', 'Perkins', 'Caterpillar', 'Cummins']),
-            //'modele' => $this->faker->randomElement(['SDMO 20KVA', 'Kohler 30KVA', 'Perkins 50KVA', 'Caterpillar 100KVA', 'Cummins 150KVA']),
+            'reference' => $this->faker->randomElement(['SDMO', 'Kohler', 'Perkins', 'Caterpillar', 'Cummins']),
+            //'reference' => $this->faker->randomElement(['SDMO 20KVA', 'Kohler 30KVA', 'Perkins 50KVA', 'Caterpillar 100KVA', 'Cummins 150KVA']),
             'voltage' => $this->faker->numberBetween(220, 600),
             'frequency' => $this->faker->numberBetween(50, 60),
             'serial_number' => $this->faker->unique()->numberBetween(100000, 999999),

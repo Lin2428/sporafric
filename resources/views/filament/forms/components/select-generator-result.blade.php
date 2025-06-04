@@ -27,7 +27,7 @@ $ring = match($generator->status) {
         <img src="{{asset('storage/' . $generator->image)}}" class="img overflow-hidden" alt="">
 
         <div class=" ml-10 justify-center text-xs w-full">
-            <div class="font-medium pb-1">{{ $generator->name}} - {{ $generator->modele }}</div>
+            <div class="font-medium pb-1">{{ $generator->name}} - {{ $generator->reference }}</div>
             <div class="flex items-center">
                 {{$generator->power}}KVA
             </div>

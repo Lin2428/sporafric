@@ -59,7 +59,7 @@ class InterventionUtil
     {
         $html = "
                 <div class='flex flex-col text-xs' style='line-height: 1.2;'>
-                    <span class='font-normal'>{$record->contract?->generator->modele}{$record->generator}</span>
+                    <span class='font-normal'>{$record->contract?->generator->reference}{$record->generator}</span>
                     <span class='font-normal'>{$record->contract?->generator->serial_number}{$record->serial_number}</span>
                 </div>
             ";
@@ -118,11 +118,11 @@ class InterventionUtil
                 ->searchable(false, function($search) {
                     return fn($query, $search) => $query
                         ->whereHas('devis.generator', function ($query) use ($search) {
-                            $query->where('modele', 'like', "%{$search}%")
+                            $query->where('reference', 'like', "%{$search}%")
                                 ->orWhere('serial_number', 'like', "%{$search}%");
                         })
                         ->orWhereHas('contract.generator', function ($query) use ($search) {
-                            $query->where('modele', 'like', "%{$search}%")
+                            $query->where('reference', 'like', "%{$search}%")
                                 ->orWhere('serial_number', 'like', "%{$search}%");
                         });
                 })

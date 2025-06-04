@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Customer;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Console\Seeds\Withoutreferencevents;
 use Illuminate\Database\Seeder;
 
 class CustomerSeeder extends Seeder

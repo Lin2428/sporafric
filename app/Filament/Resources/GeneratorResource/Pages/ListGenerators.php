@@ -4,10 +4,13 @@ namespace App\Filament\Resources\GeneratorResource\Pages;
 
 use App\Enum\GeneratorStatus;
 use App\Filament\Resources\GeneratorResource;
+use App\Http\Controllers\OdooController;
 use App\Models\Generator;
 use Filament\Actions;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\ViewField;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
 
@@ -19,10 +22,7 @@ class ListGenerators extends ListRecords
     public ?string $category = null;
     public array $products;
 
-    public function updatedCategory($state)
-    {
-        $this->products = Generator::select('*')->get()->toArray();
-    }
+    
     public function getTabs(): array
     {
         return  [
@@ -55,24 +55,41 @@ class ListGenerators extends ListRecords
                 ->modalHeading("Synchroniser les produits")
                 ->modal()
                 ->form([
-                    Select::make('category')
-                        ->label('Sélectionnez la catégorie')
-                        ->searchable()
-                        ->preload()
+                    Select::make('syncronize-type')
+                        ->label('Que voulez-vous synchroniser ?')
                         ->reactive()
                         ->options([
-                            '1' => 'Categorie 1',
-                            '2' => 'Categorie 2',
-                            '3' => 'Categorie 3',
-                            '4' => 'Categorie 4'
+                            false => 'Produits non synchronisés',
+                            true => 'Tout les produits',
                         ])
-                        ->multiple()
                         ->afterStateUpdated(function ($state) {
-                            $this->updatedCategory($state);
+                            $this->products = OdooController::syncronizeGenerator($state);
                         }),
 
                     $this->getProductViewField(),
                 ])
+                ->beforeFormFilled(function () {
+                     $this->products = [];
+                 })
+                ->action(function ($data) {
+                    foreach ($this->products as $product) {
+                        Generator::updateOrCreate(
+                            [
+                                'odoo_id' => $product['id']
+                            ],
+                            [
+                                'odoo_id' => $product['id'],
+                                'name' => $product['name'],
+                                'reference' => $product['default_code'],
+                            ]
+                            );
+                    }
+
+                    Notification::make()
+                        ->success()
+                        ->title('Synchronisation effectuée')
+                        ->send();
+                })
                 ->modalSubmitActionLabel('Synchroniser')
         ];
     }

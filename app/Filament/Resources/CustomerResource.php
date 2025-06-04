@@ -46,9 +46,6 @@ class CustomerResource extends Resource
                             ->label('Nom du client')
                             ->required(),
 
-                        FileUpload::make('logo')
-                            ->label('Logo'),
-
                         Section::make('Contact Commercial')
                             ->columns(2)
                             ->schema([
@@ -147,12 +144,6 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('logo')
-                    ->label('Logo')
-                    ->circular()
-                    ->rounded()
-                    ->size(50)
-                    ->default('https://ui-avatars.com/api/?name=Logo&background=random'),
 
                 TextColumn::make('name')
                     ->label('Nom')
