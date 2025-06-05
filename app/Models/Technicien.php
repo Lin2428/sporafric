@@ -10,10 +10,12 @@ class Technicien extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'odoo_id',
         'name',
         'phone',
         'email',
         'photo',
         'user_id',
+        'is_active',
     ];
 }

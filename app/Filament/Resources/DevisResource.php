@@ -246,21 +246,7 @@ class DevisResource extends Resource
         ];
     }
 
-/*************  ✨ Windsurf Command ⭐  *************/
-/**
- * Builds and returns an Infolist configuration for the DevisResource.
- *
- * The Infolist is structured with multiple sections and groups, each containing
- * a schema of components to display detailed information about a Devis record.
- * It includes information about the generator, devis details, rental details,
- * and contact information.
- *
- * @param Infolist $infolist The infolist to configure.
- * 
- * @return Infolist The configured infolist with specified columns and schema.
- */
 
-/*******  dd4f9191-c47c-4009-ae3e-426cc5fb4f65  *******/
     public static function buildInfolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -290,6 +276,7 @@ class DevisResource extends Resource
                                 ImageEntry::make('generator.image')
                                     ->label('')
                                     ->columnSpanFull()
+                                    ->default('generateur.png')
                                     ->extraAttributes(['class' => 'w-full d-flex justify-center']),
 
                                 TextEntry::make('generator.name')

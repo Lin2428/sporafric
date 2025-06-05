@@ -156,6 +156,7 @@ class GeneratorResource extends Resource
                 ImageColumn::make('image')
                     ->label('Image')
                     ->size(50)
+                    ->default('generateur.png')
                     ->extraAttributes(['style' => 'width: 100px, height: 100px;']),
 
                 TextColumn::make('name')
@@ -307,7 +308,8 @@ class GeneratorResource extends Resource
                                                 ImageEntry::make('image')
                                                     ->label('')
                                                     ->columnSpanFull()
-                                                    ->extraAttributes(['class' => 'w-full d-flex justify-center']),
+                                                    ->extraAttributes(['class' => 'w-full d-flex justify-center'])
+                                                    ->default('generateur.png'),
 
                                                 TextEntry::make('name')
                                                     ->label('GE')

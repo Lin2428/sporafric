@@ -275,6 +275,7 @@ class ContractResource extends Resource
                                 ImageEntry::make('generator.image')
                                     ->label('')
                                     ->columnSpanFull()
+                                    ->default('generateur.png')
                                     ->extraAttributes(['class' => 'w-full d-flex justify-center']),
 
                                 TextEntry::make('generator.name')

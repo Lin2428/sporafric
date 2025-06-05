@@ -65,7 +65,8 @@ class TechnicienResource extends Resource
                     ->label('Photo')
                     ->circular()
                     ->rounded()
-                    ->size(50),
+                    ->size(50)
+                    ->default('technicien.png'),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nom & Prénom')
@@ -93,7 +94,7 @@ class TechnicienResource extends Resource
                 //     ->modalWidth('md'),
                 //     Tables\Actions\DeleteAction::make(),
                 // ]),
-                Tables\Actions\ViewAction::make()
+                Tables\Actions\EditAction::make()
                     ->modalWidth('md'),
             ])
             ->bulkActions([

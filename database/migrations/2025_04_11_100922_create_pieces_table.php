@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('pieces', function (Blueprint $table) {
             $table->id();
-            $table->string('reference');
-            $table->string('designation');
-            $table->string('image');
+            $table->integer('odoo_id')->nullable();
+            $table->string('reference')->nullable();
+            $table->string('designation')->nullable();
+            $table->string('image')->nullable();
             $table->integer('duree_vie');
             $table->integer('pr');
             $table->integer('pv');
