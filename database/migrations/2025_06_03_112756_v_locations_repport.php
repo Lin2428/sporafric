@@ -39,9 +39,8 @@ SELECT
     IFNULL(techs.techniciens, '') AS techniciens,
 
     -- Infos durée contrat et mensualité
-    TIMESTAMPDIFF(MONTH, d.start_date, d.end_date) AS duree_contrat,
-    TIMESTAMPDIFF(MONTH, d.start_date, NOW()) AS mois_ecoules,
-    TIMESTAMPDIFF(MONTH, d.start_date, NOW()) * d.forfait AS montant_paye,
+    TIMESTAMPDIFF(DAY, d.start_date, d.end_date) AS duree_contrat,
+    TIMESTAMPDIFF(DAY, d.start_date, NOW()) AS jour_ecoules,
 
     -- Ajout du champ occupation seulement si devis_generators est utilisé
     TIMESTAMPDIFF(DAY, dg.created_at, dg.updated_at) AS occupation
@@ -81,7 +80,7 @@ LEFT JOIN (
     GROUP BY it.intervention_id
 ) AS techs ON techs.intervention_id = i.id
 
-WHERE i.type_location = 0
+WHERE i.type_location = 0 
         ");
     }
 

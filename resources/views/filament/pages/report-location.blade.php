@@ -125,10 +125,10 @@
             <tbody>
                 <tr>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ $data->isNotEmpty() ? $data->first()->duree_contrat : "" }} mois
+                        {{ $data->isNotEmpty() ? $data->first()->duree_contrat : "" }} jours
                     </td>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ $data->isNotEmpty() ? $data->first()->mois_ecoules :"" }} mois
+                        {{ $data->isNotEmpty() ? $data->first()->jour_ecoules :"" }} jours
                     </td>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
                         {{ $data->isNotEmpty() ? $data->count() :"" }}
@@ -175,10 +175,10 @@
                         {{ $data->isNotEmpty() ? $data->count() :"" }}
                     </td>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ \App\Utils\NumberUtils::format($revenuContrat)}}
+                        {{ \App\Utils\NumberUtils::format($totalDevis)}}
                     </td>
                     <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ \App\Utils\NumberUtils::format($total1 + $revenuContrat) }} FCFA
+                        {{ \App\Utils\NumberUtils::format($total1 + $totalDevis) }} FCFA
                     </td>
                 </tr>
             </tbody>
