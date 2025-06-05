@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Generator;
 use App\Services\OdooService;
 
 class OdooController extends Controller
@@ -47,9 +48,16 @@ class OdooController extends Controller
 
     public static function syncronizeGenerator(bool $all = false)
     {
-        $odoo = new OdooService();
-        $data = $odoo->searchRead('product.template',
+        $odoo      = new OdooService();
+        $generator = Generator::all()->pluck('odoo_id')->toArray();
+        $data      = $odoo->searchRead('product.template',
+            $all ? [
+
+                (['categ_id', 'in', [82, 240]]),
+                (['active', '=', true]),
+            ] :
             [
+                (['id', 'not in', $generator]),
                 (['categ_id', 'in', [82, 240]]),
                 (['active', '=', true]),
             ],
@@ -72,7 +80,7 @@ class OdooController extends Controller
             'id',
             'name',
             'partner_id',
-            'order_line', 
+            'order_line',
             'amount_total',
             'date_order',
             'invoice_status',
