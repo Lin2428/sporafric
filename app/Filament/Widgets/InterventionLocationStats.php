@@ -13,8 +13,8 @@ class InterventionLocationStats extends BaseWidget
     protected function getStats(): array
     {
         $data = $this->getEloquentQuery()->first();
-        $txEnCours = ($data->en_cours / $data->total) * 100;
-        $txAnnulee = ($data->annulee / $data->total) * 100;
+        $txEnCours = $data->en_cours == 0 ? 0 : ($data->en_cours / $data->total) * 100;
+        $txAnnulee = $data->annulee == 0 ? 0 : ($data->annulee / $data->total) * 100;
         return [
             Stat::make('Total', $data->total)
                 ->icon('heroicon-o-cube')

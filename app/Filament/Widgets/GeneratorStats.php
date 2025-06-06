@@ -15,8 +15,8 @@ class GeneratorStats extends BaseWidget
     {
         $data = $this->getEloquentQuery()->first();
 
-        $txLocation = ($data->total_location/$data->total) * 100;
-        $txIndisponible = ($data->indisponible/$data->total) * 100;
+        $txLocation = $data->total_location == 0 ? 0 : ($data->total_location/$data->total) * 100;
+        $txIndisponible = $data->indisponible == 0 ? 0 : ($data->indisponible/$data->total) * 100;
 
         return [
             Stat::make('Total', $data->total)
