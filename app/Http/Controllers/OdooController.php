@@ -75,7 +75,7 @@ class OdooController extends Controller
         $odoo = new OdooService();
 
         $orders = $odoo->searchRead('sale.order', [
-            ['is_rental_order', '=', true],
+           ( ['is_rental_order', '=', true])
         ], [
             'id',
             'name',
@@ -84,6 +84,8 @@ class OdooController extends Controller
             'amount_total',
             'date_order',
             'invoice_status',
+            'amount_total',
+            'expected_date',
         ]);
 
         $allLineIds = [];
@@ -95,12 +97,18 @@ class OdooController extends Controller
         $linesData = [];
         if (! empty($allLineIds)) {
             $linesData = $odoo->searchRead('sale.order.line', [
-                ['id', 'in', $allLineIds],
+                (['id', 'in', $allLineIds]),
+                (['is_rental', '=', true]),
             ], [
                 'order_id',
                 'product_id',
             ]);
         }
+
+        dd([
+            'orders' => $orders,
+            'lines'  => $linesData,
+        ]);
 
         return [
             'orders' => $orders,

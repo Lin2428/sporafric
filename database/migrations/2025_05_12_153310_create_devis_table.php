@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('devis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id');
+            $table->integer('odoo_id')->nullable();
+            $table->foreignId('customer_id')->nullable();
             $table->foreignId('generator_id')->nullable();
             $table->string('number')->unique();
-            $table->string('site');
-            $table->string('code_site')->unique();
+            $table->string('site')->nullable();
+            $table->string('code_site')->unique()->nullable();
             $table->string('adress')->nullable();
             $table->date('start_date');
-            $table->date('end_date');
+            $table->date('end_date')->nullable();
             $table->boolean('is_active')->default(value: true);
             $table->boolean('is_retired')->default(value: false);
             $table->integer('forfait')->nullable();
