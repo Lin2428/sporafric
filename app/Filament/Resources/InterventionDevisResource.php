@@ -4,11 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
-use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
-use App\Filament\Resources\InterventionResource\Pages;
+use App\Filament\Resources\GeneratorResource\Pages\ViewInterventionDevis;
+use App\Filament\Resources\InterventionDevisResource\Pages;
+use App\Filament\Resources\InterventionDevisResource\RelationManagers;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
+use App\Models\InterventionDevis;
+use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
@@ -24,21 +27,25 @@ use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-class InterventionResource extends Resource
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class InterventionDevisResource extends Resource
 {
     protected static ?string $model = Intervention::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
-    protected static ?string $navigationGroup = 'Maintenance';
-    protected static ?string $navigationLabel = 'Interventions';
-    protected static ?int $navigationSort = 0;
+    protected static ?string $navigationGroup = 'Location';
+    protected static ?string $navigationLabel = 'Loc Interventions';
+    protected static ?string $title = 'Interventions';
+    protected static ?int $navigationSort = 1;
+
     public static function getNavigationBadge(): ?string
     {
-        $count = Intervention::where('type_location', 1)->count();
+        $count = Intervention::where('type_location',  0)->count();
         return $count;
     }
 
-    public static function form(Form $form): Form
+
+public static function form(Form $form): Form
     {
 
         return $form
@@ -121,7 +128,7 @@ class InterventionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->query(static::getEloquentQuery()->where('type_location', 1))
+        ->query(static::getEloquentQuery()->where('type_location', 0))
             ->columns(InterventionUtil::table())
             ->filters([
                 Filter::make('status')
@@ -169,6 +176,7 @@ class InterventionResource extends Resource
             ]);
     }
 
+
     public static function getRelations(): array
     {
         return [
@@ -179,12 +187,13 @@ class InterventionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListInterventions::route('/'),
-            'create' => Pages\CreateIntervention::route('/create'),
-            'edit' => Pages\EditIntervention::route('/{record}/edit'),
-            'view' => ViewIntervention::route('/{record}'),
+            'index' => Pages\ListInterventionDevis::route('/'),
+            'create' => Pages\CreateInterventionDevis::route('/create'),
+            'edit' => Pages\EditInterventionDevis::route('/{record}/edit'),
+                'view' =>  ViewInterventionDevis::route('/{record}'),
         ];
     }
+
     public static function buildInfolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -192,7 +201,7 @@ class InterventionResource extends Resource
 
                 TextEntry::make('generator')
                     ->getStateUsing(function (Intervention $record) {
-                       return $record->contract != null ? $record->contract?->generator?->name . '-' . $record->contract?->generator?->reference . ' ' . $record->contract?->generator?->power . 'KVA - N/S: ' . $record->contract?->generator?->serial_number : $record->devis?->generator?->name . '-' . $record->devis?->generator?->power . 'KVA ' . $record->devis?->generator?->serial_number;
+                        return $record->contract != null ? $record->contract?->generator?->name . '-' . $record->contract?->generator?->reference . ' ' . $record->contract?->generator?->power . 'KVA - N/S: ' . $record->contract?->generator?->serial_number : $record->devis?->generator?->name . '-' . $record->devis?->generator?->power . 'KVA ' . $record->devis?->generator?->serial_number;
                     })->hiddenLabel()
                     ->size(10)
                     ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])
@@ -202,3 +211,4 @@ class InterventionResource extends Resource
             ]);
     }
 }
+

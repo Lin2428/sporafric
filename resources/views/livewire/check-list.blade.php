@@ -1,20 +1,19 @@
 <script src="{{ asset('css/pub.css') }}"></script>
 
 <div>
-    <div class="flex justify-between">
+    <form wire:submit="create" >
+        <div class="flex justify-between">
         <x-filament::button
         color="gray"
         icon="heroicon-o-printer"
-        id="print-form-etat"
-    >
+        id="print-form-etat">
         Imprimer le formulaire vierge
     </x-filament::button>
-        <x-filament::button wire:click="">
+        <x-filament::button type="submit">
             Enrégistrer
          </x-filament::button>
        </div>
        <br>
-    <form wire:submit="create" >
         {{ $this->form }}
         <br>
     </form>

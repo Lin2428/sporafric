@@ -143,7 +143,7 @@ class RetiredPage extends Page implements HasForms, HasTable
                 TextColumn::make('is_active')
                     ->label('Statut')
                     ->badge()
-                    ->getStateUsing(fn(Devis $record): string => $record->is_active ? 'En cours' : 'Terminé')
+                    ->getStateUsing(fn(Intervention $record): string => $record->devis->is_active ? 'En cours' : 'Terminé')
                     ->colors([
                         'success' => 'En cours',
                         'danger' => 'Terminé',

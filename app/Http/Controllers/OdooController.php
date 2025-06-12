@@ -17,9 +17,7 @@ class OdooController extends Controller
     {
         $odoo = new OdooService();
         $data = $odoo->searchRead('res.partner',
-            [
-                (['is_company', '=', true]),
-            ],
+            [],
             [
                 'id',
                 'name',
@@ -80,6 +78,7 @@ class OdooController extends Controller
             'id',
             'name',
             'partner_id',
+            'customer_info',
             'order_line',
             'amount_total',
             'date_order',
@@ -87,6 +86,8 @@ class OdooController extends Controller
             'amount_total',
             'expected_date',
         ]);
+
+     
 
         $allLineIds = [];
 
@@ -104,11 +105,6 @@ class OdooController extends Controller
                 'product_id',
             ]);
         }
-
-        dd([
-            'orders' => $orders,
-            'lines'  => $linesData,
-        ]);
 
         return [
             'orders' => $orders,

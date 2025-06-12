@@ -118,12 +118,12 @@ class WidgetUtils
                     $model = Devis::where('site', 'like', "%$search%");
                 }
                 $users = $model->orWhere('contact_phone', 'like', "$search%")
-                    ->orWhere('contact_email', 'like', "$search%")
-                    ->orWhere('number', 'like', "$search%")
+                    ->orWhere('contact_email', 'like', "%$search%")
+                    ->orWhere('number', 'like', "%$search%")
                     ->orWhereHas('customer', function ($query) use ($search) {
-                        $query->where('name', 'like', "$search%");
-                        $query->orWhere('contact_c_phone', 'like', "$search%");
-                        $query->orWhere('contact_c_email', 'like', "$search%");
+                        $query->where('name', 'like', "%$search%");
+                        $query->orWhere('contact_c_phone', 'like', "%$search%");
+                        $query->orWhere('contact_c_email', 'like', "%$search%");
                     })
                     ->limit(50)
                     ->get();

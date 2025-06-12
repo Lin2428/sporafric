@@ -11,6 +11,7 @@ class Devis extends Model
     use SoftDeletes;
     protected $fillable = [
         'odoo_id',
+        'customer_name',
         'customer_id',
         'generator_id',
         'number',

@@ -275,7 +275,7 @@
 
 </div>
 <br>
-<hr>
+{{-- <hr>
 <br>
 <div class="container-1">
     <div class="w-full">
@@ -344,7 +344,7 @@
         </div>
     </div>
 
-</div>
+</div> --}}
 
 <!-- PDF.js Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>

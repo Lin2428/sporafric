@@ -24,6 +24,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->favicon(asset('favicon.ico'))
             ->id('admin')
             ->viteTheme(['public/css/filament/filament/app.css', 'resources/css/app.css',])
             ->path('admin')

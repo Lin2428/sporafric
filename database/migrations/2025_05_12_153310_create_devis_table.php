@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('odoo_id')->nullable();
             $table->foreignId('customer_id')->nullable();
+            $table->string('customer_name')->nullable();
             $table->foreignId('generator_id')->nullable();
             $table->string('number')->unique();
             $table->string('site')->nullable();

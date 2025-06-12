@@ -177,7 +177,9 @@ class DevisResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->extraAttributes(['style' => 'font-weight: bold;'])
-                    ->limit(50),
+                    ->limit(50)
+                    ->description(fn(Devis $record): string => $record->customer_name != '0' ? $record->customer_name : ''),
+                
 
                 ImageColumn::make('customer.logo')
                     ->label('Logo')
@@ -397,12 +399,12 @@ class DevisResource extends Resource
                                             ->label('Nom')
                                             ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
+                                         TextEntry::make('customer.contact_c_phone')
+                                            ->label('Téléphone')
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_c_email')
                                             ->label('Email')
                                             ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('customer.contact_c_phone')
-                                            ->label('Téléphone')
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
                                     ]),
 
@@ -414,12 +416,12 @@ class DevisResource extends Resource
                                             ->label('Nom')
                                             ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
+                                        TextEntry::make('customer.contact_l_phone')
+                                            ->label('Téléphone')
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_l_email')
                                             ->label('Email')
                                             ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('customer.contact_l_phone')
-                                            ->label('Téléphone')
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
                                     ]),
 
@@ -431,12 +433,12 @@ class DevisResource extends Resource
                                             ->label('Nom')
                                             ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
+                                        TextEntry::make('contact_phone')
+                                            ->label('Téléphone')
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('contact_email')
                                             ->label('Email')
                                             ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('contact_phone')
-                                            ->label('Téléphone')
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
                                     ]),
 

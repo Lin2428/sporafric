@@ -25,7 +25,9 @@ class ListCustomers extends ListRecords
                 ->icon('heroicon-o-arrow-path')
                 ->action(function () {
                     $data = OdooController::syncronizeClient();
+               
                     foreach ($data as $client) {
+                    
                         Customer::updateOrCreate(
                             [
                                 'odoo_id' => $client['id'],

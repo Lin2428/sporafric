@@ -32,6 +32,7 @@ class ListDevis extends ListRecords
                       ],
                       [
                           'odoo_id' => $devis['id'],
+                          'customer_name' => $devis['customer_info'] ?? "",
                           'customer_id' => Customer::where('odoo_id', $devis['partner_id'][0] ?? null)->value('id'),
                           'generator_id' => Generator::where('odoo_id', $data['lines'][$k]['product_id'] ?? null)->value('id'),
                           'number' => $devis['name'],
