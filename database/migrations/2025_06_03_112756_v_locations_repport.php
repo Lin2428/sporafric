@@ -20,14 +20,14 @@ SELECT
     i.created_at AS intervention_at,
     i.type AS type_intervention,
     inf.devis_montant,
-    d.site,
-    d.code_site,
+    dg.site,
+    dg.code_site,
     d.forfait,
     d.start_date AS devis_start_at,
     cu.name AS customer_name,
 
     -- Gestion du générateur
-    COALESCE(dg.generator_id, d.generator_id) AS generator_id,
+    dg.generator_id AS generator_id,
     COALESCE(g.name, '-') AS generator_name,
 
     -- Sous-requête pièces
@@ -56,7 +56,7 @@ LEFT JOIN intervention_infos inf ON inf.intervention_id = i.id
 LEFT JOIN devis_generators dg ON dg.devis_id = i.devis_id
 
 -- Gestion du générateur (priorité à devis_generators)
-LEFT JOIN generators g ON g.id = COALESCE(dg.generator_id, d.generator_id)
+LEFT JOIN generators g ON g.id = dg.generator_id
 
 -- Sous-requête pièces
 LEFT JOIN (

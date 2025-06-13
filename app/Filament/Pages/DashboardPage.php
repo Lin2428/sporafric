@@ -14,7 +14,7 @@ class DashboardPage extends Page
 
     protected static ?string $navigationGroup = 'Dashboard';
 
-    protected static ?string $title = 'Groupes électrogènes';
+    protected static ?string $title = 'Location';
     protected static ?string $navigationLabel = 'Tableau ed bord';
     protected static ?int $navigationSort = 1;
 
@@ -25,7 +25,6 @@ class DashboardPage extends Page
     public function mount()
     {
         $this->interventionsDuJour = Intervention::whereBetween('date_planifiee', [now()->subWeek(), now()->addDay()])
-        ->where('status', '!=', InterventionStatus::ANNULEE->value)
         ->where('status', '!=', InterventionStatus::TERMINEE->value)
         ->with(['interventionTechniciens', 'pieces', 'contract', 'customer'])
         ->orderBy('date_planifiee', 'asc')

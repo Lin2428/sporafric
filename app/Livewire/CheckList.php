@@ -1,9 +1,10 @@
 <?php
 
+
 namespace App\Livewire;
 
+use Filament\Actions\Action;
 use Faker\Provider\en_US\Text;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
@@ -14,19 +15,25 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Pages\Concerns\InteractsWithFormActions;
 use Livewire\Component;
 use App\Models\Technicien;
 
-class CheckList extends Component implements HasForms
+class CheckList extends Component implements HasForms, HasInfolists
 {
     use InteractsWithForms;
-
+    use InteractsWithInfolists;
+    use InteractsWithFormActions;
     public ?array $data = [];
     
     public function mount(): void
     {
         $this->form->fill();
     }
+
+  
 
     public function form(Form $form): Form
     {
@@ -87,7 +94,7 @@ class CheckList extends Component implements HasForms
                         Section::make('État après location')
                             ->columns(2)
                             ->schema([
-                                Select::make('technician_id_apres')
+                                Select::make('technician_id')
                                     ->options($techniciens)
                                     ->label('Technicien(e)')
                                     ->required()
@@ -95,7 +102,7 @@ class CheckList extends Component implements HasForms
                                     ->placeholder('Sélectionner un(e) technicien(e)')
                                     ->columnSpanFull(),
 
-                                CheckboxList::make('etat_apres')
+                                CheckboxList::make('etat')
                                     ->columnSpanFull()
                                     ->columns(2)
                                     ->label('État')
@@ -103,25 +110,57 @@ class CheckList extends Component implements HasForms
                                     ->options([
                                         'is_clean' => 'Propre',
                                         'is_functional' => 'Démarre',
-                                        'is_complete' => 'Grandeur électrique',
                                         'is_maintained' => 'Bien entretenu',
-                                        'is_usable' => 'Grandeur mécanique',
-                                        'is_acceptable' => 'Nb heures',
-                                        'is_safe' => 'Prochaine vidange',
-                                        'is_legal' => 'Légal',
                                     ]),
+
+                                TextInput::make('electrical_value')
+                                    ->label('Grandeur électrique')
+                                    ->numeric()
+                                    ->required()
+                                    ->columnSpanFull(),
+
+                                TextInput::make('mechanical_value')
+                                    ->label('Grandeur mécanique')
+                                    ->numeric()
+                                    ->required()
+                                    ->columnSpanFull(),
+
+                                TextInput::make('hour_number')
+                                    ->label('Nombre d\'heures')
+                                    ->numeric()
+                                    ->required()
+                                    ->columnSpanFull(),
+
+                                TextInput::make('next_vidange')
+                                    ->label('Prochaine vidange')
+                                    ->required()
+                                    ->columnSpanFull(),
                             ])
                             ->columnSpan(1),
                     ]),
-            ])
-            ->statePath('data')
-            ->submitAction(
-                Action::make('submit')
-                    ->label('Enrégistrer')
-                    ->submit('submit') // Appelle la méthode submit()
-                    ->color('primary')
-            );
+            ]);
     }
+
+      public function getActions(): array
+{
+
+    return [
+        Action::make('print')
+            ->button()
+            ->label('Imprimer le formulaire vierge')
+            ->icon('heroicon-o-printer')
+            ->color('gray')
+            ->extraAttributes(['id' => 'print-form-etat', 'x-on:click.stop' => '']),
+
+     
+        Action::make('submit')
+        ->button()  
+            ->label('Enregistrer')
+            ->action(function (array $data) {
+     
+            }),
+    ];
+}
 
     public function create(): void
     {

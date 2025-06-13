@@ -3,17 +3,20 @@
     <div class="grid grid-cols-3 gap-4">
         {{-- Widget stat 1 --}}
         <div class="col-span-2">
-            @livewire(\App\Filament\Widgets\GeneratorStats::class)
+            @livewire(\App\Filament\Widgets\GeneratorLocationStats::class)
             <br>
-            <span class="text-3xl font-bold">Interventions sur les locations</span>
+            <span class="text-3xl font-bold">Maintenance</span>
             <br>
+            <br>
+             @livewire(\App\Filament\Widgets\InterventionMaintenanceStats::class)
+            {{-- <br>
             <br>
             @livewire(\App\Filament\Widgets\InterventionLocationStats::class)
             <br>
             <span class="text-3xl font-bold">Interventions sur les maintenances</span>
             <br>
             <br>
-            @livewire(\App\Filament\Widgets\InterventionMaintenanceStats::class)
+            --}}
         </div>
 
         {{-- Bloc HTML perso --}}
@@ -64,11 +67,7 @@
             </div>
         </x-filament::card>
     </div>
-    <div class="grid grid-cols-2 gap-4 mt-4">
-        {{-- Widget stat 2 --}}
-        @livewire(\App\Filament\Widgets\ContractExpiredTable::class)
-        @livewire(\App\Filament\Widgets\LocationExipiredTable::class)
-    </div>
+   
     <div class="grid grid-cols-2 gap-4 mt-4">
         {{-- Widget stat 2 --}}
         @livewire(\App\Filament\Widgets\InterventionTypeChart::class)

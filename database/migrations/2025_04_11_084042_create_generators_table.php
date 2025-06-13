@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('odoo_id');
             $table->string('name')->nullable();
+            $table->boolean('type');
             $table->string('image')->nullable();
             $table->string('reference')->nullable();
             $table->double('power')->nullable();

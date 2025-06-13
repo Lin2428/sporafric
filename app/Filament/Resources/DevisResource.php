@@ -178,7 +178,7 @@ class DevisResource extends Resource
                     ->sortable()
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50)
-                    ->description(fn(Devis $record): string => $record->customer_name != '0' ? $record->customer_name : ''),
+                    ->description(fn(Devis $record): string => $record->customer_name != null && $record->customer_name != '0' ? $record->customer_name : ''),
                 
 
                 ImageColumn::make('customer.logo')
@@ -265,7 +265,7 @@ class DevisResource extends Resource
                                     ->label('')
                                     ->badge()
                                     ->getStateUsing(function (Devis $record) {
-                                        return $record->generator ? GeneratorStatus::from($record->generator->status)->label() : "Pas de GE assigné";
+                                        return $record->generator ? GeneratorStatus::from($record->generator?->status)->label() : "Pas de GE assigné";
                                     })
                                     ->colors([
                                         'success' => 'Disponible',

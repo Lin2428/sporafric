@@ -9,6 +9,7 @@ use App\Models\Devis;
 use App\Models\DevisGenerator;
 use App\Models\Generator;
 use Filament\Actions;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 
 class ListDevis extends ListRecords
@@ -43,6 +44,12 @@ class ListDevis extends ListRecords
                           'user_id' => auth()->user()->id,
                       ]);
                    }
+
+                   Notification::make()
+                        ->title('Synchronisation terminée')
+                        ->body('Les devis ont été synchronisés avec succès.')
+                        ->success()
+                        ->send();
                 })->requiresConfirmation(),
         ];
     }

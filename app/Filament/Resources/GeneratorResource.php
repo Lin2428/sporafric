@@ -13,6 +13,7 @@ use App\Models\Generator;
 use App\Models\Intervention;
 use App\Utils\DateUtils;
 use App\Utils\NumberUtils;
+use Doctrine\DBAL\Schema\View;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -885,7 +886,11 @@ class GeneratorResource extends Resource
                             ->icon('heroicon-o-arrow-path')
                             ->iconPosition(IconPosition::After)
                             ->schema([
-                                Livewire::make(CheckList::class),
+                               \Filament\Infolists\Components\View::make('filament.infolist.components.checklist-render')
+                                    ->label('')
+                                    ->viewData([
+                                        'record' => fn ($record) => $record->checkList,
+                                    ]),
                             ]),
                             Tabs\Tab::make('Historique des interventions')
                             ->icon('heroicon-o-arrow-path')

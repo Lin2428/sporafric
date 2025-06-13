@@ -1,24 +1,15 @@
 <script src="{{ asset('css/pub.css') }}"></script>
 
 <div>
-    <form wire:submit="create" >
-        <div class="flex justify-between">
-        <x-filament::button
-        color="gray"
-        icon="heroicon-o-printer"
-        id="print-form-etat">
-        Imprimer le formulaire vierge
-    </x-filament::button>
-        <x-filament::button type="submit">
-            Enrégistrer
-         </x-filament::button>
-       </div>
+    <div class="flex justify-between gap-2">
+    @foreach ($this->getActions() as $action)
+        {{ $action }}
+    @endforeach
+</div>
        <br>
         {{ $this->form }}
         <br>
-    </form>
-    
-  
+     
 <div id="printable" class="hidden">
     @include('impression.form-etat')
 </div>

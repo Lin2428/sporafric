@@ -15,7 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('contract_id')->constrained();
             $table->foreignId('generator_id')->nullable();
+            $table->string('site')->nullable();
+            $table->string('code_site')->nullable();
             $table->boolean('status')->default(false);
+            $table->string('contact_name')->nullable();
+            $table->string('contact_phone')->nullable();
+            $table->string('contact_email')->nullable();
+            $table->string('lat')->nullable();
+            $table->string('lng')->nullable();
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

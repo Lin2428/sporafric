@@ -47,8 +47,8 @@ class ContractResource extends Resource
                                 WidgetUtils::customerSelectWidget()
                                     ->columnSpanFull(),
 
-                                WidgetUtils::generatorSelectWidget()
-                                    ->columnSpanFull(),
+                                // WidgetUtils::generatorSelectWidget()
+                                //     ->columnSpanFull(),
 
                                 TextInput::make('number')
                                     ->label('Numéro de contrat')
@@ -396,13 +396,13 @@ class ContractResource extends Resource
                                             ->label('Nom')
                                             ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('customer.contact_c_email')
-                                            ->label('Email')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_c_phone')
                                             ->label('Téléphone')
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
+                                        TextEntry::make('customer.contact_c_email')
+                                            ->label('Email')
+                                            ->lineClamp(2)
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),    
                                     ]),
 
                                 \Filament\Infolists\Components\Section::make('Contact logistique')
@@ -413,13 +413,14 @@ class ContractResource extends Resource
                                             ->label('Nom')
                                             ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
+                                        TextEntry::make('customer.contact_l_phone')
+                                            ->label('Téléphone')
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('customer.contact_l_email')
                                             ->label('Email')
                                             ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('customer.contact_l_phone')
-                                            ->label('Téléphone')
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
+                                        
                                     ]),
 
                                 \Filament\Infolists\Components\Section::make('Contact sur site')
@@ -430,12 +431,12 @@ class ContractResource extends Resource
                                             ->label('Nom')
                                             ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('contact_email')
-                                            ->label('Email')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
                                         TextEntry::make('contact_phone')
                                             ->label('Téléphone')
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
+                                            TextEntry::make('contact_email')
+                                            ->label('Email')
+                                            ->lineClamp(2)
                                             ->extraAttributes(['class' => 'font-bold text-danger']),
                                     ]),
 

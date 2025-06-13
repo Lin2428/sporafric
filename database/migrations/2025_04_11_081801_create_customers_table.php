@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('odoo_id')->unique();
             $table->string('name');
             $table->string('city')->nullable();
+            $table->boolean('is_active')->default(value: true);
             $table->string('contact_c_name')->nullable();
             $table->string('contact_c_email')->nullable();
             $table->string('contact_c_phone')->nullable();
