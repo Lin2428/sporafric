@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('generators', function (Blueprint $table) {
             $table->id();
-            $table->integer('odoo_id');
+            $table->integer('odoo_id')->nullable();
             $table->string('name')->nullable();
-            $table->boolean('type');
+            $table->integer('type')->default(2);
             $table->string('image')->nullable();
             $table->string('reference')->nullable();
             $table->double('power')->nullable();
@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('houres')->nullable();
             $table->integer('next_vidange')->nullable();
             $table->string('fuel_type')->nullable();
+            $table->string('lat')->nullable();
+            $table->string('lng')->nullable();
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

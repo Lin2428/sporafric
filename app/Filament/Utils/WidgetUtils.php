@@ -14,13 +14,13 @@ use Illuminate\Database\Eloquent\Builder;
 
 class WidgetUtils
 {
-    public static function generatorSelectWidget(?Closure $onUpdate = null, ?string $name = 'generator_id', bool $isDispo = true): Select
+    public static function generatorSelectWidget(?Closure $onUpdate = null, ?string $name = 'generator_id', bool $isDispo = true, int $type = 1): Select
     {
         $select = Select::make($name)
-            ->relationship('generator', 'name')
             ->allowHtml()
-            ->getSearchResultsUsing(function (string $search) use ($isDispo) {
+            ->getSearchResultsUsing(function (string $search) use ($isDispo, $type) {
                 $query = Generator::query()
+                    ->where('type', '=', $type)
                     ->where(function (Builder $query) use ($search) {
                         $query
                             ->where('name', 'like', "%{$search}%")

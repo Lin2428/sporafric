@@ -23,6 +23,9 @@ class Generator extends Model
         'houres',
         'next_vidange',
         'fuel_type',
+        'type',
+        'lat',
+        'lng',
         'user_id',
     ];
 
@@ -42,7 +45,7 @@ class Generator extends Model
 
     public function contractGenerator()
     {
-        return $this->hasOne(ContractGenerator::class)->where('status', true);
+        return $this->hasOne(ContractGenerator::class);
     }
 
     public function devisGenerator()

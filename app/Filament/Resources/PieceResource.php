@@ -86,6 +86,7 @@ class PieceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultPaginationPageOption(50)
             ->columns([
                 ImageColumn::make('image')
                     ->label('Image')
@@ -108,7 +109,7 @@ class PieceResource extends Resource
 
                 TextColumn::make('pv')
                     ->label('Prix de vente')
-                    ->getStateUsing(fn($record) => NumberUtils::format($record->pr) . " FCFA")
+                    ->getStateUsing(fn($record) => NumberUtils::format($record->pv) . " FCFA")
                     ->searchable(),
 
                 TextColumn::make('duree_vie')
@@ -122,7 +123,6 @@ class PieceResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make()
                 ]),
             ])
             ->bulkActions([

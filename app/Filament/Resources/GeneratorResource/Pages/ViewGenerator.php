@@ -28,10 +28,6 @@ class ViewGenerator extends ViewRecord
                 Actions\EditAction::make()
                     ->label('Modifier le groupe electrogene')
                     ->icon('heroicon-o-pencil'),
-
-                Actions\DeleteAction::make()
-                    ->label('Supprimer le groupe electrogene')
-                    ->icon('heroicon-o-trash'),
             ]),
         ];
     }

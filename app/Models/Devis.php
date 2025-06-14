@@ -39,6 +39,7 @@ class Devis extends Model
      protected static function booted()
     {
         static::created(function ($model) {
+            dd($model);
            if($model->generator_id != null){
             // Update the generator status to EN_LOCATION
             Generator::where('id', $model->generator_id)
@@ -55,6 +56,7 @@ class Devis extends Model
         });
 
         static::updating(function ($model) {
+            dd($model);
             $statusOld = $model->getOriginal('is_active');
             $statusNew = $model->is_active;
 

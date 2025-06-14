@@ -129,7 +129,8 @@ public static function form(Form $form): Form
     {
         return $table
         ->query(static::getEloquentQuery()->where('type_location', 0))
-            ->columns(InterventionUtil::table())
+        ->defaultPaginationPageOption(50)
+        ->columns(InterventionUtil::table())
             ->filters([
                 Filter::make('status')
                 ->form([

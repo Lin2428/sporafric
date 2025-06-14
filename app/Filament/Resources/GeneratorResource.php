@@ -47,13 +47,13 @@ class GeneratorResource extends Resource
     protected static ?string $model = Generator::class;
 
     protected static ?string $navigationIcon  = 'icon-generator';
-    protected static ?string $navigationGroup = 'Global';
+    protected static ?string $navigationGroup = 'Location';
     protected static ?string $navigationLabel = 'Groupes Electrogènes';
     protected static ?int $navigationSort     = 3;
 
     public static function getNavigationBadge(): ?string
     {
-        $count = Generator::count();
+        $count = Generator::where('type', 1)->count();
         return $count;
     }
 
@@ -153,6 +153,9 @@ class GeneratorResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->query(static::$model::query()->where('type', 1))
+            ->defaultPaginationPageOption(50)
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 ImageColumn::make('image')
                     ->label('Image')

@@ -11,6 +11,11 @@ class ContractGenerator extends Model
     protected $fillable = [
         'contract_id',
         'generator_id',
+        'site',
+        'code_site',
+        'contact_name',
+        'contact_phone',
+        'contact_email',
         'status',
         'user_id',
     ];

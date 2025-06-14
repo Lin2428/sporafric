@@ -33,6 +33,7 @@ class ListPieces extends ListRecords
                                 'odoo_id' => $piece['id'],
                                 'reference' => $piece['name'],
                                 'designation' => $piece['default_code'],
+                                'duree_vie' => 0,
                                 'pr' => $piece['standard_price'],
                                 'pv' => $piece['list_price'],
                             ]);

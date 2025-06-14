@@ -5,10 +5,15 @@ namespace App\Filament\Resources;
 use App\Enum\GeneratorStatus;
 use App\Filament\Resources\ContractResource\Pages;
 use App\Filament\Utils\WidgetUtils;
+use App\Livewire\ShowGeneratorsTable;
 use App\Models\Contract;
+use App\Models\Generator;
+use App\Utils\DateUtils;
 use App\Utils\NumberUtils;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -17,6 +22,8 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\View;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\Livewire;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -47,21 +54,8 @@ class ContractResource extends Resource
                                 WidgetUtils::customerSelectWidget()
                                     ->columnSpanFull(),
 
-                                // WidgetUtils::generatorSelectWidget()
-                                //     ->columnSpanFull(),
-
                                 TextInput::make('number')
                                     ->label('Numéro de contrat')
-                                    ->required()
-                                    ->columnSpanFull(),
-
-                                TextInput::make('site')
-                                    ->label('Site')
-                                    ->required()
-                                    ->columnSpanFull(),
-
-                                TextInput::make('code_site')
-                                    ->label('Code')
                                     ->required()
                                     ->columnSpanFull(),
 
@@ -70,33 +64,27 @@ class ContractResource extends Resource
                                     ->numeric()
                                     ->columnSpanFull(),
                             ]),
-
-                        Section::make('Localisation sur la carte')
-                            ->schema([
-                                View::make('filament.forms.components.map-picker')
-                                    ->label(''),
-                            ]),
                     ])->columnSpan(['lg' => 2]),
 
                 Group::make()
                     ->schema([
-                        Section::make('Contact sur place')
-                            ->columns(2)
-                            ->schema([
-                                TextInput::make('contact_name')
-                                    ->label('Nom')
-                                    ->required()
-                                    ->columnSpanFull(),
-                                TextInput::make('contact_email')
-                                    ->label('Email')
-                                    ->required()
-                                    ->columnSpanFull(),
-                                TextInput::make('contact_phone')
-                                    ->label('Téléphone')
-                                    ->tel()
-                                    ->required()
-                                    ->columnSpanFull(),
-                            ])->columnSpan(['lg' => 1]),
+                        // Section::make('Contact sur place')
+                        //     ->columns(2)
+                        //     ->schema([
+                        //         TextInput::make('contact_name')
+                        //             ->label('Nom')
+                        //             ->required()
+                        //             ->columnSpanFull(),
+                        //         TextInput::make('contact_email')
+                        //             ->label('Email')
+                        //             ->required()
+                        //             ->columnSpanFull(),
+                        //         TextInput::make('contact_phone')
+                        //             ->label('Téléphone')
+                        //             ->tel()
+                        //             ->required()
+                        //             ->columnSpanFull(),
+                        //     ])->columnSpan(['lg' => 1]),
 
                         Section::make('Infos contractuelles')
                             ->columns(2)
@@ -120,31 +108,42 @@ class ContractResource extends Resource
                                     ->required(),
                             ])->columnSpan(['lg' => 1]),
 
-                        Section::make('Données de la carte')
+                    ])->columnSpan(['lg' => 1]),
+
+                    Repeater::make('generators')
+                        ->label('Groupes électrogènes')
+                        ->createItemButtonLabel('Ajouter un GE')
+                        ->schema([
+                          WidgetUtils::generatorSelectWidget(type: 2)
+                                    ->columnSpanFull(),
+
+                            TextInput::make('site')
+                                    ->label('Site'),
+
+                                TextInput::make('code_site')
+                                    ->label('Code'),
+                                
+                            Section::make('Contact sur place')
                             ->columns(2)
                             ->schema([
-                               Textarea::make('adress')
-                                    ->label('Adresse')
-                                    ->rows(2)
-                                    ->required()
+                                TextInput::make('contact_name')
+                                    ->label('Nom'),
+                                    TextInput::make('contact_phone')
+                                    ->label('Téléphone')
+                                    ->tel(),
+                                TextInput::make('contact_email')
+                                    ->label('Email')
                                     ->columnSpanFull(),
-
-                                TextInput::make('lat')
-                                    ->label('Latitude')
-                                    ->reactive()
-                                    ->required()
-                                    ->columnSpanFull(),
-
-                                TextInput::make('lng')
-                                    ->label('Longitude')
-                                    ->required()
-                                    ->reactive()
-                                    ->columnSpanFull(),
-                            ])->columnSpan(['lg' => 1]),
-                    ])->columnSpan(['lg' => 1]),
+                            ])->columnSpanFull(),
+                           
+                        ])->columns(2)
+                    ->grid(2)
+                        ->columnSpan(['lg' => 3]),
 
             ])->columns(3);
     }
+
+
 
     public static function infolist(Infolist $infolist): Infolist
     {
@@ -154,6 +153,7 @@ class ContractResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->defaultPaginationPageOption(50)
             ->columns([
                 TextColumn::make('number')
                     ->label('N° contrat')
@@ -176,40 +176,32 @@ class ContractResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->extraAttributes(['style' => 'font-weight: bold;'])
-                    ->limit(50),
+                    ->limit(10),
 
-                ImageColumn::make('customer.logo')
-                    ->label('Logo')
-                    ->circular()
-                    ->rounded()
-                    ->size(50)
-                    ->default('https://ui-avatars.com/api/?name=Logo&background=random'),
+                // ImageColumn::make('customer.logo')
+                //     ->label('Logo')
+                //     ->circular()
+                //     ->rounded()
+                //     ->size(50)
+                //     ->default('https://ui-avatars.com/api/?name=Logo&background=random'),
 
-                TextColumn::make('site')
-                    ->label('Site')
-                    ->searchable()
-                    ->sortable()
-                    ->limit(50),
-
-                TextColumn::make('generator.name')
-                    ->label('GE')
-                    ->searchable()
-                    ->sortable()
+                TextColumn::make('generator')
+                    ->getStateUsing(fn(Contract $record): string => (string) $record->generators->count())
+                    ->label('Nombre deGE')
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50),
 
-                TextColumn::make('generator.reference')
-                    ->label('referencee')
-                    ->searchable()
-                    ->sortable()
+                TextColumn::make('forfait')
+                    ->getStateUsing(fn(Contract $record): string => NumberUtils::format($record->forfait). ' FCFA')
+                    ->label('Forfait')
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50),
 
-                ImageColumn::make('generator.image')
-                    ->label('Image')
-                    ->circular()
-                    ->rounded()
-                    ->size(50),
+                TextColumn::make('customer.contact_c_phone')
+                    ->label('Téléphone')
+                    ->searchable()
+                    ->sortable()
+                    ->limit(50),
             ])
             ->filters([
                 SelectFilter::make('is_active'),
@@ -252,79 +244,12 @@ class ContractResource extends Resource
             ->columns(7)
             ->schema([
                 \Filament\Infolists\Components\Group::make()
-                    ->columnSpan(4)
+                    ->columnSpanFull()
                     ->columns(2)
                     ->schema([
-                        \Filament\Infolists\Components\Section::make('Informations du groupe électrogène')
-                            ->columns(3)
-                            ->schema([
-                                TextEntry::make('generator.status')
-                                    ->label('')
-                                    ->badge()
-                                    ->getStateUsing(function (Contract $record) {
-                                        return $record->generator ? GeneratorStatus::from($record->generator->status)->label() : "Pas de GE assigné";
-                                    })
-                                    ->colors([
-                                        'success' => 'Disponible',
-                                        'warning' => ['Pas de GE assigné', 'En maintenance'],
-                                        'info' => 'En location',
-                                        'danger' => 'Indisponible',
-                                    ])
-                                    ->columnSpanFull(),
-
-                                ImageEntry::make('generator.image')
-                                    ->label('')
-                                    ->columnSpanFull()
-                                    ->default('generateur.png')
-                                    ->extraAttributes(['class' => 'w-full d-flex justify-center']),
-
-                                TextEntry::make('generator.name')
-                                    ->label('GE')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.reference')
-                                    ->label('referencee')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.serial_number')
-                                    ->label('Numéro de série')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.power')
-                                    ->label('Puissance')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.fuel_type')
-                                    ->label('Type de carburant')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.houres')
-                                    ->label('Heures de fonc.')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.next_vidange')
-                                    ->date('d/m/Y')
-                                    ->label('Prochaine vidange')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.start-up')
-                                    ->label('Mise en service')
-                                    ->date('d/m/Y')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.created_at')
-                                    ->label('Ajouté le')
-                                    ->date('d/m/Y')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-                            ])
-                    ]),
-
-                \Filament\Infolists\Components\Group::make()
-                    ->columnSpan(3)
-                    ->columns(2)
-                    ->schema([
-                        \Filament\Infolists\Components\Section::make('Contrat')
+                        \Filament\Infolists\Components\Section::make('Informations du contrat')
                             ->columns(2)
+                            ->collapsible()
                             ->schema([
                                 TextEntry::make('is_active')
                                     ->label('')
@@ -350,6 +275,14 @@ class ContractResource extends Resource
                                 TextEntry::make('customer.name')
                                     ->label('Client')
                                     ->extraAttributes(['class' => 'font-bold']),
+                                
+                                   TextEntry::make('customer.contact_c_phone')
+                                            ->label('Téléphone')
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),
+                                    TextEntry::make('customer.contact_c_email')
+                                            ->label('Email')
+                                            ->lineClamp(2)
+                                            ->extraAttributes(['class' => 'font-bold text-danger']),    
 
                                 TextEntry::make('forfait')
                                     ->label('Forfait de maintenance mensuel')
@@ -357,107 +290,29 @@ class ContractResource extends Resource
                                     ->extraAttributes(['class' => 'font-bold'])
                                     ->columnSpanFull(),
 
-                                TextEntry::make('site')
-                                    ->label('Site')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-                                TextEntry::make('code_site')
-                                    ->label('Code')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
+                               
                                 TextEntry::make('start_date')
-                                    ->date('d/m/Y')
-                                    ->label('A debuter le')
+                                    ->hiddenLabel()
+                                    ->getStateUsing(function (Contract $record) {
+                                        return $record->start_date ? "A debuter le ". DateUtils::format($record->start_date) : '';
+                                    })
                                     ->extraAttributes(['class' => 'font-bold text-danger']),
                                 TextEntry::make('end_date')
-                                    ->date('d/m/Y')
-                                    ->label('Se termine le')
+                                ->hiddenLabel()
+                                    ->getStateUsing(function (Contract $record) {
+                                        return $record->end_date ? "Se termine le ". DateUtils::format($record->end_date) : '';
+                                    })
                                     ->color('danger'),
 
                             ])
                     ]),
 
-                \Filament\Infolists\Components\Group::make()
-                    ->columnSpan(7)
-                    ->columns(2)
-                    ->schema([
-                        \Filament\Infolists\Components\Section::make('Detail du contrat')
-                            ->columns(2)
-                            ->collapsible()
-                            ->schema([
-                           
-                                TextEntry::make('adress')
-                                            ->label('adresse')
-                                            ->columnSpanFull(),
 
-                                \Filament\Infolists\Components\Section::make('Contact commercial')
-                                    ->columns(2)
-                                    ->columnSpan(['lg' => 1])
-                                    ->schema([
-                                        TextEntry::make('customer.contact_c_name')
-                                            ->label('Nom')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('customer.contact_c_phone')
-                                            ->label('Téléphone')
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('customer.contact_c_email')
-                                            ->label('Email')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),    
-                                    ]),
+                \Filament\Infolists\Components\View::make('filament.infolist.components.generator-show-tab')
+                    ->label('Groupe électrogènes')
+                    ->extraAttributes(['class' => 'w-full d-flex justify-center'])
+                    ->columnSpanFull(),
 
-                                \Filament\Infolists\Components\Section::make('Contact logistique')
-                                    ->columns(2)
-                                    ->columnSpan(['lg' => 1])
-                                    ->schema([
-                                        TextEntry::make('customer.contact_l_name')
-                                            ->label('Nom')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('customer.contact_l_phone')
-                                            ->label('Téléphone')
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('customer.contact_l_email')
-                                            ->label('Email')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        
-                                    ]),
-
-                                \Filament\Infolists\Components\Section::make('Contact sur site')
-                                    ->columns(2)
-                                    ->columnSpan(['lg' => 1])
-                                    ->schema([
-                                        TextEntry::make('contact_name')
-                                            ->label('Nom')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('contact_phone')
-                                            ->label('Téléphone')
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                            TextEntry::make('contact_email')
-                                            ->label('Email')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                    ]),
-
-                                TextEntry::make('vu')
-                                    ->label('Vue sur la carte')
-                                    ->columnSpanFull()
-                                    ->inlineLabel(),
-
-                                \Filament\Infolists\Components\View::make('filament.infolist.components.map-pointer')
-                                    ->label('')
-                                    ->getStateUsing(function (Contract $record) {
-                                        return [
-                                            'lat' => $record->lat,
-                                            'lng' => $record->lng,
-                                        ];
-                                    })
-                                    ->extraAttributes(['class' => 'w-full d-flex justify-center'])
-                                    ->columnSpanFull(),
-
-                            ])
-                    ]),
             ]);
     }
 }

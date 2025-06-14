@@ -26,10 +26,6 @@ class ViewContract extends ViewRecord
                 Actions\EditAction::make()
                     ->label('Modifier le contrat')
                     ->icon('heroicon-o-pencil'),
-                    
-                Actions\DeleteAction::make()
-                    ->label('Supprimer le contrat')
-                    ->icon('heroicon-o-trash'),
             ]),
         ];
     }

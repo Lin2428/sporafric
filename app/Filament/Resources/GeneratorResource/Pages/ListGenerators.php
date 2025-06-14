@@ -80,6 +80,7 @@ class ListGenerators extends ListRecords
                             [
                                 'odoo_id' => $product['id'],
                                 'name' => $product['name'],
+                                'type' => 1,
                                 'reference' => $product['default_code'],
                             ]
                             );

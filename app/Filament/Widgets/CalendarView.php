@@ -35,7 +35,9 @@ class CalendarView extends CalendarWidget
 
     public function getEvents(array $fetchInfo = []): Collection | array
     {
-        return Intervention::whereMonth('date_planifiee', now()->month)->get()->map(fn(Intervention $intervention) => $intervention->toCalendarEvent());
+        return Intervention::whereMonth('date_planifiee', now()->month)
+        ->get()
+        ->map(fn(Intervention $intervention) => $intervention->toCalendarEvent());
     }
 
 
