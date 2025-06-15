@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('houres')->nullable();
             $table->integer('next_vidange')->nullable();
             $table->string('fuel_type')->nullable();
+            $table->text('adresse')->nullable();
             $table->string('lat')->nullable();
             $table->string('lng')->nullable();
             $table->foreignId('user_id')->nullable();

@@ -17,11 +17,14 @@ class Intervention extends Model implements Eventable
     use SoftDeletes, HasFactory;
 
     protected $fillable = [
-        'type_location',
+        'type_service',
+        'type_activite',
         'contract_id',
+        'generator_id',
         'devis_id',
         'customer_id',
-        'generator',
+        'generator_name',
+        'generator_reference',
         'power',
         'serial_number',
         'date_prise_appel',
@@ -41,11 +44,18 @@ class Intervention extends Model implements Eventable
         'user_id',
     ];
 
-    protected $with = ['interventionTechniciens', 'pieces'];
+    protected $with = ['interventionTechniciens', 'pieces', 'generator'];
+
+
 
     public function contract()
     {
         return $this->belongsTo(Contract::class);
+    }
+
+    public function generator()
+    {
+        return $this->belongsTo(Generator::class);
     }
 
     public function devis()

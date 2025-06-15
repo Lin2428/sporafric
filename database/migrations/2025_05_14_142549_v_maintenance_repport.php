@@ -81,7 +81,7 @@ LEFT JOIN (
     GROUP BY it.intervention_id
 ) AS techs ON techs.intervention_id = i.id
 
-WHERE i.type_location = 1
+WHERE i.type_service = 1
         ");
     }
 

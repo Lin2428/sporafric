@@ -41,7 +41,7 @@
 
 //     public static function getNavigationBadge(): ?string
 //     {
-//         $count = Intervention::where('type_location',  0)->count();
+//         $count = Intervention::where('type_service',  0)->count();
 //         return $count;
 //     }
 
@@ -58,7 +58,7 @@
 //     {
 
 //         return Intervention::query()
-//          ->where('type_location', '==', 0);
+//          ->where('type_service', '==', 0);
 //     }
 
 //     public static function table(Table $table): Table

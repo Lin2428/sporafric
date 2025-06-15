@@ -104,7 +104,7 @@ class RetiredPage extends Page implements HasForms, HasTable
                     
                     $devis = Devis::find($data['devis_id']);
                     $devis->update(['is_retired' => true]);
-                    $data['type_location'] = '0';
+                    $data['type_service'] = '0';
                     $data['type'] = InterventionType::RETRAIT->value;
                     $data['identifiant'] = NumberUtils::generate();
                     
@@ -129,7 +129,7 @@ class RetiredPage extends Page implements HasForms, HasTable
         return $table
             ->query(Intervention::query()
             ->where('type', InterventionType::RETRAIT)
-            ->where('type_location', '=', 0)
+            ->where('type_service', '=', 0)
             )
             ->columns([
                 

@@ -103,7 +103,7 @@ class InterventionActionForm1 extends Component implements HasForms, HasActions
                 $this->record->pieces()->whereNotIn('piece_id', $existingIds)->delete(); // suppression des anciens
 
                 foreach ($pieces as $piece) {
-                    $generatorId = $this->record->contract?->generator_id ?? $this->record->devis?->generator_id;
+                    $generatorId = $this->record->generator?->id;
                     InterventionPieces::updateOrCreate(
                         [
                             'intrvention_id' => $this->record->id,

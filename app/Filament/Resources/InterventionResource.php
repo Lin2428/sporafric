@@ -34,7 +34,7 @@ class InterventionResource extends Resource
     protected static ?int $navigationSort = 0;
     public static function getNavigationBadge(): ?string
     {
-        $count = Intervention::where('type_location', 1)->count();
+        $count = Intervention::where('type_service', 1)->count();
         return $count;
     }
 
@@ -48,60 +48,62 @@ class InterventionResource extends Resource
                         Section::make('Informations sur l’intervention')
                             ->columns(2)
                             ->schema([
-                                Select::make('type_location')
+                                Select::make('type_service')
                                     ->label("Location ou Maintenance ?")
                                     ->options(["1" => "Maintenance", "0" => "Location"])
-                                    
+                                    ->default("1")
+                                    ->disabled()
                                     ->columnSpanFull()
-                                    ->reactive()
-                                    ->required(),
+                                    ->reactive(),
+
+                                Select::make('type_activite')
+                                    ->label("Type d'activité")
+                                    ->options([1 => "Sous contrat", 0 => "Hors contrat"])
+                                    ->columnSpanFull()
+                                    ->reactive(),
 
                                 WidgetUtils::contractSelectWidget()
                                     ->columnSpanFull()
-                                    ->visible(fn(callable $get) => $get('type_location') == "1"),
+                                    ->reactive()
+                                    ->visible(fn(callable $get) => $get('type_activite') == "1"),
 
-                                WidgetUtils::contractSelectWidget('devis_id')
+                                WidgetUtils::generatorSelectWidget(type: 2, contract_id: 12)
                                     ->columnSpanFull()
-                                    ->visible(fn(callable $get) => $get('type_location') == "0")
-                                    ->label("Devis"),
-                                // Section::make('Information sur le client')
-                                //     ->columns(2)
-                                //     ->schema([
-                                //         WidgetUtils::customerSelectWidget()
-                                //             ->columnSpanFull(),
+                                    ->visible(fn(callable $get) => $get('contract_id') != null && $get('type_activite') == "1"),
 
-                                //         TextInput::make('generator')
-                                //             ->label("Marque du GE")
-                                //             ->required(),
-                                //         TextInput::make('power')
-                                //             ->label("Puissance (KVA)")
-                                //             ->numeric(),
-                                //         TextInput::make('serial_number')
-                                //             ->label("Numéro de série")->columnSpanFull(),
-                                //     ])->visible(fn(callable $get) => $get('type_location') == "0"),
+                                Section::make('Information sur le client')
+                                    ->columns(2)
+                                    ->schema([
+                                        WidgetUtils::customerSelectWidget()
+                                            ->columnSpanFull(),
+
+                                        TextInput::make('generator_name')
+                                            ->label("Marque du GE"),
+                                        TextInput::make('power')
+                                            ->label("Puissance (KVA)")
+                                            ->numeric(),
+                                        TextInput::make('serial_number')
+                                            ->label("Numéro de série")->columnSpanFull(),
+                                    ])->visible(fn(callable $get) => $get('type_activite') == "0"),
+                                
 
                                 DatePicker::make('date_prise_appel')
-                                    ->label('Date de prise d’appel')
-                                    ->required(),
+                                    ->label('Date de prise d’appel'),
 
                                 DatePicker::make('date_planifiee')
-                                    ->label('Date planifiée')
-                                    ->required(),
+                                    ->label('Date planifiée'),
 
                                 TextInput::make('identifiant')
-                                    ->label('Numéro de Bon d\'intervention')
-                                    ->required(),
+                                    ->label('Numéro de Bon d\'intervention'),
 
                                 Select::make('type')
                                     ->label('Type')
                                     ->options(collect(InterventionType::cases())
                                         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                                        ->toArray())
-                                    ->required(),
+                                        ->toArray()),
 
                                 Textarea::make('description_panne')
                                     ->label('Description de la panne ou du travail à effectuer')
-                                    ->required()
                                     ->rows(5)
                                     ->columnSpanFull(),
                             ])
@@ -121,7 +123,7 @@ class InterventionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->query(static::getEloquentQuery()->where('type_location', 1))
+        ->query(static::getEloquentQuery()->where('type_service', 1))
             ->columns(InterventionUtil::table())
             ->filters([
                 Filter::make('status')
@@ -192,11 +194,12 @@ class InterventionResource extends Resource
 
                 TextEntry::make('generator')
                     ->getStateUsing(function (Intervention $record) {
-                       return $record->contract != null ? $record->contract?->generator?->name . '-' . $record->contract?->generator?->reference . ' ' . $record->contract?->generator?->power . 'KVA - N/S: ' . $record->contract?->generator?->serial_number : $record->devis?->generator?->name . '-' . $record->devis?->generator?->power . 'KVA ' . $record->devis?->generator?->serial_number;
+                       return $record->contract != null ? $record->generator?->name . ' ' . $record->generator?->power . 'KVA - N/S: ' . $record?->generator?->serial_number : $record->generator_name . '-' . $record->power . 'KVA - N/S: ' . $record->serial_number;
                     })->hiddenLabel()
                     ->size(10)
                     ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->url(fn (Intervention $record): ?string => $record->generator?->id ? url('admin/contract-generators', ['record' => $record->generator->id]) : null),
                 \Filament\Infolists\Components\View::make('filament.infolist.pages.view-intervention')
                     ->columnSpanFull(),
             ]);

@@ -24,6 +24,7 @@ class Generator extends Model
         'next_vidange',
         'fuel_type',
         'type',
+        'adresse',
         'lat',
         'lng',
         'user_id',

@@ -15,7 +15,7 @@ class InterventionMaintenanceStats extends BaseWidget
 
     protected function getStats(): array
     {
-        $generators = Generator::where('type', 1)
+        $generators = Generator::where('type', 2)
             ->count();
 
         $contract = Contract::count();
@@ -66,6 +66,6 @@ class InterventionMaintenanceStats extends BaseWidget
             COUNT(CASE WHEN date_planifiee < now() AND status = 0 THEN 1 END) AS en_retard
         ')
         
-            ->where('type_location', '1');
+            ->where('type_service', '1');
     }
 }

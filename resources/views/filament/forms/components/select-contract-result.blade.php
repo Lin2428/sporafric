@@ -2,11 +2,11 @@
     <div class="flex">
 
         <img src="{{asset($contract->customer?->logo ?'storage/'.$contract->customer?->logo: "storage/contrat.png
-        ")}} " class=" img overflow-hidden rounded-3xl" alt="">
+        ")}} " class=" img-co overflow-hidden rounded-3xl" alt="">
 
         <div class="flex flex-col ml-3 text-xs">
+            <span class="font-medium">N°: {{$contract->number}}</span>
             <span class="font-medium">Client: {{$contract->customer?->name}}</span>
-            <span class="font-medium">Site: {{$contract->site}}</span>
             <div class="">Contact: {{ $contract->customer?->contact_c_phone }}<br>{{ $contract->customer?->contact_c_email
                 }}
             </div>
@@ -16,7 +16,7 @@
 </div>
 
 <style>
-    .img {
+    .img-co {
         width: 70px;
         height: 70px;
         overflow: hidden;

@@ -18,4 +18,25 @@ class EditIntervention extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    // static::updated(function (Intervention $intervention) {
+       
+
+        protected function mutateFormDataBeforeSave(array $data): array
+    {
+           if($data['type_activite'] == 1)
+            {
+                $data['generator_name'] = null;
+                $data['generator_reference'] = null;
+                $ada['power'] = null;
+                $data['serial_number'] = null;
+                $data['customer_id'] = null;
+            }else {
+                $data['contract_id'] = null;
+                $data['generator_id'] = null;
+            }
+    
+        return $data;
+
+    }
 }

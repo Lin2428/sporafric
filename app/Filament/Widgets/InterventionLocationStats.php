@@ -38,6 +38,6 @@ class InterventionLocationStats extends BaseWidget
             COUNT(CASE WHEN status = 1 THEN 1 END) AS en_cours,
             COUNT(CASE WHEN status = 3 THEN 1 END) AS annulee
         ')
-        ->where('type_location', '0');
+        ->where('type_service', '0');
     }
 }

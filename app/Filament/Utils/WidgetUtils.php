@@ -14,16 +14,27 @@ use Illuminate\Database\Eloquent\Builder;
 
 class WidgetUtils
 {
-    public static function generatorSelectWidget(?Closure $onUpdate = null, ?string $name = 'generator_id', bool $isDispo = true, int $type = 1): Select
+    public static function generatorSelectWidget(?Closure $onUpdate = null, ?string $name = 'generator_id', bool $isDispo = true, int $type = 1, int|Closure|null $contract_id = null): Select
     {
         $select = Select::make($name)
             ->allowHtml()
-            ->getSearchResultsUsing(function (string $search) use ($isDispo, $type) {
-                $query = Generator::query()
-                    ->where('type', '=', $type)
-                    ->where(function (Builder $query) use ($search) {
+            ->getSearchResultsUsing(function (string $search) use ($isDispo, $type, $contract_id) {
+                $result = collect();
+                $query = Generator::query();
+                if ($contract_id) {
+                    $query->whereHas('contractGenerator', function (Builder $query) use ($contract_id) {
+                        $query->where('contract_id', $contract_id);
+                    });
+                }
+                $query
+                    ->where('type', '=', $type);
+                    if($search === '/'){
+                    $result = $query->get();
+                    }
+                    else {
+                    $query->where(function (Builder $query) use ($search) {
                         $query
-                            ->where('name', 'like', "%{$search}%")
+                            ->orWhere('name', 'like', "%{$search}%")
                             ->orWhere('reference', 'like', "%{$search}%")
                             ->orWhere('serial_number', 'like', "%{$search}%")
                             ->when(intval($search), fn(Builder $query) => $query->orWhere('id', intval($search)));
@@ -34,6 +45,7 @@ class WidgetUtils
                 }
 
                 $result = $query->get();
+                }
 
                 return $result
                     ->mapWithKeys(fn($generator) => [
@@ -113,14 +125,11 @@ class WidgetUtils
             ->allowHtml()
             ->label('Contrat')
             ->getSearchResultsUsing(function (string $search) use($name) {
-                $model = Contract::where('site', 'like', "%$search%");
+                $model = Contract::where("number", "like", "%$search%");
                 if(str_contains($name, 'devis')) {
-                    $model = Devis::where('site', 'like', "%$search%");
+                    $model = Devis::where("number", "like", "%$search%");
                 }
-                $users = $model->orWhere('contact_phone', 'like', "$search%")
-                    ->orWhere('contact_email', 'like', "%$search%")
-                    ->orWhere('number', 'like', "%$search%")
-                    ->orWhereHas('customer', function ($query) use ($search) {
+                $users = $model->orWhereHas('customer', function ($query) use ($search) {
                         $query->where('name', 'like', "%$search%");
                         $query->orWhere('contact_c_phone', 'like', "%$search%");
                         $query->orWhere('contact_c_email', 'like', "%$search%");
@@ -135,14 +144,14 @@ class WidgetUtils
                     ->toArray();
             })
             ->getOptionLabelUsing(function ($value) {
-                $customer = Customer::where('id', $value)
+                $customer = Contract::where('id', $value)
                     ->firstOrFail();
 
-                return WidgetUtils::getCustomerSelect($customer);
+                return WidgetUtils::getContractSelect($customer);
             })
             ->createOptionModalHeading('Nouveau client')
             ->createOptionUsing(function ($data) {
-                $customer = Customer::make($data);
+                $customer = Contract::make($data);
 
                 if (mb_strlen($customer->email ?? '') === 0) {
                     $customer->email = null;

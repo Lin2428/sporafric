@@ -19,18 +19,15 @@ class InterventionUtil
             ->columns(1)
             ->schema([
                 DatePicker::make('start_date')
-                    ->label('Date de début')
-                    ->required(),
+                    ->label('Date de début'),
                 DatePicker::make('end_date')
-                    ->label('Date limite')
-                    ->required(),
+                    ->label('Date limite'),
 
                 Select::make('status')
                     ->label('Statut')
                     ->options(collect(InterventionStatus::cases())
                         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                        ->toArray())
-                    ->required(),
+                        ->toArray()),
                 Select::make('interventionTechniciens.technicien_id')
                     ->relationship('interventionTechniciens', 'name')
                     ->label('Techniciens assignés')
@@ -57,10 +54,13 @@ class InterventionUtil
 
     public static function generatorColumn(Intervention $record): HtmlString
     {
+       
+        $reference = $record->generator?->reference ?? $record->reference;
+        $powr = $record->generator?->power ?? $record->power;
         $html = "
                 <div class='flex flex-col text-xs' style='line-height: 1.2;'>
-                    <span class='font-normal'>{$record->contract?->generator->reference}{$record->generator}</span>
-                    <span class='font-normal'>{$record->contract?->generator->serial_number}{$record->serial_number}</span>
+                    <span class='font-normal'>{$reference}</span>
+                    <span class='font-normal'>{$powr}KVA</span>
                 </div>
             ";
 
@@ -102,38 +102,35 @@ class InterventionUtil
                         })
                         ->orWhereHas('contract.customer', function ($query) use ($search) {
                             $query->where('name', 'like', "%{$search}%");
-                        });
+                        })
+                        ->orWhereHas('customer', function ($query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        })
+                        ;
+
                 })
                 ->getStateUsing(function (Intervention $record) {
-                    return $record->contract
-                        ? optional($record->contract->customer)->name
-                        : optional($record->devis->customer)->name;
+                    return  optional($record->contract?->customer)->name ??
+                         optional($record->devis?->customer)->name
+                         ?? optional($record->customer)->name;
                 })
                 ->description(fn(Intervention $record) => static::customerColumn($record))
                 ->extraAttributes(['class' => 'font-bold'])
-                ->limit(50),
+                ->limit(8),
 
-            TextColumn::make('groupe')
+            TextColumn::make('generator_name')
                 ->label('Groupe Électrogène')
                 ->searchable(false, function($search) {
                     return fn($query, $search) => $query
-                        ->whereHas('devis.generator', function ($query) use ($search) {
-                            $query->where('reference', 'like', "%{$search}%")
-                                ->orWhere('serial_number', 'like', "%{$search}%");
-                        })
-                        ->orWhereHas('contract.generator', function ($query) use ($search) {
+                        ->whereHas('generator', function ($query) use ($search) {
                             $query->where('reference', 'like', "%{$search}%")
                                 ->orWhere('serial_number', 'like', "%{$search}%");
                         });
                 })
-                ->getStateUsing(function (Intervention $record) {
-                    return $record->contract
-                        ? optional($record->contract->generator)->name
-                        : optional($record->devis->generator)->name;
-                })
+                ->getStateUsing(fn(Intervention $record) => $record->generator?->name ?? $record->generator_name)
                 ->description(fn(Intervention $record) => static::generatorColumn($record))
                 ->extraAttributes(['class' => 'font-bold'])
-                ->limit(50),
+                ->limit(8),
 
             TextColumn::make('type')
                 ->label('Type')

@@ -13,14 +13,16 @@ return new class extends Migration
     {
         Schema::create('interventions', function (Blueprint $table) {
             $table->id();
-            $table->integer('type_location');
+            $table->integer('type_service');
+            $table->integer('type_activite')->nullable();
             $table->foreignId('contract_id')->nullable();
-                 $table->foreignId('devis_id')->nullable();
+            $table->foreignId('generator_id')->nullable();
+            $table->foreignId('devis_id')->nullable();
             $table->foreignId('customer_id')->nullable();
-            $table->date('date_prise_appel');
-            $table->date('date_planifiee');
-            $table->integer('type');
-            $table->string('identifiant');
+            $table->date('date_prise_appel')->nullable();
+            $table->date('date_planifiee')->nullable();
+            $table->integer('type')->nullable();
+            $table->string('identifiant')->nullable();
             $table->text('description_panne')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
@@ -31,7 +33,8 @@ return new class extends Migration
             $table->boolean('status')->nullable();
             $table->boolean('cancelled')->default(false);
             $table->string('raison')->nullable();
-            $table->string('generator')->nullable();
+            $table->string('generator_name')->nullable();
+            $table->string('generator_reference')->nullable();
             $table->string('power')->nullable();
             $table->string('serial_number')->nullable();
             $table->foreignId('user_id')->nullable();

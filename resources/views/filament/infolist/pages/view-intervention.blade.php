@@ -111,7 +111,11 @@
     }
 </style>
 <span class="text-red-800">
-    {{$getRecord()->type_location == 1 ? "Maintenance":"Location"}}
+    {{$getRecord()->type_service == 1 ? "Maintenance":"Location"}}
+</span>
+ -
+<span class="text-blue-800">
+    {{$getRecord()->type_activite == 1 ? "Sous contrat":"Hors contrat"}}
 </span>
 <br>
 <br>
@@ -275,7 +279,7 @@
 
 </div>
 <br>
-{{-- <hr>
+<hr>
 <br>
 <div class="container-1">
     <div class="w-full">
@@ -344,7 +348,7 @@
         </div>
     </div>
 
-</div> --}}
+</div>
 
 <!-- PDF.js Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>

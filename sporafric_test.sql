@@ -2272,7 +2272,7 @@ REPLACE INTO `generators` (`id`, `name`, `image`, `reference`, `power`, `voltage
 -- Dumping structure for table sporafric.interventions
 CREATE TABLE IF NOT EXISTS `interventions` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `type_location` int(11) NOT NULL,
+  `type_service` int(11) NOT NULL,
   `contract_id` bigint(20) unsigned DEFAULT NULL,
   `customer_id` bigint(20) unsigned DEFAULT NULL,
   `date_prise_appel` date NOT NULL,
@@ -2301,7 +2301,7 @@ CREATE TABLE IF NOT EXISTS `interventions` (
 ) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table sporafric.interventions: ~56 rows (approximately)
-REPLACE INTO `interventions` (`id`, `type_location`, `contract_id`, `customer_id`, `date_prise_appel`, `date_planifiee`, `type`, `identifiant`, `description_panne`, `start_date`, `end_date`, `compteur`, `fiche`, `facturable`, `astrinte`, `status`, `cancelled`, `raison`, `generator`, `power`, `serial_number`, `user_id`, `deleted_at`, `created_at`, `updated_at`, `devis_id`) VALUES
+REPLACE INTO `interventions` (`id`, `type_service`, `contract_id`, `customer_id`, `date_prise_appel`, `date_planifiee`, `type`, `identifiant`, `description_panne`, `start_date`, `end_date`, `compteur`, `fiche`, `facturable`, `astrinte`, `status`, `cancelled`, `raison`, `generator`, `power`, `serial_number`, `user_id`, `deleted_at`, `created_at`, `updated_at`, `devis_id`) VALUES
 	(1, 1, 4, NULL, '2025-05-13', '2025-05-16', 2, 'Lin345', 'À l\'heure actuelle, aucune annonce officielle n\'a confirmé l\'élection d\'un nouveau pape. Le conclave pour élire le successeur du pape François a débuté ce mercredi 7 mai 2025 à 16h30 (heure de Rome) dans la chapelle Sixtine, avec la participation de 133 cardinaux électeurs. La première fumée, indiquant l\'issue du premier vote, est attendue vers 19 heures. Si elle est noire, cela signifie qu\'aucun pape n\'a encore été élu ; si elle est blanche, cela annonce l\'élection d\'un nouveau souverain pontife. Pour l\'instant, aucune fumée blanche n\'a été signalée.', '2025-05-14', '2025-05-17', NULL, 'robin-meyer-sa-2025-05-14-1.pdf', 1, 0, 3, 0, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-13 09:40:38', '2025-05-20 09:52:21', NULL),
 	(3, 1, 2, NULL, '2025-04-30', '2025-06-13', 4, 'commodi', 'Ut sit quasi ullam molestias sint aliquam molestias eaque qui esse praesentium maiores ipsam rerum.', '2025-06-09', '2025-05-28', NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-07 05:24:05', '2025-05-14 10:21:22', NULL),
 	(4, 1, 2, NULL, '2025-05-07', '2025-05-26', 3, 'eum', 'Mollitia voluptatem et sit debitis quia ut autem omnis perferendis sit.', '2025-05-25', '2025-06-12', NULL, NULL, NULL, NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, '2025-03-03 20:35:01', '2025-03-13 12:33:14', NULL),
@@ -4512,7 +4512,7 @@ LEFT JOIN (
     GROUP BY it.intervention_id
 ) AS techs ON techs.intervention_id = i.id
 
-WHERE i.type_location = 0 ;
+WHERE i.type_service = 0 ;
 
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `v_maintenance_repport`;
@@ -4584,7 +4584,7 @@ LEFT JOIN (
     GROUP BY it.intervention_id
 ) AS techs ON techs.intervention_id = i.id
 
-WHERE i.type_location = 1 ;
+WHERE i.type_service = 1 ;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

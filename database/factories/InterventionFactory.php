@@ -19,7 +19,7 @@ class InterventionFactory extends Factory
     public function definition(): array
     {
         return [
-            'type_location' => 1,
+            'type_service' => 1,
             'contract_id' => $this->faker->randomElement([1, 2, 4]),
             'date_prise_appel' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'date_planifiee' => $this->faker->dateTimeBetween('now', '+1 month'),

@@ -40,7 +40,7 @@ class InterventionDevisResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = Intervention::where('type_location',  0)->count();
+        $count = Intervention::where('type_service',  0)->count();
         return $count;
     }
 
@@ -55,7 +55,7 @@ public static function form(Form $form): Form
                         Section::make('Informations sur l’intervention')
                             ->columns(2)
                             ->schema([
-                                Select::make('type_location')
+                                Select::make('type_service')
                                     ->label("Location ou Maintenance ?")
                                     ->options(["1" => "Maintenance", "0" => "Location"])
                                     
@@ -65,11 +65,11 @@ public static function form(Form $form): Form
 
                                 WidgetUtils::contractSelectWidget()
                                     ->columnSpanFull()
-                                    ->visible(fn(callable $get) => $get('type_location') == "1"),
+                                    ->visible(fn(callable $get) => $get('type_service') == "1"),
 
                                 WidgetUtils::contractSelectWidget('devis_id')
                                     ->columnSpanFull()
-                                    ->visible(fn(callable $get) => $get('type_location') == "0")
+                                    ->visible(fn(callable $get) => $get('type_service') == "0")
                                     ->label("Devis"),
                                 // Section::make('Information sur le client')
                                 //     ->columns(2)
@@ -85,7 +85,7 @@ public static function form(Form $form): Form
                                 //             ->numeric(),
                                 //         TextInput::make('serial_number')
                                 //             ->label("Numéro de série")->columnSpanFull(),
-                                //     ])->visible(fn(callable $get) => $get('type_location') == "0"),
+                                //     ])->visible(fn(callable $get) => $get('type_service') == "0"),
 
                                 DatePicker::make('date_prise_appel')
                                     ->label('Date de prise d’appel')
@@ -128,7 +128,7 @@ public static function form(Form $form): Form
     public static function table(Table $table): Table
     {
         return $table
-        ->query(static::getEloquentQuery()->where('type_location', 0))
+        ->query(static::getEloquentQuery()->where('type_service', 0))
         ->defaultPaginationPageOption(50)
         ->columns(InterventionUtil::table())
             ->filters([
