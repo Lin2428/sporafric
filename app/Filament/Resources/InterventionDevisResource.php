@@ -20,6 +20,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -47,6 +48,7 @@ class InterventionDevisResource extends Resource
 
 public static function form(Form $form): Form
     {
+        $devisId = null;
 
         return $form
             ->schema([
@@ -57,35 +59,23 @@ public static function form(Form $form): Form
                             ->schema([
                                 Select::make('type_service')
                                     ->label("Location ou Maintenance ?")
+                                    ->default(0)
+                                    ->disabled()
                                     ->options(["1" => "Maintenance", "0" => "Location"])
                                     
                                     ->columnSpanFull()
                                     ->reactive()
                                     ->required(),
 
-                                WidgetUtils::contractSelectWidget()
-                                    ->columnSpanFull()
-                                    ->visible(fn(callable $get) => $get('type_service') == "1"),
-
                                 WidgetUtils::contractSelectWidget('devis_id')
                                     ->columnSpanFull()
-                                    ->visible(fn(callable $get) => $get('type_service') == "0")
+                                    ->reactive()
                                     ->label("Devis"),
-                                // Section::make('Information sur le client')
-                                //     ->columns(2)
-                                //     ->schema([
-                                //         WidgetUtils::customerSelectWidget()
-                                //             ->columnSpanFull(),
 
-                                //         TextInput::make('generator')
-                                //             ->label("Marque du GE")
-                                //             ->required(),
-                                //         TextInput::make('power')
-                                //             ->label("Puissance (KVA)")
-                                //             ->numeric(),
-                                //         TextInput::make('serial_number')
-                                //             ->label("Numéro de série")->columnSpanFull(),
-                                //     ])->visible(fn(callable $get) => $get('type_service') == "0"),
+                                 WidgetUtils::generatorSelectWidget(isDispo:false)
+                                    ->columnSpanFull()
+                                    ->reactive()
+                                    ->visible(fn(callable $get) => $get('devis_id') != null),
 
                                 DatePicker::make('date_prise_appel')
                                     ->label('Date de prise d’appel')
@@ -202,11 +192,12 @@ public static function form(Form $form): Form
 
                 TextEntry::make('generator')
                     ->getStateUsing(function (Intervention $record) {
-                        return $record->contract != null ? $record->contract?->generator?->name . '-' . $record->contract?->generator?->reference . ' ' . $record->contract?->generator?->power . 'KVA - N/S: ' . $record->contract?->generator?->serial_number : $record->devis?->generator?->name . '-' . $record->devis?->generator?->power . 'KVA ' . $record->devis?->generator?->serial_number;
+                        return $record->devis != null ? $record->generator?->name . '-' . $record->generator?->power . ' KVA ' . $record->generator?->serial_number:"";
                     })->hiddenLabel()
                     ->size(10)
                     ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->url(fn(Intervention $record) => url('/admin/generators/' . $record->generator?->id)),
                 \Filament\Infolists\Components\View::make('filament.infolist.pages.view-intervention')
                     ->columnSpanFull(),
             ]);

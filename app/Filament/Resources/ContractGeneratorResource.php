@@ -15,6 +15,7 @@ use App\Livewire\InterventionHistory;
 use App\Models\ContractFacture;
 use App\Models\Generator;
 use App\Models\Intervention;
+use App\Models\ReportMaintenance;
 use App\Utils\DateUtils;
 use App\Utils\NumberUtils;
 use Doctrine\DBAL\Schema\View;
@@ -536,19 +537,6 @@ class ContractGeneratorResource extends Resource
                                         })
                                             ->columns(2)
                                             ->schema([
-                                            TextEntry::make('adress')
-                                                        ->label('Adresse')
-                                                        ->getStateUsing(function (Generator $record) {
-                                                            if($record->contractGenerator){
-                                                                return $record->contractGenerator->contract->adress;
-                                                            }
-                                                            if($record->devisGenerator){
-                                                                return $record->devisGenerator->devis->adress;
-                                                            }
-                                                            return null;
-                                                        })
-                                                        ->columnSpanFull(),
-
                                                 \Filament\Infolists\Components\Section::make('Contact commercial')
                                                     ->columnSpan(['lg' => 1])
                                                     ->columns(2)
@@ -781,6 +769,7 @@ class ContractGeneratorResource extends Resource
                                  Livewire::make(InterventionHistory::class)
                                     ->data([
                                         'generatorId' => $infolist->getRecord()->id,
+                                        'model' => ReportMaintenance::class,
                                     ]),
                             ]),
                     ]),

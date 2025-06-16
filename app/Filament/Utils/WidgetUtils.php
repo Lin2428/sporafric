@@ -14,17 +14,24 @@ use Illuminate\Database\Eloquent\Builder;
 
 class WidgetUtils
 {
-    public static function generatorSelectWidget(?Closure $onUpdate = null, ?string $name = 'generator_id', bool $isDispo = true, int $type = 1, int|Closure|null $contract_id = null): Select
+    public static function generatorSelectWidget(?Closure $onUpdate = null, ?string $name = 'generator_id', bool $isDispo = true, int $type = 1): Select
     {
         $select = Select::make($name)
             ->allowHtml()
-            ->getSearchResultsUsing(function (string $search) use ($isDispo, $type, $contract_id) {
+            ->getSearchResultsUsing(function (string $search, callable $get) use ($isDispo, $type) {
                 $result = collect();
+                
                 $query = Generator::query();
-                if ($contract_id) {
-                    $query->whereHas('contractGenerator', function (Builder $query) use ($contract_id) {
-                        $query->where('contract_id', $contract_id);
+                if ($get('contract_id') !=null) {
+                    $query->whereHas('contractGenerator', function (Builder $query) use ($get) {
+                        $query->where('contract_id', $get('contract_id'));
                     });
+                }
+                if ($get('devis_id') != null) {
+                    $query->WhereHas('devisGenerator', function (Builder $query) use ($get) {
+                        $query->where('devis_id', $get('devis_id'));
+                    });
+
                 }
                 $query
                     ->where('type', '=', $type);
@@ -119,7 +126,7 @@ class WidgetUtils
                     return 'devis';
                 }
                 return 'contract';
-            },'name')
+            },'number')
             ->searchable()
             ->required()
             ->allowHtml()
@@ -143,9 +150,16 @@ class WidgetUtils
                     })
                     ->toArray();
             })
-            ->getOptionLabelUsing(function ($value) {
-                $customer = Contract::where('id', $value)
+            ->getOptionLabelUsing(function ($value) use($name) {
+            
+                $customer = null;
+                if (str_contains($name, 'devis')) {
+                    $customer = Devis::where('id', $value)
+                        ->firstOrFail();
+                }else{
+                        $customer = Contract::where('id', $value)
                     ->firstOrFail();
+                }
 
                 return WidgetUtils::getContractSelect($customer);
             })

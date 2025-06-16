@@ -18,8 +18,6 @@ return new class extends Migration
             $table->boolean('status')->default(false);
             $table->string('site')->nullable();
             $table->string('code_site')->unique()->nullable();
-            $table->boolean('is_retired')->default(value: false);
-            $table->string('adress')->nullable();
             $table->string('contact_name')->nullable();
             $table->string('contact_phone')->nullable();
             $table->string('contact_email')->nullable();

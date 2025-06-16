@@ -12,7 +12,12 @@ class DevisGenerator extends Model
         'devis_id',
         'generator_id',
         'status',
-        'user_id',
+        'user_id', 
+        'site',
+        'code_site',
+        'contact_name',
+        'contact_phone',
+        'contact_email',
     ];
 
     public function devis()

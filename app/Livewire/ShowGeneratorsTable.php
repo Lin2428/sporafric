@@ -43,10 +43,15 @@ class ShowGeneratorsTable extends Component implements HasForms, HasTable
                     ->searchable(),
                 TextColumn::make('power')
                     ->label('Puissance ')
-                    ->getStateUsing(fn($record) => NumberUtils::format($record->power) . " W")
+                    ->getStateUsing(fn($record) => NumberUtils::format($record->power) . " KVA")
                     ->searchable(),
             ])
-            ->recordUrl(fn ($record) => url('/admin/contract-generators', $record->id))
+            ->recordUrl(function ($record){
+                if(str_contains(request()->url(), 'devis')){
+                    return url('/admin/generators', $record->id);
+                }
+                 return url('/admin/contract-generators', $record->id);
+            })
             ->filters([
                 // ...
             ]);

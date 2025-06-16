@@ -67,7 +67,7 @@ class InterventionResource extends Resource
                                     ->reactive()
                                     ->visible(fn(callable $get) => $get('type_activite') == "1"),
 
-                                WidgetUtils::generatorSelectWidget(type: 2, contract_id: 12)
+                                WidgetUtils::generatorSelectWidget(type: 2)
                                     ->columnSpanFull()
                                     ->visible(fn(callable $get) => $get('contract_id') != null && $get('type_activite') == "1"),
 
@@ -94,6 +94,7 @@ class InterventionResource extends Resource
                                     ->label('Date planifiée'),
 
                                 TextInput::make('identifiant')
+                                ->unique(ignoreRecord:true)
                                     ->label('Numéro de Bon d\'intervention'),
 
                                 Select::make('type')

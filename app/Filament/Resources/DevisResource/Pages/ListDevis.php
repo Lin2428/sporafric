@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DevisResource\Pages;
 
+use App\Enum\GeneratorStatus;
 use App\Filament\Resources\DevisResource;
 use App\Http\Controllers\OdooController;
 use App\Models\Customer;
@@ -25,17 +26,18 @@ class ListDevis extends ListRecords
                 ->icon('heroicon-o-arrow-path')
                 ->color('primary')
                 ->action(function () {
+                    set_time_limit(60);
                    $data = OdooController::syncronizeDevis();
                    
                    foreach ($data['orders']  as $k => $devis) {
+                    $customerId = Customer::where('odoo_id', $devis['partner_id'][0] ?? null)->value('id');
                     Devis::updateOrCreate([
                           'odoo_id' => $devis['id'],
                       ],
                       [
                           'odoo_id' => $devis['id'],
                           'customer_name' => $devis['customer_info'] ?? "",
-                          'customer_id' => Customer::where('odoo_id', $devis['partner_id'][0] ?? null)->value('id'),
-                          'generator_id' => Generator::where('odoo_id', $data['lines'][$k]['product_id'] ?? null)->value('id'),
+                          'customer_id' => $customerId,
                           'number' => $devis['name'],
                           'start_date' => $devis['date_order'],
                           'end_date' => $devis['expected_date'] == false ? null : $devis['expected_date'],
@@ -43,8 +45,36 @@ class ListDevis extends ListRecords
                           'is_active' => $devis['invoice_status'] === 'no' ? true : false,
                           'user_id' => auth()->user()->id,
                       ]);
+                
                    }
 
+                   foreach ($data['lines'] as $generator) {
+                    $generatorId = Generator::where('odoo_id', $generator['product_id'][0] ?? null)->value('id');
+                    $devisId = Devis::where('odoo_id', $generator['order_id'][0] ?? null)->value('id');
+                    $status = Devis::where('odoo_id', $generator['order_id'][0] ?? null)->value('is_active');
+
+                    if($generatorId != null){
+                          DevisGenerator::updateOrCreate([
+                              'devis_id' => $devisId,
+                              'generator_id' => $generatorId,
+                          ], [
+                             'devis_id' => $devisId,
+                             'generator_id' => $generatorId,
+                             'status' => $status,
+                          ]);
+                      }
+                    }
+
+                    $generators = DevisGenerator::where('generator_id', '!=', null)
+                      ->where('status', true)
+                        ->get();
+                      
+                    foreach ($generators as $gen) {
+                        Generator::where('id', $gen->generator_id)
+                            ->update([
+                                'status' => GeneratorStatus::EN_LOCATION,
+                            ]);
+                    }
                    Notification::make()
                         ->title('Synchronisation terminée')
                         ->body('Les devis ont été synchronisés avec succès.')

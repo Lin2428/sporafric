@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('number')->unique();
             $table->date('start_date');
             $table->date('end_date')->nullable();
+            $table->boolean('is_retired')->default(value: false);
             $table->boolean('is_active')->default(value: true);
             $table->integer('forfait')->nullable();
             $table->foreignId('user_id')->nullable();

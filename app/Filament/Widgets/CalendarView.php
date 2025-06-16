@@ -3,42 +3,65 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Intervention;
+use Filament\Forms\Components\Select;
 use \Guava\Calendar\Widgets\CalendarWidget;
 
 use Illuminate\Support\Collection;
-use Guava\Calendar\ValueObjects\CalendarEvent;
 use Illuminate\Support\HtmlString;
 
 class CalendarView extends CalendarWidget
 {
    //protected string $calendarView = 'resourceTimeGridWeek';
-    protected string|\Closure|HtmlString|null $heading = 'Calendrier';
+    protected string|\Closure|HtmlString|null $heading = 'Planning des interventions';
     
   protected bool $dateClickEnabled = true;
   protected bool $dateSelectEnabled = true;
   protected bool $noEventsClickEnabled = true;
   protected bool $eventClickEnabled = true;
-  protected ?string $defaultEventClickAction = 'view'; // 'view' or 'edit'
+  protected bool $allDay = true;
+  protected ?string $defaultEventClickAction = 'view'; 
     
-     /**
-      * Get the options for the calendar.
-      */
+  public $technicien;
+  public $status;
 
+  protected $listeners = ['reloadCalendar' => '$refresh'];
+
+    
+    /**
+     * Get the options for the calendar.
+     *
+     * @return array
+     */
    public function getOptions(): array
     {
         return [
             'title' => 'Planing',
-            'nowIndicator' => true,
-            'slotDuration' => '00:15:00'
+            'nowIndicator' => '',
+            'slotDuration' => '00:15:00',
+            'allDay' => false
         ];
     }
 
+    
+
     public function getEvents(array $fetchInfo = []): Collection | array
     {
-        return Intervention::whereMonth('date_planifiee', now()->month)
+           $start = $fetchInfo['start'] ?? now()->startOfMonth();
+    $end = $fetchInfo['end'] ?? now()->endOfMonth();
+
+    return Intervention::whereBetween('start_date', [$start, $end])
+        ->when($this->technicien, fn($q) => $q->where('user_id', $this->technicien))
+        ->when($this->status, fn($q) => $q->where('status', $this->status))
         ->get()
         ->map(fn(Intervention $intervention) => $intervention->toCalendarEvent());
     }
+
+     public static function refresh()
+    {
+        // Provide an empty array as the default argument
+        return (new self())->getEvents([]);
+    }
+
 
 
     /**
@@ -74,7 +97,7 @@ class CalendarView extends CalendarWidget
      */
     public function onDateSelect(array $info = []): void
     {
-        
+        dd('kok'.$info);
     }
 
     /**
@@ -85,7 +108,7 @@ class CalendarView extends CalendarWidget
      */
     public function onNoEventsClick($info): void
     {
-        
+        dd('top'.$info);
     }
 
     public function getEventContent(): null|string|array

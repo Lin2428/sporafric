@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DevisResource\Pages;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Devis;
+use App\Utils\DateUtils;
 use App\Utils\NumberUtils;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -181,39 +182,17 @@ class DevisResource extends Resource
                     ->limit(50)
                     ->description(fn(Devis $record): string => $record->customer_name != null && $record->customer_name != '0' ? $record->customer_name : ''),
                 
-
-                ImageColumn::make('customer.logo')
-                    ->label('Logo')
-                    ->circular()
-                    ->rounded()
-                    ->size(50)
-                    ->default('customer.png'),
-
-                TextColumn::make('site')
-                    ->label('Site')
-                    ->searchable()
-                    ->sortable()
-                    ->limit(50),
-
-                TextColumn::make('generator.name')
-                    ->label('GE')
-                    ->searchable()
-                    ->sortable()
+                TextColumn::make('generator')
+                    ->getStateUsing(fn(Devis $record): string => (string) $record->generators!=null ? (string)$record->generators?->count(): "0")
+                    ->label('Nombre deGE')
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50),
 
-                TextColumn::make('generator.reference')
-                    ->label('referencee')
-                    ->searchable()
-                    ->sortable()
+                TextColumn::make('forfait')
+                    ->getStateUsing(fn(Devis $record): string => NumberUtils::format($record->forfait) . ' FCFA')
+                    ->label('Prix devis')
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50),
-
-                ImageColumn::make('generator.image')
-                    ->label('Image')
-                    ->circular()
-                    ->rounded()
-                    ->size(50),
             ])
             ->filters([
                 SelectFilter::make('is_active'),
@@ -256,79 +235,12 @@ class DevisResource extends Resource
             ->columns(7)
             ->schema([
                 \Filament\Infolists\Components\Group::make()
-                    ->columnSpan(4)
+                    ->columnSpanFull()
                     ->columns(2)
                     ->schema([
-                        \Filament\Infolists\Components\Section::make('Informations du groupe électrogène')
-                            ->columns(3)
-                            ->schema([
-                                TextEntry::make('generator.status')
-                                    ->label('')
-                                    ->badge()
-                                    ->getStateUsing(function (Devis $record) {
-                                        return $record->generator ? GeneratorStatus::from($record->generator?->status)->label() : "Pas de GE assigné";
-                                    })
-                                    ->colors([
-                                        'success' => 'Disponible',
-                                        'warning' => ['Pas de GE assigné', 'En maintenance'],
-                                        'info' => 'En location',
-                                        'danger' => 'Indisponible',
-                                    ])
-                                    ->columnSpanFull(),
-
-                                ImageEntry::make('generator.image')
-                                    ->label('')
-                                    ->columnSpanFull()
-                                    ->default('generateur.png')
-                                    ->extraAttributes(['class' => 'w-full d-flex justify-center']),
-
-                                TextEntry::make('generator.name')
-                                    ->label('GE')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.reference')
-                                    ->label('referencee')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.serial_number')
-                                    ->label('Numéro de série')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.power')
-                                    ->label('Puissance')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.fuel_type')
-                                    ->label('Type de carburant')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.houres')
-                                    ->label('Heures de fonc.')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.next_vidange')
-                                    ->date('d/m/Y')
-                                    ->label('Prochaine vidange')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.start-up')
-                                    ->label('Mise en service')
-                                    ->date('d/m/Y')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('generator.created_at')
-                                    ->label('Ajouté le')
-                                    ->date('d/m/Y')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-                            ])
-                    ]),
-
-                \Filament\Infolists\Components\Group::make()
-                    ->columnSpan(3)
-                    ->columns(2)
-                    ->schema([
-                        \Filament\Infolists\Components\Section::make('Devis')
+                        \Filament\Infolists\Components\Section::make('Informations de la location')
                             ->columns(2)
+                            ->collapsible()
                             ->schema([
                                 TextEntry::make('is_active')
                                     ->label('')
@@ -348,119 +260,50 @@ class DevisResource extends Resource
                                     ->extraAttributes(['class' => 'w-full d-flex justify-center']),
 
                                 TextEntry::make('number')
-                                    ->label('N° devis')
+                                    ->label('N° contrat')
                                     ->extraAttributes(['class' => 'font-bold']),
 
                                 TextEntry::make('customer.name')
                                     ->label('Client')
                                     ->extraAttributes(['class' => 'font-bold']),
 
+                                TextEntry::make('customer.contact_c_phone')
+                                    ->label('Téléphone')
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
+                                TextEntry::make('customer.contact_c_email')
+                                    ->label('Email')
+                                    ->lineClamp(2)
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
+
                                 TextEntry::make('forfait')
-                                    ->label('Montant du devis')
+                                    ->label('Prix du devis')
                                     ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
                                     ->extraAttributes(['class' => 'font-bold'])
                                     ->columnSpanFull(),
 
-                                TextEntry::make('site')
-                                    ->label('Site')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-                                TextEntry::make('code_site')
-                                    ->label('Code')
-                                    ->extraAttributes(['class' => 'font-bold text-danger']),
+
                                 TextEntry::make('start_date')
-                                    ->date('d/m/Y')
-                                    ->label('A debuter le')
+                                    ->hiddenLabel()
+                                    ->getStateUsing(function (Devis $record) {
+                                        return $record->start_date ? "A debuter le " . DateUtils::format($record->start_date) : '';
+                                    })
                                     ->extraAttributes(['class' => 'font-bold text-danger']),
                                 TextEntry::make('end_date')
-                                    ->date('d/m/Y')
-                                    ->label('Se termine le')
+                                    ->hiddenLabel()
+                                    ->getStateUsing(function (Devis $record) {
+                                        return $record->end_date ? "Se termine le " . DateUtils::format($record->end_date) : '';
+                                    })
                                     ->color('danger'),
 
                             ])
                     ]),
 
-                \Filament\Infolists\Components\Group::make()
-                    ->columnSpan(7)
-                    ->columns(2)
-                    ->schema([
-                        \Filament\Infolists\Components\Section::make('Detail de la location')
-                            ->columns(2)
-                            ->collapsible()
-                            ->schema([
-                           
-                                TextEntry::make('adress')
-                                            ->label('adresse')
-                                            ->columnSpanFull(),
 
-                                \Filament\Infolists\Components\Section::make('Contact commercial')
-                                    ->columns(2)
-                                    ->columnSpan(['lg' => 1])
-                                    ->schema([
-                                        TextEntry::make('customer.contact_c_name')
-                                            ->label('Nom')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                         TextEntry::make('customer.contact_c_phone')
-                                            ->label('Téléphone')
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('customer.contact_c_email')
-                                            ->label('Email')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                    ]),
+                \Filament\Infolists\Components\View::make('filament.infolist.components.generator-show-tab')
+                    ->label('Groupe électrogènes')
+                    ->extraAttributes(['class' => 'w-full d-flex justify-center'])
+                    ->columnSpanFull(),
 
-                                \Filament\Infolists\Components\Section::make('Contact logistique')
-                                    ->columns(2)
-                                    ->columnSpan(['lg' => 1])
-                                    ->schema([
-                                        TextEntry::make('customer.contact_l_name')
-                                            ->label('Nom')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('customer.contact_l_phone')
-                                            ->label('Téléphone')
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('customer.contact_l_email')
-                                            ->label('Email')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                    ]),
-
-                                \Filament\Infolists\Components\Section::make('Contact sur site')
-                                    ->columns(2)
-                                    ->columnSpan(['lg' => 1])
-                                    ->schema([
-                                        TextEntry::make('contact_name')
-                                            ->label('Nom')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('contact_phone')
-                                            ->label('Téléphone')
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                        TextEntry::make('contact_email')
-                                            ->label('Email')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                    ]),
-
-                                TextEntry::make('vu')
-                                    ->label('Vue sur la carte')
-                                    ->columnSpanFull()
-                                    ->inlineLabel(),
-
-                                \Filament\Infolists\Components\View::make('filament.infolist.components.map-pointer')
-                                    ->label('')
-                                    ->getStateUsing(function (Devis $record) {
-                                        return [
-                                            'lat' => $record->lat,
-                                            'lng' => $record->lng,
-                                        ];
-                                    })
-                                    ->extraAttributes(['class' => 'w-full d-flex justify-center'])
-                                    ->columnSpanFull(),
-
-                            ])
-                    ]),
             ]);
     }
 }

@@ -9,6 +9,7 @@ use App\Filament\Resources\InterventionResource\Pages\EditIntervention;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Devis;
+use App\Models\DevisGenerator;
 use App\Models\Intervention;
 use App\Utils\NumberUtils;
 use Filament\Actions\Action;
@@ -58,9 +59,15 @@ class RetiredPage extends Page implements HasForms, HasTable
                             Section::make('Informations sur le retrait')
                                 ->columns(2)
                                 ->schema([
-                                    WidgetUtils::contractSelectWidget('devis_id')
-                                        ->columnSpanFull()
-                                        ->label("Devis"),
+                                   WidgetUtils::contractSelectWidget('devis_id')
+                                    ->columnSpanFull()
+                                    ->reactive()
+                                    ->label("Devis"),
+
+                                 WidgetUtils::generatorSelectWidget(isDispo:false)
+                                    ->columnSpanFull()
+                                    ->reactive()
+                                    ->visible(fn(callable $get) => $get('devis_id') != null),
                                     DatePicker::make('date_prise_appel')
                                         ->label('Date de prise d’appel')
                                         ->required(),
@@ -103,7 +110,6 @@ class RetiredPage extends Page implements HasForms, HasTable
                 ])->action(function (array $data) {
                     
                     $devis = Devis::find($data['devis_id']);
-                    $devis->update(['is_retired' => true]);
                     $data['type_service'] = '0';
                     $data['type'] = InterventionType::RETRAIT->value;
                     $data['identifiant'] = NumberUtils::generate();
@@ -114,7 +120,9 @@ class RetiredPage extends Page implements HasForms, HasTable
 
                     $intervention->interventionTechniciens()->sync($technicians);
 
-                    $devis->update(['is_retired' => true]);
+                    DevisGenerator::where('devis_id', $devis->id)
+                        ->where('generator_id', $data['generator_id'])
+                        ->update(['is_retired' => true]);
 
                     
                     Notification::make()
@@ -131,74 +139,17 @@ class RetiredPage extends Page implements HasForms, HasTable
             ->where('type', InterventionType::RETRAIT)
             ->where('type_service', '=', 0)
             )
-            ->columns([
-                
-            TextColumn::make('number')
-                    ->label('N° contrat')
-                    ->searchable()
-                    ->sortable()
-                    ->extraAttributes(['style' => 'font-weight: bold;'])
-                    ->limit(50),
-
-                TextColumn::make('is_active')
-                    ->label('Statut')
-                    ->badge()
-                    ->getStateUsing(fn(Intervention $record): string => $record->devis->is_active ? 'En cours' : 'Terminé')
-                    ->colors([
-                        'success' => 'En cours',
-                        'danger' => 'Terminé',
-                    ]),
-
-                TextColumn::make('customer.name')
-                    ->label('Client')
-                    ->searchable()
-                    ->sortable()
-                    ->extraAttributes(['style' => 'font-weight: bold;'])
-                    ->limit(50),
-
-                ImageColumn::make('customer.logo')
-                    ->label('Logo')
-                    ->circular()
-                    ->rounded()
-                    ->size(50)
-                    ->default('https://ui-avatars.com/api/?name=Logo&background=random'),
-
-                TextColumn::make('site')
-                    ->label('Site')
-                    ->searchable()
-                    ->sortable()
-                    ->limit(50),
-
-                TextColumn::make('generator.name')
-                    ->label('GE')
-                    ->searchable()
-                    ->sortable()
-                    ->extraAttributes(['style' => 'font-weight: bold;'])
-                    ->limit(50),
-
-                TextColumn::make('generator.reference')
-                    ->label('referencee')
-                    ->searchable()
-                    ->sortable()
-                    ->extraAttributes(['style' => 'font-weight: bold;'])
-                    ->limit(50),
-
-                ImageColumn::make('generator.image')
-                    ->label('Image')
-                    ->circular()
-                    ->rounded()
-                    ->size(50),
-            ])
-            ->recordUrl(fn($record) => url('admin/interventions/'.$record->id))
+            ->columns(InterventionUtil::table())
+            ->recordUrl(fn($record) => url('admin/intervention-devis/'.$record->id))
             ->filters([
                 // ...
             ])
             ->actions([
                 ActionGroup::make([
                     ViewAction::make()
-                    ->url(fn($record) => url('admin/interventions/'.$record->id)),
+                    ->url(fn($record) => url('admin/intervention-devis/'.$record->id)),
                     EditAction::make()
-                    ->url(fn($record) => url('admin/interventions/'.$record->id.'/edit')),
+                    ->url(fn($record) => url('admin/intervention-devis/'.$record->id.'/edit')),
                     Action::make('cancel')
                     ->label("Annuler")
                     ->color('danger')

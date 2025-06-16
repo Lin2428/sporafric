@@ -26,6 +26,11 @@ class Contract extends Model
         'deleted_at' => 'datetime',
     ];
 
+    // protected $with = [
+    //     'customer',
+    //     'generators',
+    // ];
+
     protected static function booted()
     {
         // static::created(function ($model) {
@@ -85,7 +90,7 @@ class Contract extends Model
                     'status',
                     'user_id',
                 ])
-                ->withTimestamps();;
+                ->withTimestamps();
     }
 
     public function interventions()

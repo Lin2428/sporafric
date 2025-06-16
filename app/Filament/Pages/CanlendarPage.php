@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Pages;
 
 use App\Enum\InterventionStatus;
@@ -15,18 +14,25 @@ use Filament\Pages\Page;
 class CanlendarPage extends Page implements HasForms
 {
     use InteractsWithForms;
+    
 
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-     protected static ?string $title = 'Planning des interventions';
+    protected static ?string $navigationIcon  = 'heroicon-o-calendar-days';
+    protected static ?string $title           = 'Planning des interventions';
     protected static ?string $navigationGroup = 'Dashboard';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort     = 2;
 
     protected static string $view = 'filament.pages.canlendar-page';
+
+    public $technicien = null;
+    public $status     = 1;
 
     public function getFooterWidgets(): array
     {
         return [
-            CalendarView::class,
+            CalendarView::make([
+                'technicien' => $this->technicien,
+                'status'     => $this->status,
+            ]),
         ];
     }
 
@@ -36,7 +42,6 @@ class CanlendarPage extends Page implements HasForms
     }
     public function form(Form $form): Form
     {
-
         $technicians = Technicien::query()
             ->orderBy('name')
             ->pluck('name', 'id');
@@ -44,21 +49,32 @@ class CanlendarPage extends Page implements HasForms
         return $form
             ->schema([
                 Group::make([
-                    Select::make('technician_id')
+                    Select::make('technicien')
                         ->label('Filtrer par technicien')
                         ->options($technicians)
                         ->searchable()
+                        ->reactive()
+                        ->afterStateUpdated(function ($state) {
+                            $this->technicien = $state;
+                            $this->dispatch('reloadCalendar');
+                        })
                         ->placeholder('Sélectionnez un technicien'),
 
                     Select::make('status')
                         ->label('Filtrer par statut')
-                        ->options(collect(InterventionStatus::cases())
-                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                        ->toArray())
+                        ->options(
+                            collect(InterventionStatus::cases())
+                                ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                ->toArray()
+                        )
+                        ->reactive()
                         ->searchable()
+                        ->afterStateUpdated(function ($state) {
+                            $this->status = $state;
+                            $this->submit();
+                        })
                         ->placeholder('Sélectionnez un statut'),
                 ])->columns(2),
-
             ]);
     }
 }

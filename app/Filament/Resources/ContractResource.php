@@ -37,13 +37,14 @@ class ContractResource extends Resource
 {
     protected static ?string $model = Contract::class;
 
-    protected static ?string $navigationIcon  = 'heroicon-o-clipboard-document';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document';
     protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Contrats';
     //protected static ?int $navigationSort     = 0;
 
     public static function form(Form $form): Form
     {
+
         return $form
             ->schema([
                 Group::make()
@@ -57,6 +58,7 @@ class ContractResource extends Resource
                                 TextInput::make('number')
                                     ->label('Numéro de contrat')
                                     ->required()
+                                    ->unique(Contract::class, 'number', ignoreRecord: true)
                                     ->columnSpanFull(),
 
                                 TextInput::make('forfait')
@@ -110,35 +112,48 @@ class ContractResource extends Resource
 
                     ])->columnSpan(['lg' => 1]),
 
-                    Repeater::make('generators')
-                        ->label('Groupes électrogènes')
-                        ->createItemButtonLabel('Ajouter un GE')
-                        ->schema([
-                          WidgetUtils::generatorSelectWidget(type: 2)
-                                    ->columnSpanFull(),
+                Repeater::make('generators')
+                    ->formatStateUsing(function ($record) {
+                        return $record->generators->map(function ($generator) {
+                            return [
+                                'generator_id' => $generator->id,
+                                'site' => $generator->pivot->site,
+                                'code_site' => $generator->pivot->code_site,
+                                'contact_name' => $generator->pivot->contact_name,
+                                'contact_phone' => $generator->pivot->contact_phone,
+                                'contact_email' => $generator->pivot->contact_email,
+                            ];
+                        })->toArray();
+                    })
+                    ->label('Groupes électrogènes')
+                    ->createItemButtonLabel('Ajouter un GE')
+                    ->schema([
+                        WidgetUtils::generatorSelectWidget(type: 2)
+                            ->columnSpanFull()
+                            ->required(),
 
-                            TextInput::make('site')
-                                    ->label('Site'),
+                        TextInput::make('site')
+                            ->label('Site'),
 
-                                TextInput::make('code_site')
-                                    ->label('Code'),
-                                
-                            Section::make('Contact sur place')
+                        TextInput::make('code_site')
+                            ->label('Code'),
+
+                        Section::make('Contact sur place')
                             ->columns(2)
                             ->schema([
                                 TextInput::make('contact_name')
                                     ->label('Nom'),
-                                    TextInput::make('contact_phone')
+                                TextInput::make('contact_phone')
                                     ->label('Téléphone')
                                     ->tel(),
                                 TextInput::make('contact_email')
                                     ->label('Email')
                                     ->columnSpanFull(),
                             ])->columnSpanFull(),
-                           
-                        ])->columns(2)
+
+                    ])->columns(2)
                     ->grid(2)
-                        ->columnSpan(['lg' => 3]),
+                    ->columnSpan(['lg' => 3]),
 
             ])->columns(3);
     }
@@ -153,7 +168,7 @@ class ContractResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        ->defaultPaginationPageOption(50)
+            ->defaultPaginationPageOption(50)
             ->columns([
                 TextColumn::make('number')
                     ->label('N° contrat')
@@ -175,6 +190,7 @@ class ContractResource extends Resource
                     ->label('Client')
                     ->searchable()
                     ->sortable()
+
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(10),
 
@@ -192,7 +208,7 @@ class ContractResource extends Resource
                     ->limit(50),
 
                 TextColumn::make('forfait')
-                    ->getStateUsing(fn(Contract $record): string => NumberUtils::format($record->forfait). ' FCFA')
+                    ->getStateUsing(fn(Contract $record): string => NumberUtils::format($record->forfait) . ' FCFA')
                     ->label('Forfait')
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50),
@@ -231,10 +247,10 @@ class ContractResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListContracts::route('/'),
+            'index' => Pages\ListContracts::route('/'),
             'create' => Pages\CreateContract::route('/create'),
-            'edit'   => Pages\EditContract::route('/{record}/edit'),
-            'view'   => Pages\ViewContract::route('/{record}'),
+            'edit' => Pages\EditContract::route('/{record}/edit'),
+            'view' => Pages\ViewContract::route('/{record}'),
         ];
     }
 
@@ -275,14 +291,14 @@ class ContractResource extends Resource
                                 TextEntry::make('customer.name')
                                     ->label('Client')
                                     ->extraAttributes(['class' => 'font-bold']),
-                                
-                                   TextEntry::make('customer.contact_c_phone')
-                                            ->label('Téléphone')
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),
-                                    TextEntry::make('customer.contact_c_email')
-                                            ->label('Email')
-                                            ->lineClamp(2)
-                                            ->extraAttributes(['class' => 'font-bold text-danger']),    
+
+                                TextEntry::make('customer.contact_c_phone')
+                                    ->label('Téléphone')
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
+                                TextEntry::make('customer.contact_c_email')
+                                    ->label('Email')
+                                    ->lineClamp(2)
+                                    ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                 TextEntry::make('forfait')
                                     ->label('Forfait de maintenance mensuel')
@@ -290,17 +306,17 @@ class ContractResource extends Resource
                                     ->extraAttributes(['class' => 'font-bold'])
                                     ->columnSpanFull(),
 
-                               
+
                                 TextEntry::make('start_date')
                                     ->hiddenLabel()
                                     ->getStateUsing(function (Contract $record) {
-                                        return $record->start_date ? "A debuter le ". DateUtils::format($record->start_date) : '';
+                                        return $record->start_date ? "A debuter le " . DateUtils::format($record->start_date) : '';
                                     })
                                     ->extraAttributes(['class' => 'font-bold text-danger']),
                                 TextEntry::make('end_date')
-                                ->hiddenLabel()
+                                    ->hiddenLabel()
                                     ->getStateUsing(function (Contract $record) {
-                                        return $record->end_date ? "Se termine le ". DateUtils::format($record->end_date) : '';
+                                        return $record->end_date ? "Se termine le " . DateUtils::format($record->end_date) : '';
                                     })
                                     ->color('danger'),
 

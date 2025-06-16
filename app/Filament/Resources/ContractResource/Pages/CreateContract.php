@@ -16,7 +16,7 @@ class CreateContract extends CreateRecord
 {
     $data = $this->form->getState();
     foreach ($data['generators'] as $generatorData) {
-        $this->record->contractGenerators()->attach(
+        $this->record->generators()->attach(
             $generatorData['generator_id'],
             [
                 'site' => $generatorData['site'] ?? null,
