@@ -1,6 +1,7 @@
 <script src="{{ asset('css/pub.css') }}"></script>
 
 <div>
+    
     <div class="flex justify-between gap-2">
     <x-filament::button
     id="print-form-etat"
@@ -11,7 +12,7 @@
     </x-filament::button>
 
     <x-filament::button
-    wire:click="submit"
+    wire:click="dispatch('create')"
 >
     Enregistrer
     </x-filament::button>

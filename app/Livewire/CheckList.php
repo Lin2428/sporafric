@@ -26,7 +26,22 @@ class CheckList extends Component implements HasForms, HasInfolists
     use InteractsWithForms;
     use InteractsWithInfolists;
     use InteractsWithFormActions;
+
+     protected $listeners = ['create','form'];
     public ?array $data = [];
+
+    public $technician_id;
+    public $electrical_value;
+    public $mechanical_value;
+    public $hour_number;
+    public $next_vidange;
+    public $etat;
+    public $technician_id_after;
+    public $electrical_value_after;
+    public $mechanical_value_after;
+    public $hour_number_after;
+    public $next_vidange_after;
+    public $etat_after;
     
     public function mount(): void
     {
@@ -50,90 +65,98 @@ class CheckList extends Component implements HasForms, HasInfolists
                                 Select::make('technician_id')
                                     ->options($techniciens)
                                     ->label('Technicien(e)')
-                                    ->required()
                                     ->searchable()
                                     ->placeholder('Sélectionner un(e) technicien(e)')
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->afterStateUpdated(function ($state) {
+                                        $this->technician_id = $state;
+                                        dd($this->technician_id);
+                                    })
+                                    ->reactive(),
 
                                 CheckboxList::make('etat')
                                     ->columnSpanFull()
                                     ->columns(2)
                                     ->label('État')
-                                    ->required()
                                     ->options([
                                         'is_clean' => 'Propre',
                                         'is_functional' => 'Démarre',
                                         'is_maintained' => 'Bien entretenu',
-                                    ]),
+                                    ])
+                                    ->afterStateUpdated(function ($state) {
+                                        $this->etat = $state;
+                                    }),
 
                                 TextInput::make('electrical_value')
                                     ->label('Grandeur électrique')
                                     ->numeric()
-                                    ->required()
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->afterStateUpdated(function ($state) {
+                                        $this->electrical_value = $state;
+                                    }),
 
                                 TextInput::make('mechanical_value')
                                     ->label('Grandeur mécanique')
                                     ->numeric()
-                                    ->required()
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->afterStateUpdated(function ($state) {
+                                        $this->mechanical_value = $state;
+                                    }),
 
                                 TextInput::make('hour_number')
                                     ->label('Nombre d\'heures')
                                     ->numeric()
-                                    ->required()
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->afterStateUpdated(function ($state) {
+                                        $this->hour_number = $state;
+                                    }),
 
                                 TextInput::make('next_vidange')
                                     ->label('Prochaine vidange')
-                                    ->required()
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->afterStateUpdated(function ($state) {
+                                        $this->next_vidange = $state;
+                                    }),
                             ])
                             ->columnSpan(1),
 
                         Section::make('État après location')
                             ->columns(2)
                             ->schema([
-                                Select::make('technician_id')
+                                Select::make('technician_id_after')
                                     ->options($techniciens)
                                     ->label('Technicien(e)')
-                                    ->required()
                                     ->searchable()
                                     ->placeholder('Sélectionner un(e) technicien(e)')
                                     ->columnSpanFull(),
 
-                                CheckboxList::make('etat')
+                                CheckboxList::make('etat_after')
                                     ->columnSpanFull()
                                     ->columns(2)
                                     ->label('État')
-                                    ->required()
                                     ->options([
                                         'is_clean' => 'Propre',
                                         'is_functional' => 'Démarre',
                                         'is_maintained' => 'Bien entretenu',
                                     ]),
 
-                                TextInput::make('electrical_value')
+                                TextInput::make('electrical_value_after')
                                     ->label('Grandeur électrique')
                                     ->numeric()
-                                    ->required()
                                     ->columnSpanFull(),
 
-                                TextInput::make('mechanical_value')
+                                TextInput::make('mechanical_value_after')
                                     ->label('Grandeur mécanique')
                                     ->numeric()
-                                    ->required()
                                     ->columnSpanFull(),
 
-                                TextInput::make('hour_number')
+                                TextInput::make('hour_number_after')
                                     ->label('Nombre d\'heures')
                                     ->numeric()
-                                    ->required()
                                     ->columnSpanFull(),
 
-                                TextInput::make('next_vidange')
+                                TextInput::make('next_vidange_after')
                                     ->label('Prochaine vidange')
-                                    ->required()
                                     ->columnSpanFull(),
                             ])
                             ->columnSpan(1),
@@ -142,13 +165,15 @@ class CheckList extends Component implements HasForms, HasInfolists
     }
 
 
-    public function create(): void
+    public function create()
     {
         dd($this->form->getState());
     }
 
     public function render()
     {
-        return view('livewire.check-list');
+        return view('livewire.check-list', [
+            
+        ]);
     }
 }
