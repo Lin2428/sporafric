@@ -2,10 +2,21 @@
 
 <div>
     <div class="flex justify-between gap-2">
-    @foreach ($this->getActions() as $action)
-        {{ $action }}
-    @endforeach
-</div>
+    <x-filament::button
+    id="print-form-etat"
+    color="gray"
+    icon="heroicon-o-printer"
+    >
+    Imprimer le formulaire vierge
+    </x-filament::button>
+
+    <x-filament::button
+    wire:click="submit"
+>
+    Enregistrer
+    </x-filament::button>
+   
+    </div>
        <br>
         {{ $this->form }}
         <br>
