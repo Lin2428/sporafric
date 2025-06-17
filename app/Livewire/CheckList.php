@@ -141,26 +141,6 @@ class CheckList extends Component implements HasForms, HasInfolists
             ]);
     }
 
-      public function getActions(): array
-{
-
-    return [
-        Action::make('print')
-            ->button()
-            ->label('Imprimer le formulaire vierge')
-            ->icon('heroicon-o-printer')
-            ->color('gray')
-            ->extraAttributes(['id' => 'print-form-etat', 'x-on:click.stop' => '']),
-
-     
-        Action::make('submit')
-        ->button()  
-            ->label('Enregistrer')
-            ->action(function (array $data) {
-     
-            }),
-    ];
-}
 
     public function create(): void
     {
