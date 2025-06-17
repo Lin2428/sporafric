@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enum\InterventionStatus;
 use App\Models\Contract;
 use App\Models\Generator;
 use App\Models\Intervention;
@@ -23,33 +24,39 @@ class InterventionMaintenanceStats extends BaseWidget
         $data = $this->getEloquentQuery()->first();
         $txEnCours = $data->en_cours == 0 ? 0 : ($data->en_cours / $data->total) * 100;
         $txRetard = $data->en_retard == 0 ? 0 : ($data->en_retard / $data->total) * 100;
-        $txTermine = $data->ttrermine == 0 ? 0 : ($data->trermine / $data->total) * 100;
+        $txTermine = $data->trermine == 0 ? 0 : ($data->trermine / $data->total) * 100;
         return [
             Stat::make('GE total', $generators)
                 ->icon('heroicon-o-cube')
-                ->color('success'),
+                ->color('success')
+                ->url(url('admin/contract-generators')),
 
             Stat::make('Contrat total', $contract)
-                ->icon('heroicon-o-cube'),
+                ->icon('heroicon-o-cube')
+                ->url(url('admin/contracts')),
 
             Stat::make('Int. total', $data->total)
                 ->description('cette semaine')
-                ->icon('heroicon-o-cube'),
+                ->icon('heroicon-o-cube')
+                ->url(url('admin/interventions?tableFilters[status][date_planifiee]='.now()->week())),
 
             Stat::make('Int. en cours', $data->en_cours)
                 ->description($txEnCours != 0 ? number_format($txEnCours, 2) . ' %' : "")
                 ->icon('heroicon-o-cube')
-                ->color('success'),
+                ->color('success')
+                ->url(url('admin/interventions?tableFilters[status][status][0]='.InterventionStatus::EN_COURS->value)),
 
             Stat::make('Int. en retard', $data->en_retard)
                 ->description($txRetard != 0 ? number_format($txRetard, 2) . ' %' : "")
                 ->icon('heroicon-o-cube')
-                ->color('danger'),
+                ->color('danger')
+                ->url(url('admin/interventions?tableFilters[status][later]=true')),
 
             Stat::make('Int. cloturée', $data->trermine)
                 ->description($txTermine != 0 ? number_format($txTermine, 2) . ' %' : "")
                 ->icon('heroicon-o-cube')
-                ->color('success'),
+                ->color('success')
+                ->url(url('admin/interventions?tableFilters[status][status][0]='.InterventionStatus::TERMINEE->value)),
         ];
     }
 

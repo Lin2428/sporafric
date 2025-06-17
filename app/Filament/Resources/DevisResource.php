@@ -195,7 +195,12 @@ class DevisResource extends Resource
                     ->limit(50),
             ])
             ->filters([
-                SelectFilter::make('is_active'),
+                SelectFilter::make('is_active')
+                    ->label('Statut')
+                    ->options([
+                        '1' => 'En cours',
+                        '0' => 'Terminé',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -265,6 +270,13 @@ class DevisResource extends Resource
 
                                 TextEntry::make('customer.name')
                                     ->label('Client')
+                                    ->getStateUsing(function (Devis $record) {
+                                        $name = $record->customer->name;
+                                        $firstName = $record->customer_name;
+
+                                        return $name . '<br>' . $firstName;
+                                    })
+                                    ->html()
                                     ->extraAttributes(['class' => 'font-bold']),
 
                                 TextEntry::make('customer.contact_c_phone')

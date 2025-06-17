@@ -48,7 +48,6 @@ class InterventionDevisResource extends Resource
 
 public static function form(Form $form): Form
     {
-        $devisId = null;
 
         return $form
             ->schema([
@@ -121,6 +120,7 @@ public static function form(Form $form): Form
         ->query(static::getEloquentQuery()->where('type_service', 0))
         ->defaultPaginationPageOption(50)
         ->columns(InterventionUtil::table())
+        ->defaultSort('date_planifiee', 'desc')
             ->filters([
                 Filter::make('status')
                 ->form([

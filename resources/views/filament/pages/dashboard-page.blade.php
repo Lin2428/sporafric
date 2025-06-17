@@ -42,11 +42,15 @@
                             $icon = 'heroicon-o-exclamation-circle';
                             $title = 'DEMAIN';
                         }
+
+                        $url = '/admin/interventions/'.$intervention->id;
+                        if($intervention->type == 0) {
+                            $url = '/admin/intervention-devis/'.$intervention->id;
+                        }
             
                         $label = \App\Enum\InterventionType::from($intervention->type)->label();
-                        $location = $intervention->contract?->site ?? $intervention->customer?->name ?? 'N/A';
                     @endphp
-                    <a href="{{url('admin/interventions/'.$intervention->id)}}">
+                    <a href="{{ $url }}">
                     <div class="flex items-start gap-3 p-2 mb-2 rounded-lg shadow-sm bg-{{$bg}}-50 border border-{{$bg}}-100 text-{{$bg}}-700">
                         <div class="bg-gray-100/50 p-1 rounded-full flex items-center justify-center">
                             {{-- Icone --}}
@@ -55,7 +59,7 @@
                         <div>
                             <div class="font-bold text-sm">{{ $title }}</div>
                             <div class="text-sm">
-                                {{ $label }} – {{ $location }}
+                                {{ $label }}
                             </div>
                             <div class="text-xs">
                                 📅 {{ $date->translatedFormat('l j F Y') }}

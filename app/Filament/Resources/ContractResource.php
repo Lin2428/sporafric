@@ -220,7 +220,12 @@ class ContractResource extends Resource
                     ->limit(50),
             ])
             ->filters([
-                SelectFilter::make('is_active'),
+                SelectFilter::make('is_active')
+                    ->label('Statut')
+                    ->options([
+                        '1' => 'En cours',
+                        '0' => 'Terminé',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enum\GeneratorStatus;
 use App\Models\Devis;
 use App\Models\Generator;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -20,29 +21,35 @@ class GeneratorlocationStats extends BaseWidget
 
         $txLocation = $data->total_location == 0 ? 0 : ($data->total_location/$data->total) * 100;
         $txIndisponible = $data->indisponible == 0 ? 0 : ($data->indisponible/$data->total) * 100;
+        $txAttente = $data->attente == 0 ? 0 : ($data->attente/$data->total) * 100;
 
         return [
             Stat::make('GE total', $data->total)
                 ->icon('icon-generator')
-                ->color('success'),
+                ->color('success')
+                ->url(url('admin/generators')),
 
             Stat::make('GE en location', $data->total_location)
                 ->description($txLocation != 0 ? NumberUtils::format($txLocation, 2).' %' : "")
                 ->icon('heroicon-o-cube')
-                ->color('success'),
+                ->color('success')
+                ->url(url("admin/generators?tableFilters[status][status][0]=".GeneratorStatus::EN_LOCATION->value)),
 
-            Stat::make('GE en attente', $data->indisponible)
-                ->description($txIndisponible != 0 ? NumberUtils::format($txIndisponible, 2).' %': "")
+            Stat::make('GE en attente', $data->attente)
+                ->description($txAttente != 0 ? NumberUtils::format($txAttente, 2).' %': "")
                 ->icon('heroicon-o-cube')
-                ->color('danger'),
+                ->color('primary')
+                ->url(url("admin/generators?tableFilters[status][status][0]=".GeneratorStatus::EN_REVU->value)),
 
             Stat::make('GE en panne', $data->indisponible)
                 ->description($txIndisponible != 0 ? NumberUtils::format($txIndisponible, 2).' %': "")
                 ->icon('heroicon-o-cube')
-                ->color('danger'),
+                ->color('danger')
+                ->url(url("admin/generators?tableFilters[status][status][0]=".GeneratorStatus::INDISPONIBLE->value)),
 
             Stat::make('Loc cloturée', $locationFinish)
-                ->icon('heroicon-o-cube'),
+                ->icon('heroicon-o-cube')
+                ->url(url('admin/devis?tableFilters[is_active][value]=0')),
 
                 
         ];
@@ -60,7 +67,7 @@ class GeneratorlocationStats extends BaseWidget
         COUNT(*) AS total,
         COUNT(CASE WHEN status = 2 THEN 1 END) AS total_location,
         COUNT(CASE WHEN status = 3 THEN 1 END) AS indisponible,
-        COUNT(CASE WHEN status = 4 THEN 1 END) AS attente
+        COUNT(CASE WHEN status = 1 THEN 1 END) AS attente
     ');
     }
 }

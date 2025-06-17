@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\GeneratorStatus;
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use Carbon\Carbon;
@@ -48,7 +49,22 @@ class Intervention extends Model implements Eventable
     protected $with = ['interventionTechniciens', 'pieces', 'generator'];
 
 
+    protected static function booted()
+    {
+        static::updated(function ($intervention) {
+            if($intervention->type == InterventionType::RETRAIT->value && $intervention->status == InterventionStatus::TERMINEE->value){
+                Generator::where('id', $intervention->generator_id)
+                ->update(['status' => GeneratorStatus::EN_REVU->value]);
+            }
+        });
 
+        static::updated(function ($intervention) {
+            if($intervention->type == InterventionType::RETRAIT->value && $intervention->status == InterventionStatus::TERMINEE->value){
+                Generator::where('id', $intervention->generator_id)
+                ->update(['status' => GeneratorStatus::EN_REVU->value]);
+            }
+        });
+    }
     public function contract()
     {
         return $this->belongsTo(Contract::class);

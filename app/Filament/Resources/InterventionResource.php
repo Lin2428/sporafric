@@ -9,6 +9,7 @@ use App\Filament\Resources\InterventionResource\Pages;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
@@ -125,7 +126,8 @@ class InterventionResource extends Resource
     {
         return $table
         ->query(static::getEloquentQuery()->where('type_service', 1))
-            ->columns(InterventionUtil::table())
+        ->defaultSort('date_planifiee', 'desc')
+        ->columns(InterventionUtil::table())
             ->filters([
                 Filter::make('status')
                 ->form([
@@ -133,6 +135,10 @@ class InterventionResource extends Resource
                     ->options(collect(InterventionStatus::cases())
                         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
                         ->toArray()),
+
+                    Checkbox::make('later')
+                        ->label('En retard')
+                        ->reactive(),
 
                     DatePicker::make('date_planifiee')
                         ->label('Date planifiée'),
@@ -152,6 +158,8 @@ class InterventionResource extends Resource
                         ->when($data['date_planifiee'] ?? null, fn (Builder $query, string $date) => $query->whereDate('date_planifiee', '=', $date))
                         ->when($data['date_prise_appel'] ?? null, fn (Builder $query, string $date) => $query->whereDate('date_prise_appel', '=', $date))
                         ->when($data['type'] ?? null, fn (Builder $query, string $type) => $query->where('type', '=', $type))
+                        ->when($data['later'] ?? null, fn (Builder $query) => $query->where('status', '=', InterventionStatus::PLANIFIEE->value)
+                        ->whereDate('date_planifiee', '<', now()))
                 )
             ])
             ->actions([

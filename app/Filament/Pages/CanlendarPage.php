@@ -52,11 +52,12 @@ class CanlendarPage extends Page implements HasForms
                     Select::make('technicien')
                         ->label('Filtrer par technicien')
                         ->options($technicians)
+                        ->default( session('technicien'))
                         ->searchable()
                         ->reactive()
                         ->afterStateUpdated(function ($state) {
-                            $this->technicien = $state;
-                            $this->dispatch('reloadCalendar');
+                            session(['technicien' => $state]);
+                            return redirect(request()->header('Referer'));
                         })
                         ->placeholder('Sélectionnez un technicien'),
 
@@ -67,11 +68,12 @@ class CanlendarPage extends Page implements HasForms
                                 ->mapWithKeys(fn($status) => [$status->value => $status->label()])
                                 ->toArray()
                         )
+                        ->default( session('status'))
                         ->reactive()
                         ->searchable()
                         ->afterStateUpdated(function ($state) {
-                            $this->status = $state;
-                            $this->submit();
+                            session(['status' => $state]);
+                            return redirect(request()->header('Referer'));
                         })
                         ->placeholder('Sélectionnez un statut'),
                 ])->columns(2),

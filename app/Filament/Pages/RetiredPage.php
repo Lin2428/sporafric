@@ -45,6 +45,12 @@ class RetiredPage extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.pages.retired-page';
 
+      public static function getNavigationBadge(): ?string
+    {
+        $count = Intervention::where('type',  InterventionType::RETRAIT->value)->count();
+        return $count;
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -113,7 +119,7 @@ class RetiredPage extends Page implements HasForms, HasTable
                     $data['type_service'] = '0';
                     $data['type'] = InterventionType::RETRAIT->value;
                     $data['identifiant'] = NumberUtils::generate();
-                    
+                
                     $intervention = $devis->interventions()->create($data);
 
                     $technicians = $data['technicien_id'] ?? [];
@@ -135,7 +141,7 @@ class RetiredPage extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Intervention::query()
+            ->query(static::$model::query()
             ->where('type', InterventionType::RETRAIT)
             ->where('type_service', '=', 0)
             )
@@ -150,11 +156,11 @@ class RetiredPage extends Page implements HasForms, HasTable
                     ->url(fn($record) => url('admin/intervention-devis/'.$record->id)),
                     EditAction::make()
                     ->url(fn($record) => url('admin/intervention-devis/'.$record->id.'/edit')),
-                    Action::make('cancel')
-                    ->label("Annuler")
-                    ->color('danger')
-                    ->icon('heroicon-o-x-circle')
-                    ->requiresConfirmation(),
+                    // Action::make('cancel')
+                    // ->label("Annuler")
+                    // ->color('danger')
+                    // ->icon('heroicon-o-x-circle')
+                    // ->requiresConfirmation(),
                 ]), 
             ])
             ->bulkActions([

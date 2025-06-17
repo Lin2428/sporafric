@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\GeneratorResource\Pages;
 
+use App\Enum\InterventionStatus;
 use App\Filament\Resources\InterventionResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
@@ -42,6 +43,25 @@ class ViewIntervention extends ViewRecord
                     ->label('Modifier l\'intervention')
                     ->icon('heroicon-o-pencil'),
 
+                 Actions\Action::make('en_cours')
+                    ->label('Marquer en cours')
+                    ->icon('heroicon-o-play')
+                    ->color('primary')
+                    ->action(function ($record) {
+                        $record->status = InterventionStatus::EN_COURS->value;
+                        $record->save();
+                    })
+                    ->visible(fn($record)=>$record->status == InterventionStatus::PLANIFIEE->value ? true : false),
+
+                Actions\Action::make('finish')
+                    ->label('Marquer comme terminé')
+                    ->icon('heroicon-o-check')
+                    ->color('success')
+                    ->action(function ($record) {
+                        $record->status = InterventionStatus::TERMINEE->value;
+                        $record->save();
+                    })
+                    ->visible(fn($record)=> $record->status == InterventionStatus::EN_COURS->value ? true : false)
               
             ]),
         ];

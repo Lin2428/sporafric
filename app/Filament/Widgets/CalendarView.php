@@ -50,8 +50,10 @@ class CalendarView extends CalendarWidget
     $end = $fetchInfo['end'] ?? now()->endOfMonth();
 
     return Intervention::whereBetween('start_date', [$start, $end])
-        ->when($this->technicien, fn($q) => $q->where('user_id', $this->technicien))
-        ->when($this->status, fn($q) => $q->where('status', $this->status))
+        ->when($this->technicien, fn($q) => $q->whereHas('interventionTechniciens', function($q){
+            $q->where('technicien_id', '=', $this->technicien);
+        }))
+        ->when($this->status!=null, fn($q) => $q->where('status','=', $this->status))
         ->get()
         ->map(fn(Intervention $intervention) => $intervention->toCalendarEvent());
     }
@@ -74,8 +76,13 @@ class CalendarView extends CalendarWidget
         public function onEventClick(array $info = [], ?string $action = null): void
         {
            $id = $info['event']['extendedProps']['key'];
-           redirect()->route('admin.interventions', ['id' => $id,
-        'data-target' => '_blank',]);
+           $type = $info['event']['extendedProps']['type_service'];
+
+           if($type === 1){
+            redirect()->route('admin.interventions', ['id' => $id]);
+           }else{
+            redirect()->route('admin.intervention.devis', ['id' => $id]);
+           } 
         }
 
     /**
