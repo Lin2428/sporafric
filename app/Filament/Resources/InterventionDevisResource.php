@@ -119,7 +119,7 @@ public static function form(Form $form): Form
         return $table
         ->query(static::getEloquentQuery()->where('type_service', 0))
         ->defaultPaginationPageOption(50)
-        ->columns(InterventionUtil::table())
+        ->columns(InterventionUtil::table("Devis"))
         ->defaultSort('date_planifiee', 'desc')
             ->filters([
                 Filter::make('status')

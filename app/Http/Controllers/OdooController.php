@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Devis;
 use App\Models\Generator;
 use App\Services\OdooService;
 
@@ -68,13 +69,19 @@ class OdooController extends Controller
         return $data;
     }
 
-    public static function syncronizeDevis()
+    public static function syncronizeDevis(bool $all = false)
     {
         $odoo = new OdooService();
+        $devis = Devis::all()->pluck('odoo_id')->toArray();
 
-        $orders = $odoo->searchRead('sale.order', [
-           ( ['is_rental_order', '=', true])
-        ], [
+        $orders = $odoo->searchRead('sale.order', 
+        $all ? [ ( ['is_rental_order', '=', true])
+            ] :
+            [
+                (['id', 'not in', $devis]),
+               ( ['is_rental_order', '=', true])
+            ],
+             [
             'id',
             'name',
             'partner_id',

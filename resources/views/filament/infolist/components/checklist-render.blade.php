@@ -1,1 +1,2 @@
-@livewire('check-list')
+
+@livewire('check-list', ['record' => $getRecord()])

@@ -15,7 +15,7 @@ class InterventionTypeChart extends ChartWidget
     protected function getData(): array
     {
         $data = $this->getEloquentQuery()->get();
-       
+    
         $labels = [];
         $values = [];
         foreach ($data as $item) {
@@ -34,6 +34,7 @@ class InterventionTypeChart extends ChartWidget
                         'rgba(75, 192, 192, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
                         'rgba(153, 102, 255, 0.2)',
+                        'rgba(201, 203, 207, 0.2)'
                     ],
                     
                 'borderColor'=> [
@@ -42,7 +43,8 @@ class InterventionTypeChart extends ChartWidget
                         'rgb(255, 205, 86)',
                         'rgb(75, 192, 192)',
                         'rgb(54, 162, 235)',
-                        'rgb(153, 102, 255)'
+                        'rgb(153, 102, 255)',
+                        'rgb(201, 203, 207)'
                       ],
                 ],
             ],
@@ -56,7 +58,7 @@ class InterventionTypeChart extends ChartWidget
             COUNT(*) AS total,
             type
         ')
-        ->whereMonth('created_at', [now()->subMonths(2), now()])
+        ->whereBetween('created_at', [now()->subMonths(2), now()])
         ->groupBy('type');
     }
 

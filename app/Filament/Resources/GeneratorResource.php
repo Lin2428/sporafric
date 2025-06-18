@@ -807,9 +807,7 @@ class GeneratorResource extends Resource
                             ->schema([
                                \Filament\Infolists\Components\View::make('filament.infolist.components.checklist-render')
                                     ->label('')
-                                    ->viewData([
-                                        'record' => fn ($record) => $record->checkList,
-                                    ]),
+                                    ->viewData(['record'])
                             ]),
                             Tabs\Tab::make('Historique des interventions')
                             ->icon('heroicon-o-arrow-path')

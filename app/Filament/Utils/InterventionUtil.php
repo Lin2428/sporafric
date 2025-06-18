@@ -67,7 +67,7 @@ class InterventionUtil
         return new HtmlString($html);
     }
 
-    public static function table(): array
+    public static function table(string $nameContrat = "Contrat"): array
     {
         return [
             TextColumn::make('created_at')
@@ -117,6 +117,27 @@ class InterventionUtil
                 ->description(fn(Intervention $record) => static::customerColumn($record))
                 ->extraAttributes(['class' => 'font-bold'])
                 ->limit(8),
+
+            TextColumn::make('cd') // Nom arbitraire, car on utilise getStateUsing
+                ->label($nameContrat)
+                ->searchable(true, function($search) {
+                    return fn($query, $search) => $query
+                        ->whereHas('devis', function ($query) use ($search) {
+                            $query->where('number', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('contract', function ($query) use ($search) {
+                            $query->where('number', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('customer', function ($query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        });
+                })
+                ->getStateUsing(function (Intervention $record) {
+                    return  optional($record->contract)->number ??
+                         optional($record->devis)->number
+                         ?? "Hors contrat";
+                })
+                ->extraAttributes(['class' => 'font-bold']),
 
             TextColumn::make('generator_name')
                 ->label('Groupe Électrogène')

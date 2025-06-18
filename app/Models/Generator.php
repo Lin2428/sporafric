@@ -58,4 +58,9 @@ class Generator extends Model
     {
         return $this->hasMany(InterventionPieces::class);
     }
+
+    public function etat()
+    {
+        return $this->hasOne(Checklist::class);
+    }
 }

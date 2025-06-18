@@ -4,16 +4,16 @@
         <tr>
             <th class="px-4 py-2 text-left">id</th>
             <th class="px-4 py-2 text-left">Product</th>
-            <th class="px-4 py-2 text-left">Réference</th>
+            <th class="px-4 py-2 text-left">Date d'écheance</th>
         </tr>
     </thead>
     <tbody>
-        @if (!empty($getLivewire()->products))
-        @foreach ($getLivewire()->products as $product)
+        @if (!empty($getLivewire()->devis))
+        @foreach ($getLivewire()->devis['orders'] as $product)
         <tr class="hover:bg-gray-50">
             <td class="px-4 py-2">{{ $product['id']}}</td>
             <td class="px-4 py-2">{{ $product['name'] }}</td>
-            <td class="px-4 py-2">{{ $product['default_code'] }}</td>
+            <td class="px-4 py-2">{{ \App\Utils\DateUtils::format($product['expected_date']) }}</td>
         </tr>
         @endforeach
         @endif

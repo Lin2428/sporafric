@@ -43,7 +43,7 @@ SELECT
     TIMESTAMPDIFF(MONTH, c.start_date, NOW()) AS mois_ecoules,
     TIMESTAMPDIFF(MONTH, c.start_date, NOW()) * c.forfait AS montant_paye,
 
-    -- Ajout du champ occupation seulement si contract_generators est utilisé
+    -- Durée d'occupation du générateur
     TIMESTAMPDIFF(DAY, cg.created_at, cg.updated_at) AS occupation
 
 FROM interventions i
@@ -53,10 +53,18 @@ LEFT JOIN contracts c ON c.id = i.contract_id
 LEFT JOIN customers cu ON cu.id = c.customer_id
 LEFT JOIN intervention_infos inf ON inf.intervention_id = i.id
 
--- Jointure avec contract_generators
-LEFT JOIN contract_generators cg ON cg.contract_id = i.contract_id
+-- Jointure filtrée avec contract_generators (1 seul par contrat)
+LEFT JOIN (
+    SELECT *
+    FROM (
+        SELECT *,
+               ROW_NUMBER() OVER (PARTITION BY contract_id ORDER BY created_at DESC) AS rn
+        FROM contract_generators
+    ) AS ranked_cg
+    WHERE rn = 1
+) AS cg ON cg.contract_id = i.contract_id
 
--- Gestion du générateur (priorité à contract_generators)
+-- Gestion du générateur (lié à contract_generator)
 LEFT JOIN generators g ON g.id = cg.generator_id
 
 -- Sous-requête pièces

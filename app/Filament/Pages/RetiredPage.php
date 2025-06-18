@@ -145,7 +145,7 @@ class RetiredPage extends Page implements HasForms, HasTable
             ->where('type', InterventionType::RETRAIT)
             ->where('type_service', '=', 0)
             )
-            ->columns(InterventionUtil::table())
+            ->columns(InterventionUtil::table("Devis"))
             ->recordUrl(fn($record) => url('admin/intervention-devis/'.$record->id))
             ->filters([
                 // ...
