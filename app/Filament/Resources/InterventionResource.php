@@ -54,8 +54,7 @@ class InterventionResource extends Resource
                                     ->options(["1" => "Maintenance", "0" => "Location"])
                                     ->default("1")
                                     ->disabled()
-                                    ->columnSpanFull()
-                                    ->reactive(),
+                                    ->columnSpanFull(),
 
                                 Select::make('type_activite')
                                     ->label("Type d'activité")

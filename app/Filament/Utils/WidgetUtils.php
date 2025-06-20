@@ -78,7 +78,7 @@ class WidgetUtils
     public static function customerSelectWidget(): Select
     {
         $select = Select::make('customer_id')
-            ->relationship('customer', 'name')
+            //->relationship('customer', 'name')
             ->searchable()
             ->required()
             ->allowHtml()
@@ -121,12 +121,12 @@ class WidgetUtils
     public static function contractSelectWidget(string $name = "contract_id"): Select
     {
         $select = Select::make($name)
-            ->relationship(function () use ($name) {
-                if(str_contains($name, 'devis')) {
-                    return 'devis';
-                }
-                return 'contract';
-            },'number')
+            // ->relationship(function () use ($name) {
+            //     if(str_contains($name, 'devis')) {
+            //         return 'devis';
+            //     }
+            //     return 'contract';
+            // },'number')
             ->searchable()
             ->required()
             ->allowHtml()

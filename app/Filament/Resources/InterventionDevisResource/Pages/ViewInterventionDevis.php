@@ -7,6 +7,7 @@ use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\InterventionDevisResource;
 use App\Models\Generator;
+use ArielMejiaDev\FilamentPrintable\Actions\PrintBulkAction;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
@@ -36,12 +37,10 @@ $name = $this->record->devis != null ? $this->record->devis?->customer->name . "
     protected function getHeaderActions(): array
     {
         return [
-            /*Actions\Action::make('facture')
-                ->label('Generer la facture')
-                ->icon('heroicon-o-ticket')
-                ->color('success')
-                ->iconPosition('after'),*/
+
             Actions\ActionGroup::make([
+                     PrintBulkAction::make(),
+
                 Actions\EditAction::make()
                     ->label('Modifier l\'intervention')
                     ->icon('heroicon-o-pencil'),

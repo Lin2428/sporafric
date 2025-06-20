@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "84a503b02a84d1c31823204e15d7bbaa",
+    "content-hash": "1a410bdcbd3b74c55fac6b052dcfc081",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -71,6 +71,85 @@
                 "source": "https://github.com/AnourValar/eloquent-serialize/tree/1.3.1"
             },
             "time": "2025-04-06T06:54:34+00:00"
+        },
+        {
+            "name": "arielmejiadev/filament-printable",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ArielMejiaDev/filament-printable.git",
+                "reference": "7f973c7e417996e3f9f93e2fd3258725f73261e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ArielMejiaDev/filament-printable/zipball/7f973c7e417996e3f9f93e2fd3258725f73261e7",
+                "reference": "7f973c7e417996e3f9f93e2fd3258725f73261e7",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0",
+                "php": "^8.1|^8.2",
+                "spatie/laravel-package-tools": "^1.15.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.9",
+                "nunomaduro/larastan": "^2.0.1",
+                "orchestra/testbench": "^8.0",
+                "pestphp/pest": "^2.1",
+                "pestphp/pest-plugin-arch": "^2.0",
+                "pestphp/pest-plugin-laravel": "^2.0",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "FilamentPrintable": "ArielMejiaDev\\FilamentPrintable\\Facades\\FilamentPrintable"
+                    },
+                    "providers": [
+                        "ArielMejiaDev\\FilamentPrintable\\FilamentPrintableServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ArielMejiaDev\\FilamentPrintable\\": "src/",
+                    "ArielMejiaDev\\FilamentPrintable\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ArielMejiaDev",
+                    "email": "arielmejiadev@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Package to get your Filament Resources Printable",
+            "homepage": "https://github.com/arielmejiadev/filament-printable",
+            "keywords": [
+                "arielmejiadev",
+                "filament-printable",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/arielmejiadev/filament-printable/issues",
+                "source": "https://github.com/arielmejiadev/filament-printable"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/ArielMejiaDev",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-05-29T03:26:53+00:00"
         },
         {
             "name": "blade-ui-kit/blade-heroicons",

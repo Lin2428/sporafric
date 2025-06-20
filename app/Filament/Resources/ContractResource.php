@@ -114,7 +114,8 @@ class ContractResource extends Resource
 
                 Repeater::make('generators')
                     ->formatStateUsing(function ($record) {
-                        return $record->generators->map(function ($generator) {
+                        if(empty($record->generators)) return [];
+                        return $record->generators?->map(function ($generator) {
                             return [
                                 'generator_id' => $generator->id,
                                 'site' => $generator->pivot->site,

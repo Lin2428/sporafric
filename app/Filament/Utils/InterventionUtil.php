@@ -6,6 +6,7 @@ use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Models\Intervention;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
@@ -18,9 +19,9 @@ class InterventionUtil
         $section = Section::make('Infos internes')
             ->columns(1)
             ->schema([
-                DatePicker::make('start_date')
+                DateTimePicker::make('start_date')
                     ->label('Date de début'),
-                DatePicker::make('end_date')
+                DateTimePicker::make('end_date')
                     ->label('Date limite'),
 
                 Select::make('status')

@@ -24,8 +24,8 @@ return new class extends Migration
             $table->integer('type')->nullable();
             $table->string('identifiant')->nullable();
             $table->text('description_panne')->nullable();
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
             $table->integer('compteur')->nullable();
             $table->string('fiche')->nullable();
             $table->boolean('facturable')->nullable();

@@ -35,7 +35,7 @@ class InterventionDevisResource extends Resource
     protected static ?string $model = Intervention::class;
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?string $navigationGroup = 'Location';
-    protected static ?string $navigationLabel = 'Loc Interventions';
+    protected static ?string $navigationLabel = 'Interventions';
     protected static ?string $title = 'Interventions';
     protected static ?int $navigationSort = 1;
 

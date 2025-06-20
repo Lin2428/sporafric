@@ -2,6 +2,7 @@
 namespace App\Filament\Pages;
 
 use App\Enum\InterventionStatus;
+use App\Filament\Utils\WidgetUtils;
 use App\Filament\Widgets\CalendarView;
 use App\Models\Technicien;
 use Filament\Forms\Components\Group;
@@ -23,8 +24,10 @@ class CanlendarPage extends Page implements HasForms
 
     protected static string $view = 'filament.pages.canlendar-page';
 
-    public $technicien = null;
-    public $status     = 1;
+    public $technicien;
+    public $status;
+    public $customer_id;
+    public $type;
 
     public function getFooterWidgets(): array
     {
@@ -32,6 +35,8 @@ class CanlendarPage extends Page implements HasForms
             CalendarView::make([
                 'technicien' => $this->technicien,
                 'status'     => $this->status,
+                'customer_id' => $this->customer_id,
+                'type' => $this->type
             ]),
         ];
     }
@@ -49,6 +54,29 @@ class CanlendarPage extends Page implements HasForms
         return $form
             ->schema([
                 Group::make([
+                    WidgetUtils::customerSelectWidget()
+                        ->columnSpanFull()
+                        ->label('Filtrer par client')
+                        ->default( session('customer_id'))
+                        ->reactive()
+                        ->afterStateUpdated(function ($state) {
+                            session(['customer_id' => $state]);
+                            return redirect(request()->header('Referer'));
+                        }),
+                    Select::make('type')
+                        ->label('Filtrer par type')
+                        ->default( session('type'))
+                        ->options([
+                            '0' => 'Location',
+                            '1' => 'Maintenance',
+                        ])
+                        ->searchable()
+                        ->reactive()
+                        ->afterStateUpdated(function ($state) {
+                            session(['type' => $state]);
+                            return redirect(request()->header('Referer'));
+                        })
+                        ->placeholder('Sélectionnez un type'),
                     Select::make('technicien')
                         ->label('Filtrer par technicien')
                         ->options($technicians)
@@ -76,7 +104,9 @@ class CanlendarPage extends Page implements HasForms
                             return redirect(request()->header('Referer'));
                         })
                         ->placeholder('Sélectionnez un statut'),
-                ])->columns(2),
+
+                    
+                ])->columns(3),
             ]);
     }
 }
