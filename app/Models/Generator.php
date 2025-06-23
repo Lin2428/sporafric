@@ -28,6 +28,8 @@ class Generator extends Model
         'lat',
         'lng',
         'user_id',
+        'prochain_visite',
+        'vidange',
     ];
 
     protected $casts = [
