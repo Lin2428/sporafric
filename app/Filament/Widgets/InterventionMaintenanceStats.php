@@ -70,7 +70,7 @@ class InterventionMaintenanceStats extends BaseWidget
             COUNT(*) AS total,
             COUNT(CASE WHEN status = 1 THEN 1 END) AS en_cours,
             COUNT(CASE WHEN status = 2 THEN 1 END) AS trermine,
-            COUNT(CASE WHEN date_planifiee < now() AND status = 0 THEN 1 END) AS en_retard
+            COUNT(CASE WHEN start_date < now() AND status = 0 THEN 1 END) AS en_retard
         ')
         
             ->where('type_service', '1');

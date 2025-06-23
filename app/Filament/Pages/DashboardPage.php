@@ -24,10 +24,9 @@ class DashboardPage extends Page
 
     public function mount()
     {
-        $this->interventionsDuJour = Intervention::whereBetween('date_planifiee', [now()->subWeek(), now()->addDay()])
-        ->where('status', '!=', InterventionStatus::TERMINEE->value)
+        $this->interventionsDuJour = Intervention::where('status', '!=', InterventionStatus::TERMINEE->value)
         ->with(['interventionTechniciens', 'pieces', 'contract', 'customer'])
-        ->orderBy('date_planifiee', 'asc')
+        ->orderBy('start_date', 'asc')
         ->get();
     }
 }

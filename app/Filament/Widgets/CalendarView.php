@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
@@ -107,6 +108,12 @@ class CalendarView extends CalendarWidget
                     ->required()
                     ->label('Type')
                     ->default(InterventionType::from($intervention->type)->value),
+                 
+                Select::make('status')
+                    ->options(collect(InterventionStatus::cases())->map(fn(InterventionStatus $status) => $status->label()))
+                    ->required()
+                    ->label('Status')
+                    ->default(InterventionStatus::from($intervention->status)->value),
 
                 WidgetUtils::contractSelectWidget()
                     ->default($intervention->contract_id)
@@ -128,7 +135,7 @@ class CalendarView extends CalendarWidget
                     ->schema([WidgetUtils::customerSelectWidget()->default($intervention->customer_id)->columnSpanFull(), TextInput::make('generator_name')->label('Marque du GE')->default($intervention->generator_name), TextInput::make('power')->label('Puissance (KVA)')->numeric()->default($intervention->power), TextInput::make('serial_number')->label('Numéro de série')->default($intervention->power)->columnSpanFull()])
                     ->visible(fn() => $this->getRecord()->type_activite == '0'),
 
-                WidgetUtils::generatorSelectWidget()
+                WidgetUtils::generatorSelectWidget(type:null)
                     ->required()
                     ->default($this->getRecord()->generator_id)
                     ->visible(fn() => $this->getRecord()->generator_id != null),

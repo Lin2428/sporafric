@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class WidgetUtils
 {
-    public static function generatorSelectWidget(?Closure $onUpdate = null, ?string $name = 'generator_id', bool $isDispo = true, int $type = 1): Select
+    public static function generatorSelectWidget(?Closure $onUpdate = null, ?string $name = 'generator_id', bool $isDispo = true, null|int $type = 1): Select
     {
         $select = Select::make($name)
             ->allowHtml()
@@ -33,8 +33,10 @@ class WidgetUtils
                     });
 
                 }
-                $query
+                if($type != null) {
+                    $query
                     ->where('type', '=', $type);
+                }
                     if($search === '/'){
                     $result = $query->get();
                     }
@@ -129,6 +131,7 @@ class WidgetUtils
             // },'number')
             ->searchable()
             ->required()
+            ->reactive()
             ->allowHtml()
             ->label('Contrat')
             ->getSearchResultsUsing(function (string $search) use($name) {

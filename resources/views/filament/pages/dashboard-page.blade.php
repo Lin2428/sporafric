@@ -26,7 +26,7 @@
             <div class="space-y-4 mt-3">
                 @foreach($interventionsDuJour as $intervention)
                     @php
-                        $date = \Carbon\Carbon::parse($intervention->date_planifiee);
+                        $date = \Carbon\Carbon::parse($intervention->start_date)->locale('fr');
                         $today = now()->startOfDay();
             
                         if ($date->lt($today)) {
@@ -44,7 +44,7 @@
                         }
 
                         $url = '/admin/interventions/'.$intervention->id;
-                        if($intervention->type == 0) {
+                        if($intervention->type_service == 0) {
                             $url = '/admin/intervention-devis/'.$intervention->id;
                         }
             
