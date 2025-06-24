@@ -24,7 +24,8 @@ class DashboardPage extends Page
 
     public function mount()
     {
-        $this->interventionsDuJour = Intervention::where('status', '!=', InterventionStatus::TERMINEE->value)
+        $this->interventionsDuJour = Intervention::
+        where('status', '!=', InterventionStatus::TERMINEE->value)
         ->with(['interventionTechniciens', 'pieces', 'contract', 'customer'])
         ->orderBy('start_date', 'asc')
         ->get();

@@ -34,6 +34,7 @@ class Generator extends Model
 
     protected $casts = [
         'start-up' => 'datetime',
+        'vidange' => 'boolean',
     ];
 
 

@@ -2,11 +2,13 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Utils\BadgetWidget;
 use App\Models\ContractGenerator;
 use App\Models\DevisGenerator;
 use App\Models\Generator;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -26,13 +28,12 @@ class GeneratorHours extends Page implements HasTable
 
     protected static function getBaseQuery(): Builder|Relation
     {
-
         return Generator::query();
     }
 
     public static function customerColumn(ContractGenerator|DevisGenerator|null $record): HtmlString
     {
-        if(!$record){
+        if (!$record) {
             return new HtmlString('');
         }
         $html = "
@@ -49,43 +50,62 @@ class GeneratorHours extends Page implements HasTable
         return $table
             ->query(static::getBaseQuery())
             ->defaultSort('created_at', 'desc')
+            ->defaultPaginationPageOption('all')
             ->columns([
-                TextColumn::make('name')
-                ->label('GE')
-                ->limit(8),
+                TextColumn::make('name')->label('GE')->limit(8),
                 TextColumn::make('reference'),
                 TextColumn::make('client') // Nom arbitraire, car on utilise getStateUsing
-                ->label('Client')
-                ->searchable(true, function($search) {
-                    return fn($query, $search) => $query
-                        ->whereHas('devisGenerator.devis.customer', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        })
-                        ->orWhereHas('ContractGenerator.contract.customer', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        });
-
-                })
-                ->getStateUsing(function ($record) {
-                    return  optional($record->devisGenerator?->devis?->customer)->name ??
-                         optional($record->ContractGenerator?->contract?->customer)->name;
-                })
-                ->description(fn($record) => static::customerColumn($record->devisGenerator ?? $record->ContractGenerator))
-                ->extraAttributes(['class' => 'font-bold'])
-                ->limit(8),
+                    ->label('Client')
+                    ->searchable(true, function ($search) {
+                        return fn($query, $search) => $query
+                            ->whereHas('devisGenerator.devis.customer', function ($query) use ($search) {
+                                $query->where('name', 'like', "%{$search}%");
+                            })
+                            ->orWhereHas('ContractGenerator.contract.customer', function ($query) use ($search) {
+                                $query->where('name', 'like', "%{$search}%");
+                            });
+                    })
+                    ->getStateUsing(function ($record) {
+                        return optional($record->devisGenerator?->devis?->customer)->name ?? optional($record->ContractGenerator?->contract?->customer)->name;
+                    })
+                    ->description(fn($record) => static::customerColumn($record->devisGenerator ?? $record->ContractGenerator))
+                    ->extraAttributes(['class' => 'font-bold'])
+                    ->limit(8),
 
                 TextInputColumn::make('houres')
-                ->label('Rélévé des heurs'),
+                    ->label('Rélévé des heures')
+                    ->extraAttributes(['style' => 'width: 60px;'])
+                    ->updateStateUsing(function (string $state, $record) {
+                        $record->houres = $state;
+                        $record->next_vidange = $record->prochain_visite - $record->houres;
+                        $record->vidange = $record->next_vidange > 250;
+                        $record->save();
+                        return $state;
+                    }),
+                     TextInputColumn::make('prochain_visite')
+                    ->label('Prochaine visite')
+                    ->extraAttributes(['style' => 'width: 60px;'])
+                    ->updateStateUsing(function (string $state, $record) {
+                        $record->prochain_visite = $state;
+                        $record->next_vidange = $record->prochain_visite - $record->houres;
+                        $record->vidange = $record->next_vidange > 250;
+                        $record->save();
+                        return $state;
+                    }),
 
-                TextColumn::make('next_vidange')
-                ->label('Prochaine vidange')
-                ->getStateUsing(fn($record) => $record->next_vidange.'h'),
+                
 
-                TextInputColumn::make('prochain_visite')
-                ->label('Prochaine visite'),
+                TextColumn::make('next_vidange')->label('Prochaine vidange')->getStateUsing(fn($record) => $record->next_vidange . 'h'),
+                TextColumn::make('vidange')
+                    ->label('Vidange')
+                    ->getStateUsing(function ($record) {
+                        $text = $record->vidange ? 'Oui' : 'Non';
+                        return BadgetWidget::boleanToBadget($record->vidange, 'Ok', 'Vidange');
+                    })
+                    ->html(),
 
+               
             ])
-            ->recordUrl(fn($record) => url('admin/interventions/'.$record->id))
             ->filters([
                 //  Filter::make('status')
                 // ->form([
@@ -93,13 +113,10 @@ class GeneratorHours extends Page implements HasTable
                 //     ->options(collect(InterventionStatus::cases())
                 //         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
                 //         ->toArray()),
-
                 //     DatePicker::make('date_planifiee')
                 //         ->label('Date planifiée'),
-
                 //     DatePicker::make('date_prise_appel')
                 //         ->label('Date de prise d\'appel'),
-
                 //     Select::make('type')
                 //         ->label('Type')
                 //         ->options(collect(InterventionType::cases())
@@ -108,17 +125,17 @@ class GeneratorHours extends Page implements HasTable
                 // ])
             ])
             ->actions([
-            //     ActionGroup::make([
-            //        ViewAction::make()
-            //        ->url(fn($record) => url('admin/interventions/'.$record->id)),
-            //         EditAction::make()
-            //         ->url(fn($record) => url('admin/interventions/'.$record->id.'/edit')),
-            //   Action::make('cancel')
-            //         ->label("Annuler")
-            //         ->color('danger')
-            //         ->icon('heroicon-o-x-circle')
-            //         ->requiresConfirmation(),
-            //     ]),
+                //     ActionGroup::make([
+                //        ViewAction::make()
+                //        ->url(fn($record) => url('admin/interventions/'.$record->id)),
+                //         EditAction::make()
+                //         ->url(fn($record) => url('admin/interventions/'.$record->id.'/edit')),
+                //   Action::make('cancel')
+                //         ->label("Annuler")
+                //         ->color('danger')
+                //         ->icon('heroicon-o-x-circle')
+                //         ->requiresConfirmation(),
+                //     ]),
             ])
             ->bulkActions([]);
     }
