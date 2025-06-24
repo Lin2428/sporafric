@@ -8,6 +8,7 @@ use App\Models\Generator;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Utils\NumberUtils;
+use Illuminate\Support\HtmlString;
 
 class GeneratorlocationStats extends BaseWidget
 {
@@ -18,6 +19,8 @@ class GeneratorlocationStats extends BaseWidget
         $data = $this->getEloquentQuery()->first();
         $locationFinish = Devis::where('end_date', '<=', now())
         ->count();
+
+        $vidangeCount = Generator::where('vidange', false)->count();
 
         $txLocation = $data->total_location == 0 ? 0 : ($data->total_location/$data->total) * 100;
         $txIndisponible = $data->indisponible == 0 ? 0 : ($data->indisponible/$data->total) * 100;
@@ -51,6 +54,10 @@ class GeneratorlocationStats extends BaseWidget
                 ->icon('heroicon-o-cube')
                 ->url(url('admin/devis?tableFilters[is_active][value]=0')),
 
+            Stat::make('Vidange en attente', $vidangeCount)
+                ->icon('heroicon-o-arrow-path-rounded-square')
+                ->value(new HtmlString('<span class="text-red-500">'.$vidangeCount.'</span>'))
+                ->url(url('/admin/generator-hours')),
                 
         ];
     }

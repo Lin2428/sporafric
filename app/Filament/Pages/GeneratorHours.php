@@ -6,6 +6,8 @@ use App\Filament\Utils\BadgetWidget;
 use App\Models\ContractGenerator;
 use App\Models\DevisGenerator;
 use App\Models\Generator;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Columns\BadgeColumn;
@@ -13,6 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Filament\Tables\Table;
@@ -23,12 +26,12 @@ class GeneratorHours extends Page implements HasTable
     use InteractsWithTable;
     protected static ?string $navigationIcon = 'heroicon-o-arrow-path-rounded-square';
     protected static ?string $navigationGroup = 'Ronde';
-
     protected static ?string $navigationLabel = 'Vidanges';
+    protected static ?string $title = 'Vidanges';
 
     protected static function getBaseQuery(): Builder|Relation
     {
-        return Generator::query();
+        return Generator::query()->orderBy('vidange');
     }
 
     public static function customerColumn(ContractGenerator|DevisGenerator|null $record): HtmlString
@@ -74,7 +77,8 @@ class GeneratorHours extends Page implements HasTable
 
                 TextInputColumn::make('houres')
                     ->label('Rélévé des heures')
-                    ->extraAttributes(['style' => 'width: 60px;'])
+                    ->width(50)
+                    ->type('number')
                     ->updateStateUsing(function (string $state, $record) {
                         $record->houres = $state;
                         $record->next_vidange = $record->prochain_visite - $record->houres;
@@ -82,9 +86,11 @@ class GeneratorHours extends Page implements HasTable
                         $record->save();
                         return $state;
                     }),
+
                      TextInputColumn::make('prochain_visite')
                     ->label('Prochaine visite')
-                    ->extraAttributes(['style' => 'width: 60px;'])
+                    ->extraAttributes(['style' => 'width: 100px;'])
+                    ->type('number')
                     ->updateStateUsing(function (string $state, $record) {
                         $record->prochain_visite = $state;
                         $record->next_vidange = $record->prochain_visite - $record->houres;
@@ -107,22 +113,20 @@ class GeneratorHours extends Page implements HasTable
                
             ])
             ->filters([
-                //  Filter::make('status')
-                // ->form([
-                //     CheckboxList::make('status')
-                //     ->options(collect(InterventionStatus::cases())
-                //         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                //         ->toArray()),
-                //     DatePicker::make('date_planifiee')
-                //         ->label('Date planifiée'),
-                //     DatePicker::make('date_prise_appel')
-                //         ->label('Date de prise d\'appel'),
-                //     Select::make('type')
-                //         ->label('Type')
-                //         ->options(collect(InterventionType::cases())
-                //             ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                //             ->toArray()),
-                // ])
+                 Filter::make('status')
+                ->form([
+                    Radio::make('vidange')
+                        ->label('Statut')
+                        ->options([
+                            2 => 'Vidange',
+                            1 => 'Ok',
+                        ])
+                ])->query(function (Builder $query, $data) {
+                    $query->when($data['vidange'] ?? null, function (Builder $query, $vidange) {
+                        $vidange = $vidange == 2 ? false : true;
+                        $query->where('vidange','=',$vidange);
+                    });
+                })
             ])
             ->actions([
                 //     ActionGroup::make([
