@@ -141,7 +141,7 @@ class ChecklistModal extends Component implements HasForms, HasActions
                     ]),
             ])
             ->action(function (array $data) {
-                dd($data);
+           
                 $etat = array_filter($data['etat']);
                 $etat_after = array_filter($data['etat_after']);
                     Checklist::updateOrCreate(

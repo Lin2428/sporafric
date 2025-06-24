@@ -4,6 +4,7 @@ namespace App\Filament\Resources\GeneratorResource\Pages;
 
 use App\Enum\InterventionStatus;
 use App\Filament\Resources\InterventionResource;
+use ArielMejiaDev\FilamentPrintable\Actions\PrintAction;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
@@ -33,11 +34,8 @@ class ViewIntervention extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            /*Actions\Action::make('facture')
-                ->label('Generer la facture')
-                ->icon('heroicon-o-ticket')
-                ->color('success')
-                ->iconPosition('after'),*/
+           PrintAction::make('print')
+            ->label('Imprimer'),
             Actions\ActionGroup::make([
                 Actions\EditAction::make()
                     ->label('Modifier l\'intervention')

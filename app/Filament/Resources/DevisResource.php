@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\DevisStats;
 use App\Filament\Resources\DevisResource\Pages;
+use App\Filament\Utils\BadgetWidget;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Devis;
 use App\Utils\DateUtils;
@@ -165,14 +167,13 @@ class DevisResource extends Resource
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50),
 
-                TextColumn::make('is_active')
-                    ->label('Statut')
-                    ->badge()
-                    ->getStateUsing(fn(Devis $record): string => $record->is_active ? 'En cours' : 'Terminé')
-                    ->colors([
-                        'success' => 'En cours',
-                        'danger' => 'Terminé',
-                    ]),
+                TextColumn::make('state')
+                    ->label('Etat')
+                    ->getStateUsing(function(Devis $record){
+                        $state = DevisStats::from($record->state)->label();
+                        return BadgetWidget::devisState($state);
+                    })
+                    ->html(),
 
                 TextColumn::make('customer.name')
                     ->label('Client')
@@ -182,6 +183,13 @@ class DevisResource extends Resource
                     ->limit(50)
                     ->description(fn(Devis $record): string => $record->customer_name != null && $record->customer_name != '0' ? $record->customer_name : ''),
                 
+                TextColumn::make('is_active')
+                    ->label('Statut')
+                    ->getStateUsing(function(Devis $record){
+                        return BadgetWidget::boleanToBadget($record->is_active, 'En cours', 'Terminé');
+                    })
+                    ->html(),
+                    
                 TextColumn::make('generator')
                     ->getStateUsing(fn(Devis $record): string => (string) $record->generators!=null ? (string)$record->generators?->count(): "0")
                     ->label('Nombre deGE')
@@ -249,14 +257,10 @@ class DevisResource extends Resource
                             ->schema([
                                 TextEntry::make('is_active')
                                     ->label('')
-                                    ->badge()
                                     ->getStateUsing(function (Devis $record) {
-                                        return $record->is_active ? 'En cours' : 'Terminé';
+                                        return BadgetWidget::boleanToBadget($record->is_active, 'En cours', 'Terminé');
                                     })
-                                    ->colors([
-                                        'success' => 'En cours',
-                                        'danger' => 'Terminé',
-                                    ]),
+                                    ->html(),
 
 
                                 ImageEntry::make('customer.logo')

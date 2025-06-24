@@ -92,6 +92,7 @@ class OdooController extends Controller
             'invoice_status',
             'amount_total',
             'expected_date',
+            'state'
         ]);
 
      

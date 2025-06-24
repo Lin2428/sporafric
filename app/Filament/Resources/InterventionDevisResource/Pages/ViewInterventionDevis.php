@@ -7,6 +7,7 @@ use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\InterventionDevisResource;
 use App\Models\Generator;
+use ArielMejiaDev\FilamentPrintable\Actions\PrintAction;
 use ArielMejiaDev\FilamentPrintable\Actions\PrintBulkAction;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
@@ -37,9 +38,9 @@ $name = $this->record->devis != null ? $this->record->devis?->customer->name . "
     protected function getHeaderActions(): array
     {
         return [
-
+            PrintAction::make('print')
+            ->label('Imprimer'),
             Actions\ActionGroup::make([
-                     PrintBulkAction::make(),
 
                 Actions\EditAction::make()
                     ->label('Modifier l\'intervention')

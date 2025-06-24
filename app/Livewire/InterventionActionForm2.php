@@ -55,7 +55,7 @@ class InterventionActionForm2 extends Component implements HasForms, HasActions
                             ->default((string)$this->record->facturable),
                         Select::make('astrinte')
                             ->label("Horaire")
-                            ->options(["0" => "Journée normale", "1" => "Astrainte"])
+                            ->options(["0" => "Journée normale", "1" => "Astreinte"])
                             ->default((string)$this->record->astrinte),
                         Grid::make(2)
                             ->schema([

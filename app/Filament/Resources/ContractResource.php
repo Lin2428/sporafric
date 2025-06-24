@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enum\GeneratorStatus;
 use App\Filament\Resources\ContractResource\Pages;
+use App\Filament\Utils\BadgetWidget;
 use App\Filament\Utils\WidgetUtils;
 use App\Livewire\ShowGeneratorsTable;
 use App\Models\Contract;
@@ -180,12 +181,10 @@ class ContractResource extends Resource
 
                 TextColumn::make('is_active')
                     ->label('Statut')
-                    ->badge()
-                    ->getStateUsing(fn(Contract $record): string => $record->is_active ? 'En cours' : 'Terminé')
-                    ->colors([
-                        'success' => 'En cours',
-                        'danger' => 'Terminé',
-                    ]),
+                    ->getStateUsing(function(Contract $record){
+                        return BadgetWidget::boleanToBadget($record->is_active, 'En cours', 'Terminé');
+                    })
+                    ->html(),
 
                 TextColumn::make('customer.name')
                     ->label('Client')
@@ -275,14 +274,10 @@ class ContractResource extends Resource
                             ->schema([
                                 TextEntry::make('is_active')
                                     ->label('')
-                                    ->badge()
                                     ->getStateUsing(function (Contract $record) {
-                                        return $record->is_active ? 'En cours' : 'Terminé';
+                                        return BadgetWidget::boleanToBadget($record->is_active, 'En cours', 'Terminé');
                                     })
-                                    ->colors([
-                                        'success' => 'En cours',
-                                        'danger' => 'Terminé',
-                                    ]),
+                                    ->html(),
 
 
                                 ImageEntry::make('customer.logo')

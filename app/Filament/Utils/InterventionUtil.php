@@ -84,15 +84,11 @@ class InterventionUtil
 
             TextColumn::make('status')
                 ->label('Statut')
-                ->badge()
-                ->getStateUsing(fn($record) => InterventionStatus::from($record->status)->label())
-                ->searchable()
-                ->colors([
-                    'warning' => "En cours",
-                    'info' => "Non commencée",
-                    'danger' => "Annulée",
-                    'success' => "Terminée",
-                ]),
+                ->getStateUsing(function($record){
+                    $stat = InterventionStatus::from($record->status)->label();
+                    return BadgetWidget::interventionStatusBadget($stat);
+                    })
+                ->html(),
 
             TextColumn::make('client') // Nom arbitraire, car on utilise getStateUsing
                 ->label('Client')

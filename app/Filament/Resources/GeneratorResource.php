@@ -6,8 +6,11 @@ use App\Enum\GeneratorStatus;
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\GeneratorResource\Pages;
+use App\Filament\Utils\BadgetWidget;
 use App\Livewire\CheckList;
 use App\Livewire\InterventionHistory;
+use App\Livewire\LocationHistory;
+use App\Models\DevisGenerator;
 use App\Models\Generator;
 use App\Models\Intervention;
 use App\Models\ReportLocation;
@@ -186,68 +189,34 @@ class GeneratorResource extends Resource
                     ->extraAttributes(['style' => 'width: 100px, height: 100px;']),
 
                 TextColumn::make('name')
-                    ->label('Marque')
-                    ->extraAttributes(['style' => 'font-weight: bold; '])
-                    ->searchable(),
-
-                TextColumn::make('reference')
-                    ->label('referencee')
+                    ->label('reference')
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
                 TextColumn::make('status')
                     ->label('Statut')
-                    ->badge()
                     ->getStateUsing(function (Generator $record) {
-                        return GeneratorStatus::from($record->status)->label();
+                        $status = GeneratorStatus::from($record->status)->label();
+                        return BadgetWidget::generatorStatusBadget($status);
                     })
-                    ->colors([
-                        'success' => 'Disponible',
-                        'warning' => 'En maintenance',
-                        'info'    => 'En location',
-                        'danger'  => 'Indisponible',
-                    ]),
-
-                TextColumn::make('serial_number')
-                    ->label('Numéro de série')
-                    ->searchable(),
-
-                TextColumn::make('power')
-                    ->label('Puissance (KVA)')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('voltage')
-                    ->label('Tension (V)'),
-
-                TextColumn::make('frequency')
-                    ->label('Fréquence (Hz)'),
-
-                TextColumn::make('fuel_type')
-                    ->label('Type de carburant')
-                    ->sortable()
-                    ->searchable(),
+                    ->html(),
 
                 TextColumn::make('houres')
                     ->label('Heures de fonc.')
                     ->sortable()
+                    ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
                 TextColumn::make('next_vidange')
                     ->label('Prochaine vidange')
                     ->sortable()
+                    ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
                 TextColumn::make('start-up')
                     ->label('Mise en service')
                     ->date('d/m/Y')
                     ->sortable(),
-
-                TextColumn::make('created_at')
-                    ->label('Ajouté le')
-                    ->date('d/m/Y')
-                    ->sortable()
-                    ->searchable(),
 
             ])
             ->filters([
@@ -319,16 +288,11 @@ class GeneratorResource extends Resource
                                             ->schema([
                                                 TextEntry::make('status')
                                                     ->label('')
-                                                    ->badge()
                                                     ->getStateUsing(function (Generator $record) {
-                                                        return GeneratorStatus::from($record->status)->label();
+                                                        $status = GeneratorStatus::from($record->status)->label();
+                                                        return BadgetWidget::generatorStatusBadget($status);
                                                     })
-                                                    ->colors([
-                                                        'success' => 'Disponible',
-                                                        'warning' => ['Pas de GE assigné', 'En maintenance'],
-                                                        'info'    => 'En location',
-                                                        'danger'  => 'Indisponible',
-                                                    ])
+                                                    ->html()
                                                     ->columnSpanFull(),
 
                                                 ImageEntry::make('image')
@@ -346,18 +310,11 @@ class GeneratorResource extends Resource
                                                     ->label('referencee')
                                                     ->extraAttributes(['class' => 'font-bold text-danger']),
 
-                                                TextEntry::make('serial_number')
-                                                    ->label('Numéro de série')
-                                                    ->columnSpanFull()
-                                                    ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                                 TextEntry::make('power')
                                                     ->label('Puissance')
                                                    ->extraAttributes([ 'class' => 'font-bold']),
 
-                                                TextEntry::make('fuel_type')
-                                                    ->label('Type de carburant')
-                                                   ->extraAttributes([ 'class' => 'font-bold']),
 
                                                 TextEntry::make('houres')
                                                     ->label('Heures de fonc.')
@@ -371,11 +328,8 @@ class GeneratorResource extends Resource
                                                 TextEntry::make('start-up')
                                                     ->label('Mise en service')
                                                     ->date('d/m/Y')
-                                                   ->extraAttributes([ 'class' => 'font-bold']),
-
-                                                TextEntry::make('created_at')
-                                                    ->label('Ajouté le')
-                                                    ->date('d/m/Y')
+                                                    ->inlineLabel()
+                                                    ->columnSpanFull()
                                                    ->extraAttributes([ 'class' => 'font-bold']),
                                             ]),
                                     ]),
@@ -393,26 +347,24 @@ class GeneratorResource extends Resource
                                                 return 'Devis en cours';
                                             }
 
-                                            return 'Pas de contrat';
+                                            return 'Pas de devis';
                                         })
                                             ->columns(2)
                                             ->schema([
                                                 TextEntry::make('is_active')
                                                     ->label('')
-                                                    ->badge()
                                                     ->getStateUsing(function (Generator $record) {
+                                                        $state = null;
                                                         if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->is_active ? 'En cours' : 'Terminé';
+                                                            $state =  $record->contractGenerator->contract->is_active;
+                                                            return BadgetWidget::boleanToBadget($state, 'En cours', 'Terminé');
                                                         }
                                                         if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->is_active ? 'En cours' : 'Terminé';
+                                                            $state =  $record->devisGenerator->devis->is_active;
+                                                            return BadgetWidget::boleanToBadget($state, 'En cours', 'Terminé');
                                                         }
-                                                        return 'Pas de contrat';
-                                                    })
-                                                    ->colors([
-                                                        'success' => 'En cours',
-                                                        'danger'  => 'Terminé',
-                                                    ]),
+                                                        return '';
+                                                    })->html(),
 
                                                 ImageEntry::make('logo')
                                                     ->label('')
@@ -522,10 +474,10 @@ class GeneratorResource extends Resource
                                     ->schema([
                                         \Filament\Infolists\Components\Section::make(function (Generator $record) {
                                             if($record->contractGenerator){
-                                                return 'Details du contrat';
+                                                return 'Details';
                                             }
                                             if($record->devisGenerator){
-                                                return 'Details du devis';
+                                                return 'Details';
                                             }
                                             return "Aucun Details";
                                         })
@@ -687,18 +639,17 @@ class GeneratorResource extends Resource
                                         ->schema([
                                             TextEntry::make('status')
                                             ->label('')
-                                            ->badge()
-                                            ->getStateUsing(fn($record) => InterventionStatus::from($record->status)->label())
-                                            ->colors([
-                                                'warning' => "En cours",
-                                                'info'  => "Planifiée",
-                                                'success' => "Terminée",
-                                            ]),
+                                            ->getStateUsing(function($record){ 
+                                                 $stats = InterventionStatus::from($record->status)->label();
+
+                                                 return BadgetWidget::interventionStatusBadget($stats);
+                                                })
+                                            ->html(),
 
                                             \Filament\Infolists\Components\Actions::make([
                                                 \Filament\Infolists\Components\Actions\Action::make('view')
                                                     ->label('Détail')
-                                                    ->url(fn($record) => url('admin/interventions/'.$record->id))
+                                                    ->url(fn($record) => url('admin/intervention-devis/'.$record->id))
                                                     ->icon('heroicon-o-eye')
                                                     ->color('gray')
                                                     ->size(ActionSize::Small),
@@ -817,6 +768,17 @@ class GeneratorResource extends Resource
                                     ->data([
                                         'generatorId' => $infolist->getRecord()->id,
                                         'model' => ReportLocation::class,
+                                    ]),
+                            ]),
+
+                            Tabs\Tab::make('Historique des locations')
+                            ->icon('heroicon-o-inbox-stack')
+                            ->iconPosition(IconPosition::After)
+                            ->schema([
+                                 Livewire::make(LocationHistory::class)
+                                    ->data([
+                                        'generatorId' => $infolist->getRecord()->id,
+                                        'model' => DevisGenerator::class,
                                     ]),
                             ]),
                     ]),

@@ -36,7 +36,7 @@
                     @foreach ($data as $intervention)
                         <tr class="border-b border-slate-400">
                             <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">{{ \App\Utils\DateUtils::format($intervention->intervention_at) }}</td>
-                            <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">
+                            <td class="px-3 font-bold py-4 text-sm text-left text-slate-800 border border-slate-400">
                                 <a target="_blank" href="{{ url('/admin/interventions/' . $intervention->id) }}" class="text-blue-600 ">
                                     #{{ $intervention->identifiant }}
                                 </a></td>

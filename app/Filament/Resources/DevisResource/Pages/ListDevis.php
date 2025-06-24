@@ -65,6 +65,7 @@ class ListDevis extends ListRecords
                                 'end_date' => $devis['expected_date'] == false ? null : $devis['expected_date'],
                                 'forfait' => $devis['amount_total'],
                                 'is_active' => $devis['invoice_status'] === 'no' ? true : false,
+                                'state' => $devis['state'],
                                 'user_id' => auth()->user()->id,
                             ],
                         );

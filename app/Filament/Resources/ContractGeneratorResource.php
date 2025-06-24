@@ -10,6 +10,7 @@ use App\Filament\Resources\ContractGeneratorResource\Pages\EditContractGenerator
 use App\Filament\Resources\ContractGeneratorResource\Pages\ListContractGenerators;
 use App\Filament\Resources\GeneratorResource\Pages;
 use App\Filament\Resources\GeneratorResource\Pages\ViewContractGenerator;
+use App\Filament\Utils\BadgetWidget;
 use App\Livewire\CheckList;
 use App\Livewire\InterventionHistory;
 use App\Models\ContractFacture;
@@ -218,29 +219,21 @@ class ContractGeneratorResource extends Resource
                     ->label('Numéro de série')
                     ->searchable(),
 
-                TextColumn::make('power')
-                    ->label('Puissance (KVA)')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('voltage')
-                    ->label('Tension (V)'),
-
-                TextColumn::make('frequency')
-                    ->label('Fréquence (Hz)'),
-
-                TextColumn::make('fuel_type')
-                    ->label('Type de carburant')
-                    ->sortable()
-                    ->searchable(),
-
                 TextColumn::make('houres')
                     ->label('Heures de fonc.')
                     ->sortable()
+                    ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
                 TextColumn::make('next_vidange')
                     ->label('Prochaine vidange')
+                    ->sortable()
+                    ->extraAttributes(['style' => 'font-weight: bold; '])
+                    ->searchable(),
+
+                
+                TextColumn::make('power')
+                    ->label('Puissance (KVA)')
                     ->sortable()
                     ->searchable(),
 
@@ -248,12 +241,6 @@ class ContractGeneratorResource extends Resource
                     ->label('Mise en service')
                     ->date('d/m/Y')
                     ->sortable(),
-
-                TextColumn::make('created_at')
-                    ->label('Ajouté le')
-                    ->date('d/m/Y')
-                    ->sortable()
-                    ->searchable(),
 
             ])
             ->filters([
@@ -361,9 +348,6 @@ class ContractGeneratorResource extends Resource
                                                     ->label('Puissance')
                                                    ->extraAttributes([ 'class' => 'font-bold']),
 
-                                                TextEntry::make('fuel_type')
-                                                    ->label('Type de carburant')
-                                                   ->extraAttributes([ 'class' => 'font-bold']),
 
                                                 TextEntry::make('houres')
                                                     ->label('Heures de fonc.')
@@ -375,14 +359,12 @@ class ContractGeneratorResource extends Resource
                                                    ->extraAttributes([ 'class' => 'font-bold']),
 
                                                 TextEntry::make('start-up')
+                                                    ->inlineLabel()
                                                     ->label('Mise en service')
                                                     ->date('d/m/Y')
+                                                    ->columnSpanFull()
                                                    ->extraAttributes([ 'class' => 'font-bold']),
 
-                                                TextEntry::make('created_at')
-                                                    ->label('Ajouté le')
-                                                    ->date('d/m/Y')
-                                                   ->extraAttributes([ 'class' => 'font-bold']),
                                             ]),
                                     ]),
 
@@ -391,6 +373,7 @@ class ContractGeneratorResource extends Resource
                                     ->columns(2)
                                     ->schema([
                                         \Filament\Infolists\Components\Section::make(function(Generator $record){
+                                            
                                             if($record->contractGenerator){
                                                 return 'Contrat en cours';
                                             }
@@ -405,20 +388,18 @@ class ContractGeneratorResource extends Resource
                                             ->schema([
                                                 TextEntry::make('is_active')
                                                     ->label('')
-                                                    ->badge()
                                                     ->getStateUsing(function (Generator $record) {
                                                         if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->is_active ? 'En cours' : 'Terminé';
+                                                            $state = $record->contractGenerator->contract->is_active;
+                                                            return BadgetWidget::boleanToBadget($state, 'En cours', 'Terminé');
                                                         }
                                                         if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->is_active ? 'En cours' : 'Terminé';
+                                                            $state = $record->devisGenerator->devis->is_active ;
+                                                            return BadgetWidget::boleanToBadget($state, 'En cours', 'Terminé');
                                                         }
-                                                        return 'Pas de contrat';
+                                                        return '';
                                                     })
-                                                    ->colors([
-                                                        'success' => 'En cours',
-                                                        'danger'  => 'Terminé',
-                                                    ]),
+                                                    ->html(),
 
                                                 ImageEntry::make('logo')
                                                     ->label('')
@@ -528,7 +509,7 @@ class ContractGeneratorResource extends Resource
                                     ->schema([
                                         \Filament\Infolists\Components\Section::make(function (Generator $record) {
                                             if($record->contractGenerator){
-                                                return 'Details du contrat';
+                                                return 'Details';
                                             }
                                             if($record->devisGenerator){
                                                 return 'Details du devis';
@@ -692,14 +673,11 @@ class ContractGeneratorResource extends Resource
                                         ->schema([
                                             TextEntry::make('status')
                                             ->label('')
-                                            ->badge()
-                                            ->getStateUsing(fn($record) => InterventionStatus::from($record->status)->label())
-                                            ->colors([
-                                                'warning' => "En cours",
-                                                'info'  => "Non commencée",
-                                                'danger' => "Annulée",
-                                                'success' => "Terminée",
-                                            ]),
+                                            ->getStateUsing(function($record){ 
+                                                 $state = InterventionStatus::from($record->status)->label();
+                                                 return BadgetWidget::interventionStatusBadget($state);
+                                                })
+                                            ->html(),
 
                                             \Filament\Infolists\Components\Actions::make([
                                                 \Filament\Infolists\Components\Actions\Action::make('view')

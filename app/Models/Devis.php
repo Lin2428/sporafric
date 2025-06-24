@@ -19,6 +19,7 @@ class Devis extends Model
         'is_active',
         'is_retired',
         'forfait',
+        'state',
         'user_id',
     ];
 
