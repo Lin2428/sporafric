@@ -82,6 +82,7 @@ class ListGenerators extends ListRecords
                                 'name' => $product['name'],
                                 'type' => 1,
                                 'reference' => $product['default_code'],
+                                'vidange' => true,
                             ]
                             );
                     }

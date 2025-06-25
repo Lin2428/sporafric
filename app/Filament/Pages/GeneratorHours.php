@@ -31,7 +31,8 @@ class GeneratorHours extends Page implements HasTable
 
     protected static function getBaseQuery(): Builder|Relation
     {
-        return Generator::query()->orderBy('vidange');
+        return Generator::query()
+        ->orderBy('vidange');
     }
 
     public static function customerColumn(ContractGenerator|DevisGenerator|null $record): HtmlString
@@ -105,7 +106,6 @@ class GeneratorHours extends Page implements HasTable
                 TextColumn::make('vidange')
                     ->label('Vidange')
                     ->getStateUsing(function ($record) {
-                        $text = $record->vidange ? 'Oui' : 'Non';
                         return BadgetWidget::boleanToBadget($record->vidange, 'Ok', 'Vidange');
                     })
                     ->html(),

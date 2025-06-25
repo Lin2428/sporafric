@@ -130,6 +130,7 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                     ->columns(3),
 
                 Radio::make('control_battery')
+                    ->inlineLabel()
                     ->label('Contrôle de la batterie et de la densité(3ans)')
                     ->options([
                         '1' => '1 ,26 à 1 ,28',
@@ -171,7 +172,8 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                     TextInput::make('control_frequence')->numeric()->label('Frequences (Hz)'),
 
                     Section::make('Tension de sortie(230V)')
-                        ->columns(3)
+                        ->columns(3)    
+                        ->inlineLabel()
                         ->schema([
                             TextInput::make('control_tension.v1')
                             ->label('V1n'),
@@ -186,6 +188,7 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
 
                     Section::make('Tension de sortie(400V)')
                         ->columns(3)
+                             ->inlineLabel()
                         ->schema([
                             TextInput::make('control_tension_2.u1')
                             ->label('U12'),
@@ -198,6 +201,7 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                         ->columnSpanFull(),
                     Section::make('Intensité par phase')
                         ->columns(3)
+                             ->inlineLabel()
                         ->schema([
                             TextInput::make('control_intensite.i1')
                         ->label('I1'), 
