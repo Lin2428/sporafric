@@ -19,6 +19,7 @@ use App\Models\Intervention;
 use App\Models\ReportMaintenance;
 use App\Utils\DateUtils;
 use App\Utils\NumberUtils;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Doctrine\DBAL\Schema\View;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\CheckboxList;
@@ -49,10 +50,11 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class ContractGeneratorResource extends Resource
+class ContractGeneratorResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Generator::class;
 
+    protected static ?string $label           = "GE Maintenance";
     protected static ?string $navigationIcon  = 'icon-generator';
     protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Groupes Electrogènes';
@@ -289,6 +291,19 @@ class ContractGeneratorResource extends Resource
             'create' => CreateContractGenerator::route('/create'),
             'edit' => EditContractGenerator::route('/{record}/edit'),
             'view'   => ViewContractGenerator::route('/{record}'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'cancell',
+            'delete_any',
+            'delete',
         ];
     }
 

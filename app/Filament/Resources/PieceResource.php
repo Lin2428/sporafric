@@ -6,6 +6,7 @@ use App\Filament\Resources\PieceResource\Pages;
 use App\Filament\Resources\PieceResource\RelationManagers;
 use App\Models\Piece;
 use App\Utils\NumberUtils;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -20,10 +21,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PieceResource extends Resource
+class PieceResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Piece::class;
 
+    protected static ?string $label           = "Pièces";
     protected static ?string $navigationIcon = 'heroicon-o-cog-8-tooth';
     protected static ?string $navigationGroup = 'Global';
     protected static ?string $navigationLabel = 'Pièces de Réchange';
@@ -145,6 +147,19 @@ class PieceResource extends Resource
             'index' => Pages\ListPieces::route('/'),
             'create' => Pages\CreatePiece::route('/create'),
             'edit' => Pages\EditPiece::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'cancell',
+            'delete_any',
+            'delete',
         ];
     }
 }

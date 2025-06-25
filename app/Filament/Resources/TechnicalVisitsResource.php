@@ -7,6 +7,7 @@ use App\Filament\Resources\TechnicalVisitsResource\RelationManagers;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\TechnicalVisits;
 use ArielMejiaDev\FilamentPrintable\Actions\PrintBulkAction;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
@@ -25,9 +26,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
 
-class TechnicalVisitsResource extends Resource
+class TechnicalVisitsResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = TechnicalVisits::class;
+     
+    protected static ?string $label           = "Visites techniques";
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
 
@@ -323,6 +326,19 @@ class TechnicalVisitsResource extends Resource
             'index' => Pages\ListTechnicalVisits::route('/'),
             'create' => Pages\CreateTechnicalVisits::route('/create'),
             'edit' => Pages\EditTechnicalVisits::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'cancell',
+            'delete_any',
+            'delete',
         ];
     }
 }

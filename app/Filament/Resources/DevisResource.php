@@ -9,6 +9,7 @@ use App\Filament\Utils\WidgetUtils;
 use App\Models\Devis;
 use App\Utils\DateUtils;
 use App\Utils\NumberUtils;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
@@ -29,7 +30,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use App\Enum\GeneratorStatus;
 
-class DevisResource extends Resource
+class DevisResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Devis::class;
 
@@ -153,6 +154,19 @@ class DevisResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return static::buildInfolist($infolist);
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'cancell',
+            'delete_any',
+            'delete',
+        ];
     }
 
     public static function table(Table $table): Table

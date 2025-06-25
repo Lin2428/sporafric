@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Location\City;
 use App\Models\Location\District;
 use App\Models\Location\Quartier;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -26,12 +27,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CustomerResource extends Resource
+class CustomerResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Customer::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
+    protected static ?string $label           = "Clients";    
     protected static ?string $navigationGroup = 'Global';
     protected static ?string $navigationLabel = 'Clients';
     protected static ?int $navigationSort = 0;
@@ -203,6 +205,19 @@ class CustomerResource extends Resource
     {
         return [
             //
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'cancell',
+            'delete_any',
+            'delete',
         ];
     }
 

@@ -16,6 +16,7 @@ use App\Models\Intervention;
 use App\Models\ReportLocation;
 use App\Utils\DateUtils;
 use App\Utils\NumberUtils;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Doctrine\DBAL\Schema\View;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -45,10 +46,11 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class GeneratorResource extends Resource
+class GeneratorResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Generator::class;
 
+    protected static ?string $label           = "GE Location";
     protected static ?string $navigationIcon  = 'icon-generator';
     protected static ?string $navigationGroup = 'Location';
     protected static ?string $navigationLabel = 'Groupes Electrogènes';
@@ -265,6 +267,19 @@ class GeneratorResource extends Resource
             'create' => Pages\CreateGenerator::route('/create'),
             'edit'   => Pages\EditGenerator::route('/{record}/edit'),
             'view'   => Pages\ViewGenerator::route('/{record}'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'cancell',
+            'delete_any',
+            'delete',
         ];
     }
 

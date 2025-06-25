@@ -143,6 +143,7 @@ class InterventionActionForm2 extends Component implements HasForms, HasActions
                 ->send();
 
                 return redirect(request()->header('Referer'));
-            });
+            })
+            ->visible(auth()->user()->hasPermissionTo('update_intervention') || auth()->user()->hasPermissionTo('update_intervention::devis'));
     }
 }

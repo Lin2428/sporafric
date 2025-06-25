@@ -11,6 +11,7 @@ use App\Models\Contract;
 use App\Models\Generator;
 use App\Utils\DateUtils;
 use App\Utils\NumberUtils;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -34,10 +35,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
-class ContractResource extends Resource
+class ContractResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Contract::class;
 
+    protected static ?string $label           = "Contrat";
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document';
     protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Contrats';
@@ -256,6 +258,19 @@ class ContractResource extends Resource
             'create' => Pages\CreateContract::route('/create'),
             'edit' => Pages\EditContract::route('/{record}/edit'),
             'view' => Pages\ViewContract::route('/{record}'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'cancell',
+            'delete_any',
+            'delete',
         ];
     }
 

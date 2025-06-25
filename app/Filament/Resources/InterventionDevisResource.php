@@ -11,6 +11,7 @@ use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
 use App\Models\InterventionDevis;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -30,9 +31,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class InterventionDevisResource extends Resource
+class InterventionDevisResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Intervention::class;
+
+    protected static ?string $label           = "Interventions Location";
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?string $navigationGroup = 'Location';
     protected static ?string $navigationLabel = 'Interventions';
@@ -182,6 +185,19 @@ public static function form(Form $form): Form
             'create' => Pages\CreateInterventionDevis::route('/create'),
             'edit' => Pages\EditInterventionDevis::route('/{record}/edit'),
                 'view' =>  ViewInterventionDevis::route('/{record}'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'cancell',
+            'delete_any',
+            'delete',
         ];
     }
 

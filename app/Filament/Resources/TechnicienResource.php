@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TechnicienResource\Pages;
 use App\Filament\Resources\TechnicienResource\RelationManagers;
 use App\Models\Technicien;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
@@ -16,10 +17,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class TechnicienResource extends Resource
+class TechnicienResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Technicien::class;
 
+    protected static ?string $label           = "Techniciens";
     protected static ?string $navigationIcon = 'heroicon-o-identification';
     protected static ?string $navigationGroup = 'Global';
     protected static ?string $navigationLabel = 'Techniciens';
@@ -118,6 +120,19 @@ class TechnicienResource extends Resource
             'index' => Pages\ListTechniciens::route('/'),
             // 'create' => Pages\CreateTechnicien::route('/create'),
             // 'edit' => Pages\EditTechnicien::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'cancell',
+            'delete_any',
+            'delete',
         ];
     }
 }

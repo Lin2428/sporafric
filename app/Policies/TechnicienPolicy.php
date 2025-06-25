@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\User;
+use App\Models\Technicien;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class TechnicienPolicy
+{
+    use HandlesAuthorization;
+
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(User $user): bool
+    {
+        return $user->can('view_any_technicien');
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function view(User $user, Technicien $technicien): bool
+    {
+        return $user->can('view_technicien');
+    }
+
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create(User $user): bool
+    {
+        return $user->can('create_technicien');
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update(User $user, Technicien $technicien): bool
+    {
+        return $user->can('update_technicien');
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, Technicien $technicien): bool
+    {
+        return $user->can('delete_technicien');
+    }
+
+    /**
+     * Determine whether the user can bulk delete.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->can('delete_any_technicien');
+    }
+
+    /**
+     * Determine whether the user can permanently delete.
+     */
+    public function forceDelete(User $user, Technicien $technicien): bool
+    {
+        return $user->can('force_delete_technicien');
+    }
+
+    /**
+     * Determine whether the user can permanently bulk delete.
+     */
+    public function forceDeleteAny(User $user): bool
+    {
+        return $user->can('force_delete_any_technicien');
+    }
+
+    /**
+     * Determine whether the user can restore.
+     */
+    public function restore(User $user, Technicien $technicien): bool
+    {
+        return $user->can('restore_technicien');
+    }
+
+    /**
+     * Determine whether the user can bulk restore.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->can('restore_any_technicien');
+    }
+
+    /**
+     * Determine whether the user can replicate.
+     */
+    public function replicate(User $user, Technicien $technicien): bool
+    {
+        return $user->can('replicate_technicien');
+    }
+
+    /**
+     * Determine whether the user can reorder.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->can('reorder_technicien');
+    }
+}

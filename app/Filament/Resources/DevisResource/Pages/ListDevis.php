@@ -99,7 +99,8 @@ class ListDevis extends ListRecords
                         ]);
                     }
                     Notification::make()->title('Synchronisation terminée')->body('Les devis ont été synchronisés avec succès.')->success()->send();
-                }),
+                })
+                ->visible(auth()->user()->hasPermissionTo('create_devis')),
         ];
     }
 

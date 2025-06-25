@@ -135,7 +135,7 @@ class RetiredPage extends Page implements HasForms, HasTable
                         ->title('Retrait enregistré')
                         ->success()
                         ->send();
-                })
+                })->visible(auth()->user()->hasPermissionTo('create_intervention::devis'))
         ];
     }
     public function table(Table $table): Table

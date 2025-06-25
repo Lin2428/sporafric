@@ -92,6 +92,7 @@ class ListGenerators extends ListRecords
                         ->send();
                 })
                 ->modalSubmitActionLabel('Synchroniser')
+                ->visible(auth()->user()->hasPermissionTo('create_generator')),
         ];
     }
 

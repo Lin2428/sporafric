@@ -47,7 +47,8 @@ class ListTechniciens extends ListRecords
 
                 })
                 ->requiresConfirmation()
-                ->color('primary'),
+                ->color('primary')
+                ->visible(auth()->user()->hasPermissionTo('create_technicien')),
         ];
     }
 }

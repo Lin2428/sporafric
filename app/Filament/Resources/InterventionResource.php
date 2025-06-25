@@ -9,6 +9,7 @@ use App\Filament\Resources\InterventionResource\Pages;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -25,10 +26,11 @@ use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-class InterventionResource extends Resource
+class InterventionResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Intervention::class;
 
+    protected static ?string $label           = "Interventions Maintenance";
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?string $navigationGroup = 'Maintenance';
     protected static ?string $navigationLabel = 'Interventions';
@@ -195,6 +197,21 @@ class InterventionResource extends Resource
             'view' => ViewIntervention::route('/{record}'),
         ];
     }
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'cancell',
+            'delete_any',
+            'delete',
+        ];
+    }
+
+
     public static function buildInfolist(Infolist $infolist): Infolist
     {
         return $infolist

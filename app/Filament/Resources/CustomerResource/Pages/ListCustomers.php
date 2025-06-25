@@ -49,7 +49,8 @@ class ListCustomers extends ListRecords
                         ->send();
                 })
                 ->requiresConfirmation()
-                ->color('primary'),
+                ->color('primary')
+                ->visible(auth()->user()->hasPermissionTo('create_customer')),
         ];
     }
 }
