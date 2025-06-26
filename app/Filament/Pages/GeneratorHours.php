@@ -83,7 +83,7 @@ class GeneratorHours extends Page implements HasTable
                     ->updateStateUsing(function (string $state, $record) {
                         $record->houres = $state;
                         $record->next_vidange = $record->prochain_visite - $record->houres;
-                        $record->vidange = $record->next_vidange > 250;
+                        $record->vidange = $record->next_vidange > 30;
                         $record->save();
                         return $state;
                     }),
@@ -95,7 +95,7 @@ class GeneratorHours extends Page implements HasTable
                     ->updateStateUsing(function (string $state, $record) {
                         $record->prochain_visite = $state;
                         $record->next_vidange = $record->prochain_visite - $record->houres;
-                        $record->vidange = $record->next_vidange > 250;
+                        $record->vidange = $record->next_vidange > 30;
                         $record->save();
                         return $state;
                     }),

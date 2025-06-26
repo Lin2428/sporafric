@@ -219,6 +219,7 @@ class CalendarView extends CalendarWidget
     }
     public function authorize($ability, $arguments = [])
     {
+
         return true;
     }
 }
