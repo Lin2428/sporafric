@@ -192,7 +192,7 @@ class ContractResource extends Resource implements HasShieldPermissions
                     ->label('Client')
                     ->searchable()
                     ->sortable()
-
+                    ->tooltip(fn (Contract $record) => $record->customer->name)
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(10),
 

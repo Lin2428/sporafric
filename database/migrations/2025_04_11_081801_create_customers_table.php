@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->integer('odoo_id')->unique();
-            $table->string('name');
+            $table->text('name');
             $table->string('city')->nullable();
             $table->boolean('is_active')->default(value: true);
             $table->string('contact_c_name')->nullable();

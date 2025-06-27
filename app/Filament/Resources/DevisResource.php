@@ -194,7 +194,8 @@ class DevisResource extends Resource implements HasShieldPermissions
                     ->searchable()
                     ->sortable()
                     ->extraAttributes(['style' => 'font-weight: bold;'])
-                    ->limit(50)
+                    ->limit(20)
+                    ->tooltip(fn (Devis $record) => $record->customer->name)
                     ->description(fn(Devis $record): string => $record->customer_name != null && $record->customer_name != '0' ? $record->customer_name : ''),
                 
                 TextColumn::make('is_active')

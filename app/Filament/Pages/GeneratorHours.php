@@ -35,6 +35,12 @@ class GeneratorHours extends Page implements HasTable
         ->orderBy('vidange');
     }
 
+          public static function getNavigationBadge(): ?string
+    {
+        $count = Generator::where('vidange', false)->count();
+        return $count;
+    }
+
     public static function customerColumn(ContractGenerator|DevisGenerator|null $record): HtmlString
     {
         if (!$record) {
