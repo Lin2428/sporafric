@@ -131,6 +131,7 @@ class ContractResource extends Resource implements HasShieldPermissions
                     })
                     ->label('Groupes électrogènes')
                     ->createItemButtonLabel('Ajouter un GE')
+                    ->deleteAction(fn(\Filament\Forms\Components\Actions\Action $action) => $action->requiresConfirmation())
                     ->schema([
                         WidgetUtils::generatorSelectWidget(type: 2)
                             ->columnSpanFull()

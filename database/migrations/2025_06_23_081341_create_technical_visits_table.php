@@ -31,6 +31,8 @@ return new class extends Migration
             $table->boolean('control_12')->nullable();
             $table->boolean('control_13')->nullable();
             $table->boolean('control_14')->nullable();
+            $table->boolean('control_15')->nullable();
+            $table->boolean('control_16')->nullable();
             $table->integer('control_battery')->nullable();
             $table->float('control_circuit')->nullable();
             $table->json('control_tension')->nullable();

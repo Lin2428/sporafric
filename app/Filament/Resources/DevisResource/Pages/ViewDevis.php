@@ -15,20 +15,20 @@ class ViewDevis extends ViewRecord
 
     public function getTitle(): string | Htmlable
     {
-        $title =  "<strong class='text-primary'> {$this->record->customer->name} - {$this->record->site}</strong>";
+        $title =  "<strong class='text-primary'> {$this->record->customer->name} - {$this->record->number}</strong>";
         return new HtmlString($title);
     }
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\ActionGroup::make([
-                Actions\EditAction::make()
-                    ->label('Modifier le contrat')
-                    ->icon('heroicon-o-pencil'),
+            // Actions\ActionGroup::make([
+            //     Actions\EditAction::make()
+            //         ->label('Modifier le contrat')
+            //         ->icon('heroicon-o-pencil'),
                     
                
-            ]),
+            // ]),
         ];
     }
 }

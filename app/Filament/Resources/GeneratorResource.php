@@ -76,13 +76,13 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                     ->label('Marque')
                                     ->columnSpanFull(),
 
-                                TextInput::make('reference')
-                                    ->label('referencee')
-                                    ->columnSpanFull(),
+                                // TextInput::make('reference')
+                                //     ->label('referencee')
+                                //     ->columnSpanFull(),
 
-                                TextInput::make('serial_number')
-                                    ->label('Numéro de série')
-                                    ->columnSpanFull(),
+                                // TextInput::make('serial_number')
+                                //     ->label('Numéro de série')
+                                //     ->columnSpanFull(),
 
                                 FileUpload::make('image')
                                     // ->acceptedFileTypes([
@@ -110,10 +110,11 @@ class GeneratorResource extends Resource implements HasShieldPermissions
 
                                 TextInput::make('frequency')
                                     ->label('Fréquence (Hz)')
-                                    ->numeric(),
+                                    ->numeric()
+                                    ->columnSpanFull(),
 
-                                TextInput::make('fuel_type')
-                                    ->label('Type de carburant'),
+                                // TextInput::make('fuel_type')
+                                //     ->label('Type de carburant'),
                             ]),
                     ])->columnSpan(['lg' => 2]),
 
@@ -153,10 +154,10 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                     Section::make('Données de la carte')
                             ->columns(2)
                             ->schema([
-                               Textarea::make('adresse')
-                                    ->label('Adresse')
-                                    ->rows(2)  
-                                    ->columnSpanFull(),
+                            //    Textarea::make('adresse')
+                            //         ->label('Adresse')
+                            //         ->rows(2)  
+                            //         ->columnSpanFull(),
 
                                 TextInput::make('lat')
                                     ->label('Latitude')
@@ -191,7 +192,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                     ->extraAttributes(['style' => 'width: 100px, height: 100px;']),
 
                 TextColumn::make('name')
-                    ->label('reference')
+                    ->label('Marque')
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
@@ -204,13 +205,13 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                     ->html(),
 
                 TextColumn::make('houres')
-                    ->label('Heures de fonc.')
+                    ->label('Nb H')
                     ->sortable()
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
                 TextColumn::make('next_vidange')
-                    ->label('Prochaine vidange')
+                    ->label('P vidange')
                     ->sortable()
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
@@ -318,12 +319,12 @@ class GeneratorResource extends Resource implements HasShieldPermissions
 
                                                 TextEntry::make('name')
                                                     ->label('GE')
-                                                    ->columnSpan(2)
+                                                    ->columnSpanFull()
                                                     ->extraAttributes(['class' => 'font-bold text-danger']),
 
-                                                TextEntry::make('reference')
-                                                    ->label('referencee')
-                                                    ->extraAttributes(['class' => 'font-bold text-danger']),
+                                                // TextEntry::make('reference')
+                                                //     ->label('referencee')
+                                                //     ->extraAttributes(['class' => 'font-bold text-danger']),
 
 
                                                 TextEntry::make('power')

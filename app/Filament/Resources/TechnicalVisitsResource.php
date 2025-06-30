@@ -213,6 +213,31 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                         ->label('I3')])
                         ->columnSpanFull(),
                 ]),
+
+                 Section::make('Fin de visite')
+                ->columns(2)
+                ->schema([
+                    CheckboxList::make('checklist_4')
+                        ->bulkToggleable()
+                        ->label('')
+                        ->options([
+                            'control_15' => 'Etat de l\'arret d\'urgence',
+                            'control_16' => 'Mode de fonctionnement',
+                        ])
+                        ->afterStateHydrated(function ($component, $record) {
+                        $data = [];
+                        if ($record?->control_15 == true) {
+                            $data[] = 'control_15';
+                        }
+                        if ($record?->control_16 == true) {
+                            $data[] = 'control_16';
+                        }
+                        $component->state($data);
+                    })
+                        ->columns(2)
+                        ->columnSpanFull()
+                        ->required(),
+            ]),
         ]);
     }
 

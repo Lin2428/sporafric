@@ -14,7 +14,7 @@ class ViewContractGenerator extends ViewRecord
 
     public function getTitle(): string | Htmlable
     {
-        $title = "<strong class='text-primary'> {$this->record->name} - {$this->record->reference} - {$this->record->power}KVA</strong>";
+        $title = "<strong class='text-primary'> {$this->record->name} - {$this->record->power}KVA</strong>";
         return new HtmlString($title);
     }
 

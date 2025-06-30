@@ -7,14 +7,14 @@
 <table class="min-w-full divide-y divide-slate-800">
             <thead style="display: table-row-group">
                 <tr>
-                    <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">A debuter</th>
+                    <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">Date livraison</th>
                     <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">Numéro
                     </th>
                     <th class="px-3 py-4 text-sm font-bold text-left text-slate-800 border border-slate-400">Client</th>
                     <th class="px-3 py-4 text-sm font-bold text-left text-slate-800 border border-slate-400">Telephone</th>
                     <th class="px-3 py-4 text-sm font-bold text-left text-slate-800 border border-slate-400">Coût(FCFA)
                     </th>
-                    <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">A pris fin
+                    <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">Date retour
                     </th>
                 </tr>
             </thead>
