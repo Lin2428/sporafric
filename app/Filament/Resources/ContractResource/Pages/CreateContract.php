@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\ContractResource\Pages;
 
+use App\Enum\GeneratorStatus;
 use App\Filament\Resources\ContractResource;
+use App\Models\Generator;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -27,6 +29,8 @@ class CreateContract extends CreateRecord
                 'user_id' => auth()->id(),
             ]
         );
+
+        Generator::where('id', $generatorData['generator_id'])->update(['status' => GeneratorStatus::EN_LOCATION->value]);
     }
 }
 }

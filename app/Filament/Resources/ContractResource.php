@@ -60,6 +60,7 @@ class ContractResource extends Resource implements HasShieldPermissions
 
                                 TextInput::make('number')
                                     ->label('Numéro de contrat')
+                                    ->default("CTR-".NumberUtils::generate(6))
                                     ->required()
                                     ->unique(Contract::class, 'number', ignoreRecord: true)
                                     ->columnSpanFull(),
@@ -131,6 +132,7 @@ class ContractResource extends Resource implements HasShieldPermissions
                     })
                     ->label('Groupes électrogènes')
                     ->createItemButtonLabel('Ajouter un GE')
+                    ->deleteAction(fn(\Filament\Forms\Components\Actions\Action $action) => $action->requiresConfirmation())
                     ->schema([
                         WidgetUtils::generatorSelectWidget(type: 2)
                             ->columnSpanFull()
@@ -192,7 +194,7 @@ class ContractResource extends Resource implements HasShieldPermissions
                     ->label('Client')
                     ->searchable()
                     ->sortable()
-
+                    ->tooltip(fn (Contract $record) => $record->customer->name)
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(10),
 

@@ -1,0 +1,56 @@
+body {
+    font-size: 1em;
+}
+
+.fi-sidebar {
+    background-color: #83570a0c; /* Bleu */
+}
+
+.fi-sidebar-item-label{
+     font-size: 1em;
+     color: black;
+}
+
+
+
+.fi-sidebar-item a:hover{
+    background-color: #ca8a00;
+    color: #ffffff; /* Blanc */
+    transition: ease-in-out 0.5s;
+}
+
+.fi-sidebar-item a:hover span{
+    color: #ffffff; /* Blanc */
+    transition: ease-in-out 0.1s;
+}
+
+.fi-sidebar-item a:hover span span{
+    background: transparent; /* Blanc */
+    transition: ease-in-out 0.5s;
+}
+
+.fi-sidebar-item a span span{
+    background: transparent; /* Blanc */
+}
+
+.fi-sidebar-item a:hover svg{
+    color: #ffffff; /* Blanc */
+    transition: ease-in-out 0.5s;
+}
+
+.fi-sidebar-item-active a {
+    background-color: #ca8a00; /* Bleu plus clair pour l'item actif */
+    color: #ffffff; /* Blanc */
+    font-size: 1em;
+}
+
+
+.fi-sidebar-item-active a span,.fi-sidebar-item-active a svg{
+    color: white;
+}
+
+.fi-btn {
+    font-size: 1rem; 
+}
+
+

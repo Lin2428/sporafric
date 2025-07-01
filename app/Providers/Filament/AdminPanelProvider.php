@@ -27,7 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->favicon(asset('favicon.ico'))
             ->id('admin')
-            ->viteTheme(['public/css/filament/filament/app.css', 'resources/css/app.css',])
+            ->viteTheme(['public/css/filament/filament/app.css', 'resources/css/filament/admin/theme.css', 'resources/css/app.css',])
             ->path('admin')
             ->login()
             ->brandName('SPORAFRIC')

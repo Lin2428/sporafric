@@ -28,10 +28,13 @@ class CreateTechnicalVisits extends CreateRecord
     $data['control_12'] = in_array('control_12', $data['checklist_3']);
     $data['control_13'] = in_array('control_13', $data['checklist_3']);
     $data['control_14'] = in_array('control_14', $data['checklist_3']);
+    $data['control_15'] = in_array('control_15', $data['checklist_4']);
+    $data['control_16'] = in_array('control_16', $data['checklist_4']);
 
     unset($data['checklist_1']);
     unset($data['checklist_2']);
     unset($data['checklist_3']);
+    unset($data['checklist_4']);
    
     
     return $data;

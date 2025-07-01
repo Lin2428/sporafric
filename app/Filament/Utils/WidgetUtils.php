@@ -137,7 +137,8 @@ class WidgetUtils
             ->getSearchResultsUsing(function (string $search) use($name) {
                 $model = Contract::where("number", "like", "%$search%");
                 if(str_contains($name, 'devis')) {
-                    $model = Devis::where("number", "like", "%$search%");
+                    $model = Devis::where("number", "like", "%$search%")
+                    ->orWhere("customer_name", "like", "%$search%");
                 }
                 $users = $model->orWhereHas('customer', function ($query) use ($search) {
                         $query->where('name', 'like', "%$search%");

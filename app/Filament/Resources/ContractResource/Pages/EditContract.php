@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\ContractResource\Pages;
 
+use App\Enum\GeneratorStatus;
 use App\Filament\Resources\ContractResource;
 use App\Models\Contract;
+use App\Models\Generator;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -36,6 +38,8 @@ class EditContract extends EditRecord
             'user_id' => auth()->id(),
         ]
     ]);
+
+    Generator::where('id', $generatorData['generator_id'])->update(['status' => GeneratorStatus::EN_LOCATION->value]);
 }
         return $record;
     }

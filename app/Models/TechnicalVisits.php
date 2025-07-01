@@ -27,6 +27,8 @@ class TechnicalVisits extends Model
         'control_12',
         'control_13',
         'control_14',
+        'control_15',
+        'control_16',
         'control_battery',
         'control_circuit',
         'control_tension',

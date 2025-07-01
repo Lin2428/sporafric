@@ -7,6 +7,7 @@ use App\Filament\Widgets\GeneratorStats;
 use App\Filament\Widgets\TextWidget;
 use App\Models\Devis;
 use App\Models\DevisGenerator;
+use App\Models\Generator;
 use App\Models\Intervention;
 use Filament\Pages\Page;
 
@@ -50,6 +51,8 @@ class DashboardPage extends Page
         ->with(['devis', 'generator'])
         ->get();
 
+        $vidandeCount = Generator::where('vidange', '=', false)->count();
+
         foreach ($this->interventionsDuJour as $intervention) {
              $date = \Carbon\Carbon::parse($intervention->start_date)->locale('fr');
                         $today = now()->startOfDay();
@@ -92,6 +95,17 @@ class DashboardPage extends Page
                 'icon' => 'heroicon-o-clipboard-document-check',
                 'color' => 'red',
                 'url' => '/admin/generators/'.$location->generator_id
+            ];
+        }
+
+        if($vidandeCount != 0){
+            $this->alerts[] = [
+                'title' => "Vidange en attente",
+                'label' => $vidandeCount.' GE',
+                'date' => \Carbon\Carbon::parse(now())->locale('fr'),
+                'icon' => 'heroicon-o-arrow-path-rounded-square',
+                'color' => 'red',
+                'url' => '/admin/generator-hours'
             ];
         }
     }

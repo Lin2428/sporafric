@@ -80,13 +80,13 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                     ->label('Marque')
                                     ->columnSpanFull(),
 
-                                TextInput::make('reference')
-                                    ->label('referencee')
-                                    ->columnSpanFull(),
+                                // TextInput::make('reference')
+                                //     ->label('referencee')
+                                //     ->columnSpanFull(),
 
-                                TextInput::make('serial_number')
-                                    ->label('Numéro de série')
-                                    ->columnSpanFull(),
+                                // TextInput::make('serial_number')
+                                //     ->label('Numéro de série')
+                                //     ->columnSpanFull(),
 
                                 FileUpload::make('image')
                                     // ->acceptedFileTypes([
@@ -114,10 +114,11 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
 
                                 TextInput::make('frequency')
                                     ->label('Fréquence (Hz)')
-                                    ->numeric(),
+                                    ->numeric()
+                                    ->columnSpanFull(),
 
-                                TextInput::make('fuel_type')
-                                    ->label('Type de carburant'),
+                                // TextInput::make('fuel_type')
+                                //     ->label('Type de carburant'),
                             ]),
                     ])->columnSpan(['lg' => 2]),
 
@@ -129,14 +130,14 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                     ->label('Mise en service')
                                     ->default(now()),
 
-                                Select::make('status')
-                                    ->options( collect(GeneratorStatus::cases())
-                                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                                        ->toArray())
-                                    ->searchable()
-                                    ->label('Statut')
-                                    ->preload()
-,
+                                // Select::make('status')
+                                //     ->options( collect(GeneratorStatus::cases())
+                                //         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                //         ->toArray())
+                                //     ->searchable()
+                                //     ->label('Statut')
+                                //     ->preload()
+
 
                                 TextInput::make('houres')
                                     ->label('Heures de fonctionnement'),
@@ -157,10 +158,10 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                     Section::make('Données de la carte')
                             ->columns(2)
                             ->schema([
-                               Textarea::make('adresse')
-                                    ->label('Adresse')
-                                    ->rows(2)  
-                                    ->columnSpanFull(),
+                            //    Textarea::make('adresse')
+                            //         ->label('Adresse')
+                            //         ->rows(2)  
+                            //         ->columnSpanFull(),
 
                                 TextInput::make('lat')
                                     ->label('Latitude')
@@ -199,10 +200,10 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
-                TextColumn::make('reference')
-                    ->label('referencee')
-                    ->extraAttributes(['style' => 'font-weight: bold; '])
-                    ->searchable(),
+                // TextColumn::make('reference')
+                //     ->label('referencee')
+                //     ->extraAttributes(['style' => 'font-weight: bold; '])
+                //     ->searchable(),
 
                 // TextColumn::make('status')
                 //     ->label('Statut')
@@ -217,25 +218,24 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                 //         'danger'  => 'Indisponible',
                 //     ]),
 
-                TextColumn::make('serial_number')
-                    ->label('Numéro de série')
-                    ->searchable(),
+                // TextColumn::make('serial_number')
+                //     ->label('Numéro de série')
+                //     ->searchable(),
 
                 TextColumn::make('houres')
-                    ->label('Heures de fonc.')
+                    ->label('Nb H')
                     ->sortable()
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
                 TextColumn::make('next_vidange')
-                    ->label('Prochaine vidange')
+                    ->label('P vidange')
                     ->sortable()
-                    ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
                 
                 TextColumn::make('power')
-                    ->label('Puissance (KVA)')
+                    ->label('P KVA')
                     ->sortable()
                     ->searchable(),
 
@@ -347,17 +347,17 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
 
                                                 TextEntry::make('name')
                                                     ->label('GE')
-                                                    ->columnSpan(2)
-                                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                                TextEntry::make('reference')
-                                                    ->label('referencee')
-                                                    ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                                TextEntry::make('serial_number')
-                                                    ->label('Numéro de série')
                                                     ->columnSpanFull()
                                                     ->extraAttributes(['class' => 'font-bold text-danger']),
+
+                                                // TextEntry::make('reference')
+                                                //     ->label('referencee')
+                                                //     ->extraAttributes(['class' => 'font-bold text-danger']),
+
+                                                // TextEntry::make('serial_number')
+                                                //     ->label('Numéro de série')
+                                                //     ->columnSpanFull()
+                                                //     ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                                 TextEntry::make('power')
                                                     ->label('Puissance')
