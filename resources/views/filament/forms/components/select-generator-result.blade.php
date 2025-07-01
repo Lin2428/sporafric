@@ -19,6 +19,7 @@ $ring = match($generator->status) {
     2 => 'ring-blue-600/10',
     default => 'ring-red-600/10',
 };
+
 ?>
 
 <div class="rounded-md w-full">
@@ -32,9 +33,13 @@ $ring = match($generator->status) {
                 {{$generator->power}}KVA
             </div>
 
+            @if ($generator->type == 1)
             <span
                 class="no-print inline-flex items-center rounded-md {{$bg}} px-2 py-1 text-xs font-medium {{$text}} ring-1 {{$ring}} ring-inset">
-                {{ \App\Enum\GeneratorStatus::from($generator->status)->label() }}</span>
+                {{ \App\Enum\GeneratorStatus::from($generator->status)->label() }}
+            </span>
+            @endif
+            
         </div>
     </div>
 </div>

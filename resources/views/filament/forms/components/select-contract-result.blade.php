@@ -6,7 +6,7 @@
 
         <div class="flex flex-col ml-3 text-xs">
             <span class="font-medium">N°: {{$contract->number}}</span>
-            <span class="font-medium">Client: {{$contract->customer?->name}}</span>
+            <span class="font-medium">Client: {{$contract->customer?->name}} {{$contract->customer_name}}</span>
             <div class="">Contact: {{ $contract->customer?->contact_c_phone }}<br>{{ $contract->customer?->contact_c_email
                 }}
             </div>

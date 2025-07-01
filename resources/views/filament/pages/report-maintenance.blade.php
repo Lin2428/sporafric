@@ -126,22 +126,22 @@
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ $data->isNotEmpty() ? $data->first()->duree_contrat : "" }} mois
                     </td>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ $data->isNotEmpty() ? $data->first()->mois_ecoules :"" }} mois
                     </td>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ $data->isNotEmpty() ? $data->count() :"" }}
                     </td>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ $data->isNotEmpty() ? \App\Utils\NumberUtils::format($data->first()->forfait) :"" }}
                     </td>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ $data->isNotEmpty() ? \App\Utils\NumberUtils::format($data->first()->montant_paye) :"" }}
                     </td>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($total2) }} FCFA
                     </td>
                 </tr>
@@ -170,19 +170,19 @@
             </thead>
             <tbody>
                 <tr>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format((int)$workDays) }} jours
                     </td>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($txOcupation) }}%
                     </td>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ $data->isNotEmpty() ? $data->count() :"" }}
                     </td>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($revenuContrat)}}
                     </td>
-                    <td class="px-3 py-2 font-semibold text-right text-slate-800 border border-slate-400">
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($total1 + $revenuContrat) }} FCFA
                     </td>
                 </tr>

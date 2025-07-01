@@ -2,6 +2,7 @@
 namespace App\Filament\Resources\TechnicalVisitsResource\Pages;
 
 use App\Filament\Resources\TechnicalVisitsResource;
+use Carbon\Carbon;
 use Filament\Actions;
 use Filament\Forms\Components\ViewField;
 use Filament\Resources\Pages\EditRecord;
@@ -26,6 +27,15 @@ class EditTechnicalVisits extends EditRecord
                     function isTrueString($value) {
                         return $value ? 'Oui' : 'Non';
                     }
+
+                    $generator = $record->generator->name;
+                    $power = $record->generator->power;
+                    $adress = $record->generator->contractGenerator?->site ?? $record->generator->devisGenerator?->site;
+                    $serial = $record->generator->serial_number;
+                    $nextVidange = $record->generator->next_vidange. "h";
+                    $customer = ($record->devis?->customer?->name ?? $record->contract?->customer?->name)." ". $record->devis?->customer_name;
+                    $date = $date = Carbon::parse($record->date)->format('d/m/Y');
+;
 
                     $control1 = $record->control_1 ? 'Oui' : 'Non';
                     $control2 = $record->control_2 ? 'Oui' : 'Non';
@@ -117,11 +127,11 @@ class EditTechnicalVisits extends EditRecord
                       <h2 style="font-size: 22px;">VISITE TECHNIQUE</h2>
 
                         <div class="half">
-                            <div class="field"><label>MARQUE:</label><input type="text"></div>
-                            <div class="field"><label>PUISSANCE:</label><input type="text"></div>
-                            <div class="field"><label>N° Série:</label><input type="text"></div>
+                            <div class="field"><label>MARQUE:</label><input type="text" value="$generator"></div>
+                            <div class="field"><label>PUISSANCE:</label><input type="text" value="$power"></div>
+                            <div class="field"><label>N° Série:</label><input type="text" value="$serial"></div>
                             <div class="field"><label>Horamètre:</label><input type="text"></div>
-                            <div class="field"><label>Date:</label><input type="text"></div>
+                            <div class="field"><label>Date:</label><input type="text" value="$date"></div>
                         </div>
 
                         <div class="half">
@@ -174,12 +184,12 @@ class EditTechnicalVisits extends EditRecord
                             <tr><td>Mode de fonctionnement</td><td>$control16</td></tr>
                         </table>
 
-                        <p><strong>Prochaine vidange à :</strong> <input type="text" style="width: 200px;"></p>
+                        <p><strong>Prochaine vidange à :</strong> <input type="text" value="$nextVidange" style="width: 200px;"></p>
 
                         <div class="signature-section">
                             <div class="half">
-                                <div class="field"><label>CLIENT:</label><input type="text"></div>
-                                <div class="field"><label>ADRESSE:</label><input type="text" style="width: 80%;"></div>
+                                <div class="field"><label>CLIENT:</label><input type="text" style="width: 80%; " value="$customer"></div>
+                                <div class="field"><label>ADRESSE:</label><input type="text" value="$adress" style="width: 80%; "></div>
                             </div>
                             <div class="half" style="text-align: right;">
                                 <p>Signature:</p>
@@ -223,10 +233,5 @@ JS);
         unset($data['checklist_4']);
 
         return $data;
-    }
-
-    public function getProductViewField(): ViewField
-    {
-        return ViewField::make('devis_table')->view('filament.infolist.components.technical-visits');
     }
 }

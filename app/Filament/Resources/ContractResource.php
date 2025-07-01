@@ -60,6 +60,7 @@ class ContractResource extends Resource implements HasShieldPermissions
 
                                 TextInput::make('number')
                                     ->label('Numéro de contrat')
+                                    ->default("CTR-".NumberUtils::generate(6))
                                     ->required()
                                     ->unique(Contract::class, 'number', ignoreRecord: true)
                                     ->columnSpanFull(),
