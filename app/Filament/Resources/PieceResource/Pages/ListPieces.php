@@ -21,8 +21,17 @@ class ListPieces extends ListRecords
                 ->label('Synchroniser')
                 ->icon('heroicon-o-arrow-path')
                 ->action(function() {
-                    $data = OdooController::syncronizePieces();
-
+                    
+                    try {
+                         $data = OdooController::syncronizePieces();
+                    } catch (\Throwable $th) {
+                        Notification::make()
+                            ->title('Une erreur est survenue lors de la synchronisation !')
+                            ->danger()
+                            ->send();
+                        return;
+                    }
+                   
                     foreach($data as $piece)
                     {
                         Piece::updateOrCreate(

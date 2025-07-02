@@ -18,6 +18,9 @@
         @endforeach
         @endif
     </tbody>
+    <div class="w-full flex justify-center">
+        <x-filament::loading-indicator class="h-5 w-5" id="loading-indicator" />
+    </div>
 </table>
 
 <style>

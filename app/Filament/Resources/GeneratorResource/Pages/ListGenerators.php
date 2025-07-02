@@ -19,7 +19,7 @@ class ListGenerators extends ListRecords
     protected static string $resource = GeneratorResource::class;
 
     protected static ?string $title = 'Groupes électrogènes';
-    public ?string $category = null;
+    public bool $category;
     public array $products;
 
     
@@ -63,15 +63,24 @@ class ListGenerators extends ListRecords
                             true => 'Tout les produits',
                         ])
                         ->afterStateUpdated(function ($state) {
-                            $this->products = OdooController::syncronizeGenerator($state);
+                             $this->category = $state;
                         }),
-
-                    $this->getProductViewField(),
                 ])
                 ->beforeFormFilled(function () {
                      $this->products = [];
                  })
                 ->action(function ($data) {
+                    set_time_limit(60);
+
+                    try {
+                        $this->products = OdooController::syncronizeGenerator($this->category);
+                    } catch (\Throwable $th) {
+                        Notification::make()
+                            ->title('Une erreur est survenue lors de la synchronisation !')
+                            ->danger()
+                            ->send();
+                        return;
+                    }
                     foreach ($this->products as $product) {
                         Generator::updateOrCreate(
                             [

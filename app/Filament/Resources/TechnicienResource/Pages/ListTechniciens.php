@@ -26,7 +26,17 @@ class ListTechniciens extends ListRecords
                 ->label('Synchroniser')
                 ->icon('heroicon-o-arrow-path')
                 ->action(function() {
-                    $data = OdooController::syncronizeTechnicians();
+
+                    try {
+                        $data = OdooController::syncronizeTechnicians();
+                    } catch (\Throwable $th) {
+                         Notification::make()
+                            ->title('Une erreur est survenue lors de la synchronisation !')
+                            ->danger()
+                            ->send();
+                        return;
+                    }
+                    
 
                     foreach($data as $tecnhnician)
                     {

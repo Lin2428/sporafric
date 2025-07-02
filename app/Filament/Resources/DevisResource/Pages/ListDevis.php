@@ -18,7 +18,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListDevis extends ListRecords
 {
     protected static string $resource = DevisResource::class;
-    public ?string $category = null;
+    public bool $category;
     public array $devis;
     protected function getHeaderActions(): array
     {
@@ -34,21 +34,30 @@ class ListDevis extends ListRecords
                     Select::make('syncronize-type')
                         ->label('Que voulez-vous synchroniser ?')
                         ->reactive()
+                        ->required()
                         ->options([
                             false => 'Devis non synchronisés',
                             true => 'Tout les devis',
                         ])
                         ->afterStateUpdated(function ($state) {
-                                set_time_limit(60);
-                                $this->devis = OdooController::syncronizeDevis($state);
+                               $this->category = $state;
                         }),
-                    $this->getProductViewField(),
                 ])
                 ->beforeFormFilled(function () {
                     $this->devis = [];
                 })
                 ->action(function () {
-                    set_time_limit(60);
+                     set_time_limit(120);
+                     try {
+                            $this->devis = OdooController::syncronizeDevis($this->category);  
+                        } catch (\Throwable $th) {
+                            Notification::make()
+                            ->title('Une erreur est survenue lors de la synchronisation !')
+                            ->danger()
+                            ->send();
+
+                            return;
+                        }             
 
                     foreach ($this->devis['orders'] as $k => $devis) {
                         $customerId = Customer::where('odoo_id', $devis['partner_id'][0] ?? null)->value('id');

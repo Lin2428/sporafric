@@ -24,7 +24,17 @@ class ListCustomers extends ListRecords
                 ->label('Synchroniser')
                 ->icon('heroicon-o-arrow-path')
                 ->action(function () {
-                    $data = OdooController::syncronizeClient();
+
+                    try {
+                        $data = OdooController::syncronizeClient();
+                    } catch (\Throwable $th) {
+                         Notification::make()
+                            ->title('Une erreur est survenue lors de la synchronisation !')
+                            ->danger()
+                            ->send();
+                        return;
+                    }
+                   
                
                     foreach ($data as $client) {
                     
