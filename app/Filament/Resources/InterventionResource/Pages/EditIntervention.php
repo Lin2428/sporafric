@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Resources\InterventionResource\Pages;
 
 use App\Filament\Resources\InterventionResource;
@@ -20,22 +19,37 @@ class EditIntervention extends EditRecord
     }
 
     // static::updated(function (Intervention $intervention) {
-       
 
-        protected function mutateFormDataBeforeSave(array $data): array
+    protected function mutateFormDataBeforeSave(array $data): array
     {
-           if($data['type_activite'] == 1)
-            {
-                $data['generator_name'] = null;
-                $data['generator_reference'] = null;
-                $ada['power'] = null;
-                $data['serial_number'] = null;
-                $data['customer_id'] = null;
-            }else {
-                $data['contract_id'] = null;
-                $data['generator_id'] = null;
-            }
-    
+
+        $submittedPieces = collect($data['pieces'])->pluck('piece_id')->toArray();
+
+        $this->record->pieces()
+            ->whereNotIn('piece_id', $submittedPieces)
+            ->delete();
+
+        foreach ($data['pieces'] as $piece) {
+            $this->record->pieces()->syncWithoutDetaching([
+                $piece['piece_id'] => [
+                    'qty'          => $piece['qty'],
+                    'price'        => $piece['price'] ?? 0,
+                    'generator_id' => $data['generator_id'] ?? null,
+                ],
+            ]);
+        }
+
+        if ($data['type_activite'] == 1) {
+            $data['generator_name']      = null;
+            $data['generator_reference'] = null;
+            $ada['power']                = null;
+            $data['serial_number']       = null;
+            $data['customer_id']         = null;
+        } else {
+            $data['contract_id']  = null;
+            $data['generator_id'] = null;
+        }
+
         return $data;
 
     }

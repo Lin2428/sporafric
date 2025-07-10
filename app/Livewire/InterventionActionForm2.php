@@ -75,19 +75,7 @@ class InterventionActionForm2 extends Component implements HasForms, HasActions
                                             ->default(0)
                                             ->default($this->record->infos?->devis_montant)
                                             ->columnSpanFull(),
-                                        FileUpload::make('devis_fiche')
-                                            ->label('Devis PDF')
-                                            ->disk('devis')
-                                            ->default($this->record->infos?->devis_fiche)
-                                            ->getUploadedFileNameForStorageUsing(function ($file) {
-                                                $record = $this->record;
-
-                                                $customerName = Str::slug($record->contract?->customer?->name ?? 'client');
-                                                $date = now()->format('Y-m-d');
-
-
-                                                return "{$customerName}-{$date}-{$this->record->id}.{$file->getClientOriginalExtension()}";
-                                            })->columnSpanFull(),
+                                        
                                     ]),
                                 Section::make('Bon de commande')
                                     ->columns(2)

@@ -28,7 +28,9 @@ class InterventionUtil
                     ->label('Statut')
                     ->options(collect(InterventionStatus::cases())
                         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                        ->toArray()),
+                        ->toArray())
+                        ->required(),
+
                 Select::make('interventionTechniciens.technicien_id')
                     ->relationship('interventionTechniciens', 'name')
                     ->label('Techniciens assignés')

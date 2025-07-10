@@ -43,9 +43,8 @@ class WidgetUtils
                     else {
                     $query->where(function (Builder $query) use ($search) {
                         $query
-                            ->orWhere('name', 'like', "%{$search}%")
-                            ->orWhere('reference', 'like', "%{$search}%")
-                            ->orWhere('serial_number', 'like', "%{$search}%")
+                            ->orWhere('name', 'like', "%$search%")
+                            ->orWhere('reference', 'like', "%$search%")
                             ->when(intval($search), fn(Builder $query) => $query->orWhere('id', intval($search)));
                     });
 
@@ -87,8 +86,8 @@ class WidgetUtils
             ->label('Client')
             ->getSearchResultsUsing(function (string $search) {
                 $users = Customer::where('name', 'like', "%$search%")
-                    ->orWhere('contact_c_phone', 'like', "$search%")
-                    ->orWhere('contact_c_email', 'like', "$search%")
+                    ->orWhere('contact_c_phone', 'like', "%$search%")
+                    ->orWhere('contact_c_email', 'like', "%$search%")
                     ->where('is_active', '=', 1)
                     ->limit(50)
                     ->get();

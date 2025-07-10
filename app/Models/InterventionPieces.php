@@ -10,7 +10,7 @@ class InterventionPieces extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'intrvention_id',
+        'intervention_id',
         'piece_id',
         'generator_id',
         'qty',

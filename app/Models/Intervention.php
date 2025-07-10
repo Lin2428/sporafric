@@ -41,6 +41,7 @@ class Intervention extends Model implements Eventable
         'facturable',
         'astrinte',
         'status',
+        'montant',
         'cancelled',
         'raison',
         'user_id',
@@ -95,12 +96,12 @@ class Intervention extends Model implements Eventable
 
     public function pieces()
     {
-        return $this->belongsToMany(Piece::class, 'intervention_pieces', 'intrvention_id', 'piece_id')->withPivot(['qty', 'price']);
+        return $this->belongsToMany(Piece::class, 'intervention_pieces', 'intervention_id',)->withPivot(['qty', 'price']);
     }
 
-    public function infos()
+    public function fiches()
     {
-        return $this->hasOne(InterventionInfo::class, 'intervention_id');
+        return $this->hasMany(InterventionFiche::class);
     }
 
     public function toCalendarEvent(): CalendarEvent|array

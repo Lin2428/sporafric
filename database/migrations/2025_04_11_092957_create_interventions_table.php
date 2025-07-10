@@ -37,6 +37,7 @@ return new class extends Migration
             $table->string('generator_reference')->nullable();
             $table->string('power')->nullable();
             $table->string('serial_number')->nullable();
+            $table->integer('montant')->nullable();
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

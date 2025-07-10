@@ -9,16 +9,21 @@ use App\Filament\Resources\InterventionResource\Pages;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
+use App\Models\Piece;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -44,6 +49,16 @@ class InterventionResource extends Resource implements HasShieldPermissions
     public static function form(Form $form): Form
     {
 
+        $onUpdate = function(Set $set, Get $get) {
+            $pieces = $get('../../pieces');
+           
+            foreach ($pieces as $piece) {
+                $price = Piece::find($piece['piece_id'])?->pv;
+
+                $set('price', $price?? 0);
+            }
+        };
+
         return $form
             ->schema([
                 Group::make()
@@ -62,24 +77,29 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                     ->label("Type d'activité")
                                     ->options([1 => "Sous contrat", 0 => "Hors contrat"])
                                     ->columnSpanFull()
+                                    ->required()
                                     ->reactive(),
 
                                 WidgetUtils::contractSelectWidget()
                                     ->columnSpanFull()
                                     ->reactive()
+                                    ->required()
                                     ->visible(fn(callable $get) => $get('type_activite') == "1"),
 
-                                WidgetUtils::generatorSelectWidget(type: 2)
+                                WidgetUtils::generatorSelectWidget(type: 2, isDispo:false)
                                     ->columnSpanFull()
+                                    ->required()
                                     ->visible(fn(callable $get) => $get('contract_id') != null && $get('type_activite') == "1"),
 
                                 Section::make('Information sur le client')
                                     ->columns(2)
                                     ->schema([
                                         WidgetUtils::customerSelectWidget()
+                                            ->required()
                                             ->columnSpanFull(),
 
                                         TextInput::make('generator_name')
+                                            ->required()
                                             ->label("Marque du GE"),
                                         TextInput::make('power')
                                             ->label("Puissance (KVA)")
@@ -90,7 +110,9 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                 
 
                                 DatePicker::make('date_prise_appel')
-                                    ->label('Date de prise d’appel'),
+                                    ->label('Date de prise d’appel')
+                                    ->default(now())
+                                    ->required(),
 
                                 DatePicker::make('date_planifiee')
                                     ->label('Date planifiée'),
@@ -113,7 +135,68 @@ class InterventionResource extends Resource implements HasShieldPermissions
                     ])->columnSpan(['lg' => 2]),
 
                 Group::make()
-                    ->schema([InterventionUtil::infoInterne()])->columnSpan(['lg' => 1]),
+                    ->schema([
+                        InterventionUtil::infoInterne(),
+                        Section::make('Autre information')
+                            ->columns(2)
+                            ->schema([
+                                TextInput::make('montant')
+                                    ->label('Montant')
+                                    ->columnSpanFull(),
+
+                                Repeater::make('fiches')
+                                    ->label('')
+                                    ->relationship('fiches')
+                                    ->addActionLabel('Ajouter une pièce jointe')
+                                    ->schema([
+                                       FileUpload::make('fiche')
+                                            ->hiddenLabel()
+                                            ->disk('devis')
+                                            ->downloadable()
+                                            ->openable()
+                                            ->columnSpanFull(),
+                                    ])->columnSpanFull(),
+                            ]),
+                        ])->columnSpan(['lg' => 1]),
+
+
+                Section::make('Pièces livrées')
+                    ->columns(2)
+                    ->schema([
+                        Repeater::make('pieces')
+                    ->label('')
+                    ->formatStateUsing(function ($record) {
+                        if(empty($record->pieces)) return [];
+                      
+                        return $record->pieces?->map(function ($piece) {
+                            return [
+                                'piece_id' => $piece->id,
+                                'qty' => $piece->pivot->qty,
+                                'price' => $piece->pivot->price,
+                            ];
+                        })->toArray();
+                    })
+                    ->addActionLabel('Ajouter une pièce')
+                    ->schema([
+                        WidgetUtils::pieceSelectWidget($onUpdate)
+                            ->columnSpanFull()
+                            ->reactive()
+                            ->required(),
+                        TextInput::make('qty')
+                        ->label('Quantité')
+                        ->numeric()
+                        ->minValue(1)
+                        ->default(1)
+                        ->required(),
+                        TextInput::make('price')
+                            ->label('Prix unitaire')
+                            ->numeric()
+                            ->minValue(0)
+                            ->reactive()
+                            ->required(),
+                    ])->columnSpanFull()
+                    ->grid(2)
+                    ])->columnSpanFull(),
 
             ])->columns(3);
     }

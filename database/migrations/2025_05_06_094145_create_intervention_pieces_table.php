@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('intervention_pieces', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('intrvention_id');
+            $table->foreignId('intervention_id');
             $table->foreignId('generator_id')->nullable();
             $table->foreignId('piece_id');
             $table->integer('qty')->default(1);

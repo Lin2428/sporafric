@@ -21,7 +21,8 @@ class Piece extends Model
     ];
 
     public function interventions()
-    {
-        return $this->belongsToMany(Intervention::class, 'intrvention_deliveries');
-    }
+{
+    return $this->belongsToMany(Intervention::class, 'intervention_pieces')
+        ->withPivot(['qty', 'price']);
+}
 }

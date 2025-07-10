@@ -22,4 +22,19 @@ class CreateIntervention extends CreateRecord
         return $data;
 
     }
+
+    protected function afterCreate()
+{
+    $data = $this->form->getState();
+    foreach ($data['pieces'] as $pieceData) {
+        $this->record->pieces()->attach(
+            $pieceData['piece_id'],
+            [
+                'qty' => $pieceData['qty'],
+                'price' => $pieceData['price'] ?? 0,
+                'generator_id' => $data['generator_id'] ?? null,
+            ]
+        );
+    }
+}
 }
