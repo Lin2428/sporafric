@@ -42,14 +42,13 @@ class AdminPanelProvider extends PanelProvider
                 //Pages\Dashboard::class,
             ])
             ->navigationGroups([
-                'Dashboard',
+                'Tableau de bord',
                 'Ronde',
                 'Location',
                 'Maintenance',
                 'Global',
                 'Rapport',
-                'Localisation',
-                'Système',
+                'Paramètres',
             ])
             ->sidebarCollapsibleOnDesktop()
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')

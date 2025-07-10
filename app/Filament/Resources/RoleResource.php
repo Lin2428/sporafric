@@ -24,6 +24,7 @@ class RoleResource extends Resource implements HasShieldPermissions
     use HasShieldFormComponents;
 
     protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $navigationGroup = "Paramètres";
 
     public static function getPermissionPrefixes(): array
     {

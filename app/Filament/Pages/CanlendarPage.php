@@ -19,7 +19,7 @@ class CanlendarPage extends Page implements HasForms
 
     protected static ?string $navigationIcon  = 'heroicon-o-calendar-days';
     protected static ?string $title           = 'Planning des interventions';
-    protected static ?string $navigationGroup = 'Dashboard';
+    protected static ?string $navigationGroup = 'Tableau de bord';
     protected static ?int $navigationSort     = 2;
 
     protected static string $view = 'filament.pages.canlendar-page';

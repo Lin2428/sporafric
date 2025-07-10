@@ -15,10 +15,10 @@ class DashboardPage extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-line';
 
-    protected static ?string $navigationGroup = 'Dashboard';
+    protected static ?string $navigationGroup = 'Tableau de bord';
 
     protected static ?string $title = 'Location';
-    protected static ?string $navigationLabel = 'Tableau ed bord';
+    protected static ?string $navigationLabel = 'Tableau de bord';
     protected static ?int $navigationSort = 1;
 
     protected static string $view = 'filament.pages.dashboard-page';
