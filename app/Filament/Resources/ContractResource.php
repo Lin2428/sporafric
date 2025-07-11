@@ -64,11 +64,6 @@ class ContractResource extends Resource implements HasShieldPermissions
                                     ->required()
                                     ->unique(Contract::class, 'number', ignoreRecord: true)
                                     ->columnSpanFull(),
-
-                                TextInput::make('forfait')
-                                    ->label('Forfait de maintenance mensuel')
-                                    ->numeric()
-                                    ->columnSpanFull(),
                             ]),
                     ])->columnSpan(['lg' => 2]),
 
@@ -98,11 +93,13 @@ class ContractResource extends Resource implements HasShieldPermissions
                                 DatePicker::make('start_date')
                                     ->label('Date de début')
                                     ->required()
+                                    ->default(now())
                                     ->columnSpanFull(),
 
                                 DatePicker::make('end_date')
                                     ->label('Date de fin')
                                     ->required()
+                                    ->default(now()->addYears(10))
                                     ->columnSpanFull(),
 
                                 Toggle::make('is_active')
@@ -122,6 +119,7 @@ class ContractResource extends Resource implements HasShieldPermissions
                         return $record->generators?->map(function ($generator) {
                             return [
                                 'generator_id' => $generator->id,
+                                'forfait' => $generator->pivot->forfait,
                                 'site' => $generator->pivot->site,
                                 'code_site' => $generator->pivot->code_site,
                                 'contact_name' => $generator->pivot->contact_name,
@@ -137,6 +135,11 @@ class ContractResource extends Resource implements HasShieldPermissions
                         WidgetUtils::generatorSelectWidget(type: 2)
                             ->columnSpanFull()
                             ->required(),
+
+                        TextInput::make('forfait')
+                                    ->label('Forfait de maintenance mensuel')
+                                    ->numeric()
+                                    ->columnSpanFull(),
 
                         TextInput::make('site')
                             ->label('Site'),
@@ -208,12 +211,6 @@ class ContractResource extends Resource implements HasShieldPermissions
                 TextColumn::make('generator')
                     ->getStateUsing(fn(Contract $record): string => (string) $record->generators->count())
                     ->label('Nombre deGE')
-                    ->extraAttributes(['style' => 'font-weight: bold;'])
-                    ->limit(50),
-
-                TextColumn::make('forfait')
-                    ->getStateUsing(fn(Contract $record): string => NumberUtils::format($record->forfait) . ' FCFA')
-                    ->label('Forfait')
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50),
 
@@ -317,12 +314,6 @@ class ContractResource extends Resource implements HasShieldPermissions
                                     ->label('Email')
                                     ->lineClamp(2)
                                     ->extraAttributes(['class' => 'font-bold text-danger']),
-
-                                TextEntry::make('forfait')
-                                    ->label('Forfait de maintenance mensuel')
-                                    ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
-                                    ->extraAttributes(['class' => 'font-bold'])
-                                    ->columnSpanFull(),
 
 
                                 TextEntry::make('start_date')

@@ -37,7 +37,12 @@ class NumberUtils
     {
         $last       = Intervention::latest()->first();
 
-        $lastNumber = (int) $last?->numero ?? 0;
+        $lastNumber = (int) $last?->numero;
+
+        $parts = explode('-', $last?->numero);
+        $lastPart = end($parts);
+
+        $lastNumber = (int) $lastPart;
 
         $newNumber = $lastNumber + 1;
 

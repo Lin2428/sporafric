@@ -22,13 +22,13 @@ class ViewDevis extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            // Actions\ActionGroup::make([
-            //     Actions\EditAction::make()
-            //         ->label('Modifier le contrat')
-            //         ->icon('heroicon-o-pencil'),
+            Actions\ActionGroup::make([
+                Actions\EditAction::make()
+                    ->label('Modifier le contrat')
+                    ->icon('heroicon-o-pencil'),
                     
                
-            // ]),
+            ]),
         ];
     }
 }

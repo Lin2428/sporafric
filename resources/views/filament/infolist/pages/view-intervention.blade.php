@@ -200,6 +200,7 @@
             <thead>
                 <tr>
                     <th>Nom</th>
+                    <th>Fonction</th>
                     <th>Téléphone</th>
                     <th>Email</th>
                 </tr>
@@ -209,6 +210,7 @@
                 <tr>
                     </td>
                     <td>{{ $technicien->name }}</td>
+                    <td>{{ $technicien->job }}</td>
                     <td>{{ $technicien->phone }}</td>
                     <td>{{ $technicien->email }}</td>
                 </tr>

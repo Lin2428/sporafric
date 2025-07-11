@@ -82,6 +82,7 @@ class Contract extends Model
     {
         return $this->belongsToMany(Generator::class, 'contract_generators')
          ->withPivot([
+                    'forfait',
                     'site',
                     'code_site',
                     'contact_name',

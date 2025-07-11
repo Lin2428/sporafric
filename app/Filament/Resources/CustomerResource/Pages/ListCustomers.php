@@ -24,7 +24,7 @@ class ListCustomers extends ListRecords
                 ->label('Synchroniser')
                 ->icon('heroicon-o-arrow-path')
                 ->action(function () {
-
+set_time_limit(120);
                     try {
                         $data = OdooController::syncronizeClient();
                     } catch (\Throwable $th) {

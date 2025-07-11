@@ -132,7 +132,7 @@ class CalendarView extends CalendarWidget
 
                 Section::make('Information sur le client')
                     ->columns(2)
-                    ->schema([WidgetUtils::customerSelectWidget()->default($intervention->customer_id)->columnSpanFull(), TextInput::make('generator_name')->label('Marque du GE')->default($intervention->generator_name), TextInput::make('power')->label('Puissance (KVA)')->numeric()->default($intervention->power), TextInput::make('serial_number')->label('Numéro de série')->default($intervention->power)->columnSpanFull()])
+                    ->schema([WidgetUtils::customerSelectWidget()->default($intervention->customer_id)->columnSpanFull(), TextInput::make('generator_name')->label('Marque du GE')->default($intervention->generator_name), TextInput::make('power')->label('Puissance (kVA)')->numeric()->default($intervention->power), TextInput::make('serial_number')->label('Numéro de série')->default($intervention->power)->columnSpanFull()])
                     ->visible(fn() => $this->getRecord()->type_activite == '0'),
 
                 WidgetUtils::generatorSelectWidget(type:null)

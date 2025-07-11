@@ -22,6 +22,7 @@ class WidgetUtils
                 $result = collect();
                 
                 $query = Generator::query();
+                
                 if ($get('contract_id') !=null) {
                     $query->whereHas('contractGenerator', function (Builder $query) use ($get) {
                         $query->where('contract_id', $get('contract_id'));
@@ -60,8 +61,9 @@ class WidgetUtils
                         $generator->id => WidgetUtils::getGeneratorSelect($generator),
                     ])->toArray();
             })
-            ->getOptionLabelUsing(function ($value) {
+            ->getOptionLabelUsing(function ($value)use ($type) {
                 $generator = Generator::where('id', $value)
+                ->when($type != null, fn(Builder $query) => $query->where('type', '=', $type))
                     ->firstOrFail();
 
                 return WidgetUtils::getGeneratorSelect($generator);
@@ -134,10 +136,20 @@ class WidgetUtils
             ->allowHtml()
             ->label('Contrat')
             ->getSearchResultsUsing(function (string $search) use($name) {
-                $model = Contract::where("number", "like", "%$search%");
+                $model = Contract::where("number", "like", "%$search%")
+                ->orWhereHas('customer', function ($query) use ($search) {
+                    $query->where('name', 'like', "%$search%")
+                    ->orWhere('contact_c_phone', 'like', "%$search%")
+                    ->orWhere('contact_c_email', 'like', "%$search%");
+                });
                 if(str_contains($name, 'devis')) {
                     $model = Devis::where("number", "like", "%$search%")
-                    ->orWhere("customer_name", "like", "%$search%");
+                    ->orWhere("customer_name", "like", "%$search%")
+                     ->orWhereHas('customer', function ($query) use ($search) {
+                    $query->where('name', 'like', "%$search%")
+                    ->orWhere('contact_c_phone', 'like', "%$search%")
+                    ->orWhere('contact_c_email', 'like', "%$search%");
+                });
                 }
                 $users = $model->orWhereHas('customer', function ($query) use ($search) {
                         $query->where('name', 'like', "%$search%");

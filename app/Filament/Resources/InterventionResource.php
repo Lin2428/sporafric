@@ -8,6 +8,7 @@ use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
 use App\Filament\Resources\InterventionResource\Pages;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
+use App\Models\Generator;
 use App\Models\Intervention;
 use App\Models\Piece;
 use App\Utils\NumberUtils;
@@ -52,11 +53,13 @@ class InterventionResource extends Resource implements HasShieldPermissions
 
         $onUpdate = function(Set $set, Get $get) {
             $pieces = $get('../../pieces');
-           
-            foreach ($pieces as $piece) {
+
+           if ($pieces) {
+                foreach ($pieces as $piece) {
                 $price = Piece::find($piece['piece_id'])?->pv;
 
                 $set('price', $price?? 0);
+            }
             }
         };
 
@@ -94,9 +97,16 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                     ->required()
                                     ->visible(fn(callable $get) => $get('type_activite') == "1"),
 
-                                WidgetUtils::generatorSelectWidget(type: 2, isDispo:false)
+                                WidgetUtils::generatorSelectWidget(type: 2, isDispo:false, onUpdate: function (Set $set, $state) {
+                                        $generator = Generator::find($state);
+
+                                        $set('houres', $generator?->houres);
+                                        $set('next_vidange', $generator?->next_vidange);
+                                        $set('prochain_visite', $generator?->prochain_visite);
+                                    })
                                     ->columnSpanFull()
                                     ->required()
+                                    ->reactive()
                                     ->visible(fn(callable $get) => $get('contract_id') != null && $get('type_activite') == "1"),
 
                                 Section::make('Information sur le client')
@@ -110,7 +120,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                             ->required()
                                             ->label("Marque du GE"),
                                         TextInput::make('power')
-                                            ->label("Puissance (KVA)")
+                                            ->label("Puissance (kVA)")
                                             ->numeric(),
                                         TextInput::make('serial_number')
                                             ->label("Numéro de série")->columnSpanFull(),
@@ -127,13 +137,48 @@ class InterventionResource extends Resource implements HasShieldPermissions
 
                                 TextInput::make('identifiant')
                                 ->unique(ignoreRecord:true)
-                                    ->label('Numéro de Bon d\'intervention'),
+                                    ->label('Numéro de Bon de travaux'),
 
                                 Select::make('type')
                                     ->label('Type')
                                     ->options(collect(InterventionType::cases())
                                         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                                        ->toArray()),
+                                        ->toArray())
+                                        ->reactive(),
+
+                                TextInput::make('houres')
+                                    ->numeric()
+                                    ->label('H de fonctionnement du GE')
+                                    ->formatStateUsing(function (Get $get) {
+                                        $generator = Generator::find($get('generator_id'));
+                                  
+                                        return $generator?->houres;
+                                    })
+                                    ->reactive()
+                                    ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value)),
+
+                               TextInput::make('next_vidange')
+                                    ->numeric()
+                                    ->reactive()
+                                    ->label('Prochaine vidange')
+                                    ->formatStateUsing(function (Get $get) {
+                                        $generator = Generator::find($get('generator_id'));
+                                  
+                                        return $generator?->next_vidange;
+                                    })
+                                       ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value)),
+
+                                        TextInput::make('prochain_visite')
+                                    ->numeric()
+                                    ->reactive()
+                                    ->label('Prochaine vidange')
+                                    ->formatStateUsing(function (Get $get) {
+                                        $generator = Generator::find($get('generator_id'));
+                                  
+                                        return $generator?->prochain_visite;
+                                    })->columnSpanFull()
+                                       ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value)),
+
 
                                 Textarea::make('description_panne')
                                     ->label('Description de la panne ou du travail à effectuer')
@@ -204,6 +249,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                             ->required(),
                     ])->columnSpanFull()
                     ->grid(2)
+                    ->columns(2)
                     ])->columnSpanFull(),
 
             ])->columns(3);
@@ -310,7 +356,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
 
                 TextEntry::make('generator')
                     ->getStateUsing(function (Intervention $record) {
-                       return $record->contract != null ? $record->generator?->name . ' ' . $record->generator?->power . 'KVA - N/S: ' . $record?->generator?->serial_number : $record->generator_name . '-' . $record->power . 'KVA - N/S: ' . $record->serial_number;
+                       return $record->contract != null ? $record->generator?->name . ' ' . $record->generator?->power . 'kVA - N/S: ' . $record?->generator?->serial_number : $record->generator_name . '-' . $record->power . 'kVA - N/S: ' . $record->serial_number;
                     })->hiddenLabel()
                     ->size(10)
                     ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])

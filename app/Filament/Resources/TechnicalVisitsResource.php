@@ -260,7 +260,7 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
         $html = "
                 <div class='flex flex-col text-xs' style='line-height: 1.2;'>
                     <span class='font-normal'>{$reference}</span>
-                    <span class='font-normal'>{$powr}KVA</span>
+                    <span class='font-normal'>{$powr}kVA</span>
                 </div>
             ";
 

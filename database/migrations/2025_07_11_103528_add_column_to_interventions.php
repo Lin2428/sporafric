@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('interventions', function (Blueprint $table) {
             $table->integer('montant')->nullable();
-            $table->string('numero')->unique();
+            $table->string('numero')->unique()->nullable();
             $table->foreignId('old_generator_id')->nullable()->constrained('generators');
         });
     }

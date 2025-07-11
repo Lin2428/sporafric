@@ -73,7 +73,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                             ->columnSpan(2)
                             ->schema([
                                 TextInput::make('name')
-                                    ->label('Marque')
+                                    ->label('Infomations du GE & SN')
                                     ->columnSpanFull(),
 
                                 // TextInput::make('reference')
@@ -102,7 +102,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
 
                                 TextInput::make('power')
                                     ->numeric()
-                                    ->label('Puissance (KVA)'),
+                                    ->label('Puissance (kVA)'),
 
                                 TextInput::make('voltage')
                                     ->numeric()

@@ -61,7 +61,8 @@ class ListDevis extends ListRecords
 
                     foreach ($this->devis['orders'] as $k => $devis) {
                         $customerId = Customer::where('odoo_id', $devis['partner_id'][0] ?? null)->value('id');
-                        Devis::updateOrCreate(
+                       if($customerId != null) {
+                            Devis::updateOrCreate(
                             [
                                 'odoo_id' => $devis['id'],
                             ],
@@ -73,19 +74,21 @@ class ListDevis extends ListRecords
                                 'start_date' => $devis['date_order'],
                                 'end_date' => $devis['expected_date'] == false ? null : $devis['expected_date'],
                                 'forfait' => $devis['amount_total'],
-                                'is_active' => $devis['invoice_status'] === 'no' ? true : false,
+                                'is_active' => $devis['invoice_status'] === 'to invoice' ? true : false,
                                 'state' => $devis['state'],
                                 'user_id' => auth()->user()->id,
                             ],
                         );
+                       }
                     }
 
                     foreach ($this->devis['lines'] as $generator) {
-                        $generatorId = Generator::where('odoo_id', $generator['product_id'][0] ?? null)->value('id');
+                        $generatorId = Generator::where('odoo_id', $generator['product_template_id'][0] ?? null)->value('id');
                         $devisId = Devis::where('odoo_id', $generator['order_id'][0] ?? null)->value('id');
                         $status = Devis::where('odoo_id', $generator['order_id'][0] ?? null)->value('is_active');
 
-                        if ($generatorId != null) {
+                       
+                        if ($generatorId != null && $devisId != null) {
                             DevisGenerator::updateOrCreate(
                                 [
                                     'devis_id' => $devisId,

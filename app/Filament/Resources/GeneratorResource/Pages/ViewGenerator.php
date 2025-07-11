@@ -14,7 +14,7 @@ class ViewGenerator extends ViewRecord
 
     public function getTitle(): string | Htmlable
     {
-        $title = "<strong class='text-primary'> {$this->record->name} - {$this->record->reference} - {$this->record->power}KVA</strong>";
+        $title = "<strong class='text-primary'> {$this->record->name} - {$this->record->reference} - {$this->record->power}kVA</strong>";
         return new HtmlString($title);
     }
 

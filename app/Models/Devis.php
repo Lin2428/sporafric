@@ -40,7 +40,7 @@ class Devis extends Model
 
     public function generators()
     {
-        return $this->belongsToMany(Generator::class, 'devis_generators', 'devis_id', 'generator_id')
+        return $this->belongsToMany(Generator::class, 'devis_generators')
             ->withPivot([
                 'status',
                 'user_id', 

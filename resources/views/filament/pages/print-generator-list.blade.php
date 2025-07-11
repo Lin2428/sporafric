@@ -17,7 +17,7 @@
                     </th>
                     <th class="px-3 py-4 text-sm font-bold text-left text-slate-800 border border-slate-400">Code</th>
                     <th class="px-3 py-4 text-sm font-bold text-left text-slate-800 border border-slate-400">GE</th>
-                    <th class="px-3 py-4 text-sm font-bold text-left text-slate-800 border border-slate-400">P (KVA)
+                    <th class="px-3 py-4 text-sm font-bold text-left text-slate-800 border border-slate-400">P (kVA)
                     </th>
                 </tr>
             </thead>

@@ -30,7 +30,7 @@ $ring = match($generator->status) {
         <div class=" ml-10 justify-center text-xs w-full">
             <div class="font-medium pb-1">{{ $generator->name}} - {{ $generator->reference }}</div>
             <div class="flex items-center">
-                {{$generator->power}}KVA
+                {{$generator->power}}kVA
             </div>
 
             @if ($generator->type == 1)

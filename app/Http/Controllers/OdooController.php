@@ -36,10 +36,12 @@ class OdooController extends Controller
         $data = $odoo->searchRead('hr.employee',
             [
                 (['department_id', '=', 6]),
+                (['job_id', 'in', [4,26,27,28,]]),
             ],
             [
                 'id',
                 'name',
+                'job_id',
             ]);
 
         return $data;
@@ -75,11 +77,14 @@ class OdooController extends Controller
         $devis = Devis::all()->pluck('odoo_id')->toArray();
 
         $orders = $odoo->searchRead('sale.order', 
-        $all ? [ ( ['is_rental_order', '=', true])
+        $all ? [ 
+            ( ['is_rental_order', '=', true]),
+            (['state', 'not in', ['draft', 'sent', 'cancel']])
             ] :
             [
-                (['id', 'not in', $devis]),
-               ( ['is_rental_order', '=', true])
+            (['id', 'not in', $devis]),
+            ( ['is_rental_order', '=', true]),
+            (['state', 'not in', ['draft', 'sent', 'cancel']])
             ],
              [
             'id',
@@ -110,7 +115,7 @@ class OdooController extends Controller
                 (['is_rental', '=', true]),
             ], [
                 'order_id',
-                'product_id',
+                'product_template_id',
             ]);
         }
 

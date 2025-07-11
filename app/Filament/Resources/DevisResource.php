@@ -29,6 +29,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use App\Enum\GeneratorStatus;
+use Filament\Forms\Components\Repeater;
 
 class DevisResource extends Resource implements HasShieldPermissions
 {
@@ -43,65 +44,30 @@ class DevisResource extends Resource implements HasShieldPermissions
     {
         return $form
             ->schema([
-              
                 Group::make()
                     ->schema([
                         Section::make('Infos générales')
                             ->columns(2)
+                            ->disabled()
                             ->schema([
                                 WidgetUtils::customerSelectWidget()
                                     ->columnSpanFull(),
 
-                                WidgetUtils::generatorSelectWidget()
-                                    ->columnSpanFull(),
-
                                 TextInput::make('number')
-                                    ->label('Numéro de contrat')
+                                    ->label('Numéro du devis')
                                     ->required()
                                     ->columnSpanFull(),
 
-                                TextInput::make('site')
-                                    ->label('Site')
-                                    ->required()
-                                    ->columnSpanFull(),
-
-                                TextInput::make('code_site')
-                                    ->label('Code')
-                                    ->required()
-                                    ->columnSpanFull(),
-
-                                TextInput::make('forfait')
-                                    ->label('Forfait de maintenance mensuel')
+                                
+                        TextInput::make('forfait')
+                                    ->label('Montant')
                                     ->numeric()
                                     ->columnSpanFull(),
-                            ]),
-
-                        Section::make('Localisation sur la carte')
-                            ->schema([
-                                View::make('filament.forms.components.map-picker')
-                                    ->label(''),
                             ]),
                     ])->columnSpan(['lg' => 2]),
 
                 Group::make()
                     ->schema([
-                        Section::make('Contact sur place')
-                            ->columns(2)
-                            ->schema([
-                                TextInput::make('contact_name')
-                                    ->label('Nom')
-                                    ->required()
-                                    ->columnSpanFull(),
-                                TextInput::make('contact_email')
-                                    ->label('Email')
-                                    ->required()
-                                    ->columnSpanFull(),
-                                TextInput::make('contact_phone')
-                                    ->label('Téléphone')
-                                    ->tel()
-                                    ->required()
-                                    ->columnSpanFull(),
-                            ])->columnSpan(['lg' => 1]),
 
                         Section::make('Infos contractuelles')
                             ->columns(2)
@@ -109,12 +75,16 @@ class DevisResource extends Resource implements HasShieldPermissions
                                 DatePicker::make('start_date')
                                     ->label('Date de début')
                                     ->required()
-                                    ->columnSpanFull(),
+                                    ->default(now())
+                                    ->columnSpanFull()
+                                    ->disabled(),
 
                                 DatePicker::make('end_date')
                                     ->label('Date de fin')
                                     ->required()
-                                    ->columnSpanFull(),
+                                    ->default(now()->addYears(10))
+                                    ->columnSpanFull()
+                                    ->disabled(),
 
                                 Toggle::make('is_active')
                                     ->label('Statut')
@@ -125,28 +95,58 @@ class DevisResource extends Resource implements HasShieldPermissions
                                     ->required(),
                             ])->columnSpan(['lg' => 1]),
 
-                        Section::make('Données de la carte')
+                    ])->columnSpan(['lg' => 1]),
+
+                Repeater::make('generators')
+                    ->formatStateUsing(function ($record) {
+                        if(empty($record->generators)) return [];
+                        
+                        return $record->generators?->map(function ($generator) {
+                            return [
+                                'generator_id' => $generator->id,
+                                'forfait' => $generator->pivot->forfait,
+                                'site' => $generator->pivot->site,
+                                'code_site' => $generator->pivot->code_site,
+                                'contact_name' => $generator->pivot->contact_name,
+                                'contact_phone' => $generator->pivot->contact_phone,
+                                'contact_email' => $generator->pivot->contact_email,
+                            ];
+                        })->toArray();
+                    })
+                    ->label('Groupes électrogènes')
+                    ->addable(false)
+                    ->deletable(false)
+                    ->deleteAction(fn(\Filament\Forms\Components\Actions\Action $action) => $action->requiresConfirmation())
+                    ->schema([
+                        
+                        WidgetUtils::generatorSelectWidget()
+                            ->columnSpanFull()
+                            ->required()
+                            ->disabled()
+                            ->dehydrated(true),
+
+                        TextInput::make('site')
+                            ->label('Site'),
+
+                        TextInput::make('code_site')
+                            ->label('Code'),
+
+                        Section::make('Contact sur place')
                             ->columns(2)
                             ->schema([
-                               Textarea::make('adress')
-                                    ->label('Adresse')
-                                    ->rows(2)
-                                    ->required()
+                                TextInput::make('contact_name')
+                                    ->label('Nom'),
+                                TextInput::make('contact_phone')
+                                    ->label('Téléphone')
+                                    ->tel(),
+                                TextInput::make('contact_email')
+                                    ->label('Email')
                                     ->columnSpanFull(),
+                            ])->columnSpanFull(),
 
-                                TextInput::make('lat')
-                                    ->label('Latitude')
-                                    ->reactive()
-                                    ->required()
-                                    ->columnSpanFull(),
-
-                                TextInput::make('lng')
-                                    ->label('Longitude')
-                                    ->required()
-                                    ->reactive()
-                                    ->columnSpanFull(),
-                            ])->columnSpan(['lg' => 1]),
-                    ])->columnSpan(['lg' => 1]),
+                    ])->columns(2)
+                    ->grid(2)
+                    ->columnSpan(['lg' => 3]),
 
             ])->columns(3);
     }

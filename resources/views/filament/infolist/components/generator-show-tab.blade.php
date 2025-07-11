@@ -1,5 +1,5 @@
 @livewire('show-generators-table',
     [
-        'record' => $getRecord()->generators,
+        'record' => $getRecord()->id,
     ]
 )

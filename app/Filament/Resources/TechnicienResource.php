@@ -76,6 +76,11 @@ class TechnicienResource extends Resource implements HasShieldPermissions
                     ->searchable()
                     ->limit(50),
 
+                Tables\Columns\TextColumn::make('job')
+                    ->label('Fonction')
+                    ->searchable()
+                    ->limit(50),
+
                 Tables\Columns\TextColumn::make('phone')
                     ->label('Téléphone')
                     ->searchable()

@@ -20,7 +20,9 @@ class InterventionUtil
             ->columns(1)
             ->schema([
                 DateTimePicker::make('start_date')
-                    ->label('Date de début'),
+                    ->label('Date de début')
+                    ->reactive(),
+
                 DateTimePicker::make('end_date')
                     ->label('Date limite'),
 
@@ -63,7 +65,7 @@ class InterventionUtil
         $html = "
                 <div class='flex flex-col text-xs' style='line-height: 1.2;'>
                     <span class='font-normal'>{$reference}</span>
-                    <span class='font-normal'>{$powr}KVA</span>
+                    <span class='font-normal'>{$powr}kVA</span>
                 </div>
             ";
 

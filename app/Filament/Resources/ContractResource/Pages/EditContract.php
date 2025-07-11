@@ -28,19 +28,20 @@ class EditContract extends EditRecord
 
         $record->update($data);
         foreach ($data['generators'] as $generatorData) {
-        $this->record->generators()->syncWithoutDetaching([
-        $generatorData['generator_id'] => [
-            'site' => $generatorData['site'],
-            'code_site' => $generatorData['code_site'],
-            'contact_name' => $generatorData['contact_name'],
-            'contact_phone' => $generatorData['contact_phone'],
-            'contact_email' => $generatorData['contact_email'],
-            'user_id' => auth()->id(),
-        ]
-    ]);
+            $this->record->generators()->syncWithoutDetaching([
+                $generatorData['generator_id'] => [
+                    'forfait' => $generatorData['forfait'],
+                    'site' => $generatorData['site'],
+                    'code_site' => $generatorData['code_site'],
+                    'contact_name' => $generatorData['contact_name'],
+                    'contact_phone' => $generatorData['contact_phone'],
+                    'contact_email' => $generatorData['contact_email'],
+                    'user_id' => auth()->id(),
+                ]
+            ]);
 
-    Generator::where('id', $generatorData['generator_id'])->update(['status' => GeneratorStatus::EN_LOCATION->value]);
-}
+            Generator::where('id', $generatorData['generator_id'])->update(['status' => GeneratorStatus::EN_LOCATION->value]);
+        }
         return $record;
     }
 }

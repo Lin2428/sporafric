@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Models\ContractGenerator;
+use App\Models\DevisGenerator;
 use App\Models\Generator;
 use App\Models\Shop\Product;
 use App\Utils\NumberUtils;
@@ -12,54 +14,65 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
 class ShowGeneratorsTable extends Component implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
-    
-    public array  $data;
+
+    public  $contractId;
 
     public function mount($record): void
     {
-        $this->data = $record->pluck('id')->toArray();
+        $this->contractId = $record;
     }
-    
+
     public function table(Table $table): Table
     {
+        $model = ContractGenerator::where('contract_id', $this->contractId)->with('generator');
+
+        if(str_contains(request()->url(), 'devis')) {
+            $model = DevisGenerator::where('devis_id', $this->contractId)->with('generator');
+        }
         return $table
-        ->heading('Groupes électrogènes')
-            ->query(Generator::query()->whereIn('id', $this->data))
+            ->heading('Groupes électrogènes')
+            ->query($model)
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('generator.name')
                     ->label('Générateur')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('reference')
-                    ->searchable(),
-                TextColumn::make('serial_number')
-                    ->label('Numéro de série')
-                    ->searchable(),
-                TextColumn::make('power')
+                TextColumn::make('generator.power')
                     ->label('Puissance ')
-                    ->getStateUsing(fn($record) => NumberUtils::format($record->power) . " KVA")
+                    ->getStateUsing(fn($record) => NumberUtils::format($record->power) . " kVA")
                     ->searchable(),
+
+                TextColumn::make('site')
+                    ->label('Site ')
+                    ->searchable(),
+
+                TextColumn::make('forfait')
+                    ->label('Forfait de maintenance')
+                    ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
+                    ->columnSpanFull()
+                    ->visible(fn($record) => $record->forfait ?? false),
             ])
-            ->recordUrl(function ($record){
-                if(str_contains(request()->url(), 'devis')){
-                    return url('/admin/generators', $record->id);
+            ->recordUrl(function ($record) {
+                if (str_contains(request()->url(), 'devis')) {
+                    return url('/admin/generators/'. $record->generator_id);
                 }
-                 return url('/admin/contract-generators', $record->id);
+                return url('/admin/contract-generators/'. $record->generator_id);
             })
             ->filters([
                 // ...
             ]);
     }
-    
+
     public function render(): View
     {
-         return view('livewire.show-generators-table');
+        return view('livewire.show-generators-table');
     }
 }
 // namespace App\Livewire;

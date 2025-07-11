@@ -18,6 +18,7 @@ class DevisGenerator extends Model
         'contact_name',
         'contact_phone',
         'contact_email',
+        'forfait',
         'is_retired',
     ];
 

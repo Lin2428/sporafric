@@ -70,7 +70,7 @@ class ListGenerators extends ListRecords
                      $this->products = [];
                  })
                 ->action(function ($data) {
-                    set_time_limit(60);
+                          set_time_limit(120);
 
                     try {
                         $this->products = OdooController::syncronizeGenerator($this->category);

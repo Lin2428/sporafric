@@ -26,7 +26,7 @@ class ListTechniciens extends ListRecords
                 ->label('Synchroniser')
                 ->icon('heroicon-o-arrow-path')
                 ->action(function() {
-
+set_time_limit(120);
                     try {
                         $data = OdooController::syncronizeTechnicians();
                     } catch (\Throwable $th) {
@@ -46,7 +46,8 @@ class ListTechniciens extends ListRecords
                             ],
                             [
                                 'odoo_id' => $tecnhnician['id'],
-                                'name' => $tecnhnician['name']
+                                'name' => $tecnhnician['name'],
+                                'job' => $tecnhnician['job_id'][1]
                             ]);
                     }
 

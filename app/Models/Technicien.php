@@ -15,6 +15,7 @@ class Technicien extends Model
         'phone',
         'email',
         'photo',
+        'job',
         'user_id',
         'is_active',
     ];

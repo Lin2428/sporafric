@@ -21,6 +21,7 @@ class CreateContract extends CreateRecord
         $this->record->generators()->attach(
             $generatorData['generator_id'],
             [
+                'forfait' => $generatorData['forfait'] ?? 0,
                 'site' => $generatorData['site'] ?? null,
                 'code_site' => $generatorData['code_site'] ?? null,
                 'contact_name' => $generatorData['contact_name'] ?? null,

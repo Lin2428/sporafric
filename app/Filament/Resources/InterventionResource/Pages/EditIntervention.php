@@ -1,7 +1,9 @@
 <?php
 namespace App\Filament\Resources\InterventionResource\Pages;
 
+use App\Enum\InterventionType;
 use App\Filament\Resources\InterventionResource;
+use App\Models\Generator;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -14,7 +16,11 @@ class EditIntervention extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\Action::make('print')
+            ->label("Imprimer")
+            ->icon("heroicon-o-printer")
+            ->color('primary')
+            ->url(url('/admin/interventions/'.$this->record->id)),
         ];
     }
 
@@ -48,6 +54,20 @@ class EditIntervention extends EditRecord
         } else {
             $data['contract_id']  = null;
             $data['generator_id'] = null;
+        }
+
+        if($data['type_activite'] == '1' && ($data['type'] == InterventionType::RONDE->value || $data['type'] == InterventionType::VIDANGE->value)){
+           $houres = $data['houres'];
+            $nexTvidange = $data['prochain_visite'] -  $houres;
+            $vidange =  $nexTvidange > 30;
+
+            Generator::where('id', $data['generator_id'])
+            ->update([
+                'houres' => $data['houres'],
+                'next_vidange' => $data['next_vidange'],
+                'prochain_visite' => $data['prochain_visite'],
+                'vidange' => $vidange
+            ]);
         }
 
         return $data;

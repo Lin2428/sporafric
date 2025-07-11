@@ -9,19 +9,25 @@ use App\Filament\Resources\InterventionDevisResource\Pages;
 use App\Filament\Resources\InterventionDevisResource\RelationManagers;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
+use App\Models\Generator;
 use App\Models\Intervention;
 use App\Models\InterventionDevis;
+use App\Models\Piece;
+use App\Utils\NumberUtils;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -51,6 +57,17 @@ class InterventionDevisResource extends Resource implements HasShieldPermissions
 
 public static function form(Form $form): Form
     {
+         $onUpdate = function(Set $set, Get $get) {
+            $pieces = $get('../../pieces');
+
+           if ($pieces) {
+                foreach ($pieces as $piece) {
+                $price = Piece::find($piece['piece_id'])?->pv;
+
+                $set('price', $price?? 0);
+            }
+            }
+        };
 
         return $form
             ->schema([
@@ -68,46 +85,156 @@ public static function form(Form $form): Form
                                     ->columnSpanFull()
                                     ->reactive()
                                     ->required(),
+                                
+                                TextInput::make('numero')
+                                    ->label('Numéro')
+                                    ->default(NumberUtils::intevention_numero('INT-LOC'))
+                                    ->required()
+                                    ->unique(Intervention::class, 'numero', ignoreRecord: true)
+                                    ->columnSpanFull(),
 
                                 WidgetUtils::contractSelectWidget('devis_id')
                                     ->columnSpanFull()
                                     ->reactive()
+                                    ->required()
                                     ->label("Devis"),
 
-                                 WidgetUtils::generatorSelectWidget(isDispo:false)
+                                 WidgetUtils::generatorSelectWidget(isDispo:false, onUpdate: function (Set $set, $state) {
+                                        $generator = Generator::find($state);
+
+                                        $set('houres', $generator?->houres);
+                                        $set('next_vidange', $generator?->next_vidange);
+                                        $set('prochain_visite', $generator?->prochain_visite);
+                                    })
                                     ->columnSpanFull()
                                     ->reactive()
+                                    ->required()
                                     ->visible(fn(callable $get) => $get('devis_id') != null),
 
                                 DatePicker::make('date_prise_appel')
                                     ->label('Date de prise d’appel')
+                                    ->default(now())
                                     ->required(),
 
                                 DatePicker::make('date_planifiee')
-                                    ->label('Date planifiée')
-                                    ->required(),
+                                    ->label('Date planifiée'),
 
                                 TextInput::make('identifiant')
-                                    ->label('Numéro de Bon d\'intervention')
-                                    ->required(),
+                                    ->label('Numéro de Bon de travaux'),
 
                                 Select::make('type')
                                     ->label('Type')
                                     ->options(collect(InterventionType::cases())
                                         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
                                         ->toArray())
-                                    ->required(),
+                                    ->reactive(),
+
+                                TextInput::make('houres')
+                                    ->numeric()
+                                    ->label('H de fonctionnement du GE')
+                                    ->formatStateUsing(function (Get $get) {
+                                        $generator = Generator::find($get('generator_id'));
+                                  
+                                        return $generator?->houres;
+                                    })
+                                    ->reactive()
+                                    ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value),
+
+                               TextInput::make('next_vidange')
+                                    ->numeric()
+                                    ->reactive()
+                                    ->label('Prochaine vidange')
+                                    ->formatStateUsing(function (Get $get) {
+                                        $generator = Generator::find($get('generator_id'));
+                                  
+                                        return $generator?->next_vidange;
+                                    })
+                                       ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value),
+
+                                        TextInput::make('prochain_visite')
+                                    ->numeric()
+                                    ->reactive()
+                                    ->label('Prochaine vidange')
+                                    ->formatStateUsing(function (Get $get) {
+                                        $generator = Generator::find($get('generator_id'));
+                                  
+                                        return $generator?->prochain_visite;
+                                    })
+                                    ->columnSpanFull()
+                                    ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value),
+
 
                                 Textarea::make('description_panne')
                                     ->label('Description de la panne ou du travail à effectuer')
-                                    ->required()
                                     ->rows(5)
                                     ->columnSpanFull(),
                             ])
                     ])->columnSpan(['lg' => 2]),
 
                 Group::make()
-                    ->schema([InterventionUtil::infoInterne()])->columnSpan(['lg' => 1]),
+                    ->schema([
+                        InterventionUtil::infoInterne(),
+                        Section::make('Autre information')
+                            ->columns(2)
+                            ->schema([
+                                TextInput::make('montant')
+                                    ->label('Montant')
+                                    ->columnSpanFull(),
+
+                                Repeater::make('fiches')
+                                    ->label('')
+                                    ->relationship('fiches')
+                                    ->addActionLabel('Ajouter une pièce jointe')
+                                    ->schema([
+                                       FileUpload::make('fiche')
+                                            ->hiddenLabel()
+                                            ->disk('devis')
+                                            ->downloadable()
+                                            ->openable()
+                                            ->columnSpanFull(),
+                                    ])->columnSpanFull(),
+                            ]),
+                        ])->columnSpan(['lg' => 1]),
+
+
+                Section::make('Pièces livrées')
+                    ->columns(2)
+                    ->schema([
+                        Repeater::make('pieces')
+                    ->label('')
+                    ->formatStateUsing(function ($record) {
+                        if(empty($record->pieces)) return [];
+                      
+                        return $record->pieces?->map(function ($piece) {
+                            return [
+                                'piece_id' => $piece->id,
+                                'qty' => $piece->pivot->qty,
+                                'price' => $piece->pivot->price,
+                            ];
+                        })->toArray();
+                    })
+                    ->addActionLabel('Ajouter une pièce')
+                    ->schema([
+                        WidgetUtils::pieceSelectWidget($onUpdate)
+                            ->columnSpanFull()
+                            ->reactive()
+                            ->required(),
+                        TextInput::make('qty')
+                        ->label('Quantité')
+                        ->numeric()
+                        ->minValue(1)
+                        ->default(1)
+                        ->required(),
+                        TextInput::make('price')
+                            ->label('Prix unitaire')
+                            ->numeric()
+                            ->minValue(0)
+                            ->reactive()
+                            ->required(),
+                    ])->columnSpanFull()
+                    ->grid(2)
+                    ->columns(2)
+                    ])->columnSpanFull(),
 
             ])->columns(3);
     }
@@ -122,8 +249,8 @@ public static function form(Form $form): Form
         return $table
         ->query(static::getEloquentQuery()->where('type_service', 0))
         ->defaultPaginationPageOption(50)
+        ->defaultSort('created_at', 'desc')
         ->columns(InterventionUtil::table("Devis"))
-        ->defaultSort('date_planifiee', 'desc')
             ->filters([
                 Filter::make('status')
                 ->form([
@@ -208,7 +335,7 @@ public static function form(Form $form): Form
 
                 TextEntry::make('generator')
                     ->getStateUsing(function (Intervention $record) {
-                        return $record->devis != null ? $record->generator?->name . '-' . $record->generator?->power . ' KVA ' . $record->generator?->serial_number:"";
+                        return $record->devis != null ? $record->generator?->name . '-' . $record->generator?->power . ' kVA ' . $record->generator?->serial_number:"";
                     })->hiddenLabel()
                     ->size(10)
                     ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])
