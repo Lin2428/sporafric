@@ -63,7 +63,7 @@ class InterventionPolicy
      */
     public function forceDelete(User $user, Intervention $intervention): bool
     {
-        return $user->can('force_delete_intervention::devis');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class InterventionPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_intervention::devis');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class InterventionPolicy
      */
     public function restore(User $user, Intervention $intervention): bool
     {
-        return $user->can('restore_intervention::devis');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class InterventionPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_intervention::devis');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class InterventionPolicy
      */
     public function replicate(User $user, Intervention $intervention): bool
     {
-        return $user->can('replicate_intervention::devis');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class InterventionPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_intervention::devis');
+        return $user->can('{{ Reorder }}');
     }
 }

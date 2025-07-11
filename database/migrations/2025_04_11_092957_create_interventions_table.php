@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('interventions', function (Blueprint $table) {
             $table->id();
-            $table->string('numero')->unique();
             $table->integer('type_service');
             $table->integer('type_activite')->nullable();
             $table->foreignId('contract_id')->nullable();
@@ -38,7 +37,6 @@ return new class extends Migration
             $table->string('generator_reference')->nullable();
             $table->string('power')->nullable();
             $table->string('serial_number')->nullable();
-            $table->integer('montant')->nullable();
             $table->foreignId('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

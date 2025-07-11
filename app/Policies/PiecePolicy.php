@@ -63,7 +63,7 @@ class PiecePolicy
      */
     public function forceDelete(User $user, Piece $piece): bool
     {
-        return $user->can('force_delete_piece');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class PiecePolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_piece');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class PiecePolicy
      */
     public function restore(User $user, Piece $piece): bool
     {
-        return $user->can('restore_piece');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class PiecePolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_piece');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class PiecePolicy
      */
     public function replicate(User $user, Piece $piece): bool
     {
-        return $user->can('replicate_piece');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class PiecePolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_piece');
+        return $user->can('{{ Reorder }}');
     }
 }

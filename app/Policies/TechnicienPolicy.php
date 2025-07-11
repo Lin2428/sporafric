@@ -63,7 +63,7 @@ class TechnicienPolicy
      */
     public function forceDelete(User $user, Technicien $technicien): bool
     {
-        return $user->can('force_delete_technicien');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class TechnicienPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_technicien');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class TechnicienPolicy
      */
     public function restore(User $user, Technicien $technicien): bool
     {
-        return $user->can('restore_technicien');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class TechnicienPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_technicien');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class TechnicienPolicy
      */
     public function replicate(User $user, Technicien $technicien): bool
     {
-        return $user->can('replicate_technicien');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class TechnicienPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_technicien');
+        return $user->can('{{ Reorder }}');
     }
 }

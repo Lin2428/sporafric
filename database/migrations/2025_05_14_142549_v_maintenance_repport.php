@@ -70,13 +70,13 @@ LEFT JOIN generators g ON g.id = cg.generator_id
 -- Sous-requête pièces
 LEFT JOIN (
     SELECT
-        ip.intrvention_id AS intervention_id,
+        ip.intervention_id AS intervention_id,
         SUM(ip.qty) AS total_pieces,
         SUM(ip.qty * ip.price) AS montant_piece,
         GROUP_CONCAT(DISTINCT CONCAT(p.reference, '(', ip.qty, ')') SEPARATOR ', ') AS pieces
     FROM intervention_pieces ip
     LEFT JOIN pieces p ON p.id = ip.piece_id
-    GROUP BY ip.intrvention_id
+    GROUP BY ip.intervention_id
 ) AS pieces_data ON pieces_data.intervention_id = i.id
 
 -- Sous-requête techniciens

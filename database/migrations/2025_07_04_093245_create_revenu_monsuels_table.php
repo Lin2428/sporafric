@@ -42,7 +42,7 @@ SELECT
     (
         SELECT IFNULL(SUM(ip.qty * ip.price), 0)
         FROM interventions i
-        JOIN intervention_pieces ip ON i.id = ip.intrvention_id
+        JOIN intervention_pieces ip ON i.id = ip.intervention_id
         WHERE DATE_FORMAT(i.created_at, '%Y-%m') = mois.mois
     ) AS revenu_pieces
 

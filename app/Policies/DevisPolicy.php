@@ -63,7 +63,7 @@ class DevisPolicy
      */
     public function forceDelete(User $user, Devis $devis): bool
     {
-        return $user->can('force_delete_devis');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class DevisPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_devis');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class DevisPolicy
      */
     public function restore(User $user, Devis $devis): bool
     {
-        return $user->can('restore_devis');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class DevisPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_devis');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class DevisPolicy
      */
     public function replicate(User $user, Devis $devis): bool
     {
-        return $user->can('replicate_devis');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class DevisPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_devis');
+        return $user->can('{{ Reorder }}');
     }
 }

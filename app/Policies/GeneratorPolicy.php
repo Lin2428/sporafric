@@ -63,7 +63,7 @@ class GeneratorPolicy
      */
     public function forceDelete(User $user, Generator $generator): bool
     {
-        return $user->can('force_delete_generator');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class GeneratorPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_generator');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class GeneratorPolicy
      */
     public function restore(User $user, Generator $generator): bool
     {
-        return $user->can('restore_generator');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class GeneratorPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_generator');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class GeneratorPolicy
      */
     public function replicate(User $user, Generator $generator): bool
     {
-        return $user->can('replicate_generator');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class GeneratorPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_generator');
+        return $user->can('{{ Reorder }}');
     }
 }

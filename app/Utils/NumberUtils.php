@@ -36,11 +36,11 @@ class NumberUtils
     public static function intevention_numero(string $prefix): string
     {
         $last       = Intervention::latest()->first();
-        dd($last);
-        $lastNumber = (int) $last->numero;
-    dd($lastNumber);
+
+        $lastNumber = (int) $last?->numero ?? 0;
+
         $newNumber = $lastNumber + 1;
-        dd($newNumber);
+
         $formattedNumber = str_pad($newNumber, 9, '0', STR_PAD_LEFT);
 
         return  $prefix.'-' . $formattedNumber;

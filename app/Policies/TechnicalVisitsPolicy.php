@@ -63,7 +63,7 @@ class TechnicalVisitsPolicy
      */
     public function forceDelete(User $user, TechnicalVisits $technicalVisits): bool
     {
-        return $user->can('force_delete_technical::visits');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class TechnicalVisitsPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_technical::visits');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class TechnicalVisitsPolicy
      */
     public function restore(User $user, TechnicalVisits $technicalVisits): bool
     {
-        return $user->can('restore_technical::visits');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class TechnicalVisitsPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_technical::visits');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class TechnicalVisitsPolicy
      */
     public function replicate(User $user, TechnicalVisits $technicalVisits): bool
     {
-        return $user->can('replicate_technical::visits');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class TechnicalVisitsPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_technical::visits');
+        return $user->can('{{ Reorder }}');
     }
 }
