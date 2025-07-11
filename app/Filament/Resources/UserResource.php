@@ -55,12 +55,12 @@ class UserResource extends Resource implements HasShieldPermissions
                                     ->columnSpanFull(),
 
                                 Password::make('password')
-                                    ->label('Password')
+                                    ->label('Mot de passe')
                                     ->copyMessage('Copied in clipboard')
                                     ->regeneratePassword()
                                     ->copyable()
                                     ->required(fn(Page $livewire): bool => $livewire instanceof Pages\CreateUser)
-                                    ->maxLength(8)
+                                    ->minLength(8)
                                     ->columnSpanFull()
                                     ->dehydrateStateUsing(fn($state) => Hash::make($state))
                                     ->dehydrated(fn($state) => filled($state)),

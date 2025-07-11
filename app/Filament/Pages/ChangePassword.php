@@ -47,12 +47,12 @@ class ChangePassword extends Page implements HasForms
                                 ->columnSpanFull(),
 
                             Password::make('new_password')
-                                    ->label('Password')
+                                    ->label('Nouveau mot de passe')
                                     ->copyMessage('Copied in clipboard')
                                     ->regeneratePassword()
                                     ->copyable()
                                     ->required(fn(Page $livewire): bool => $livewire instanceof Pages\CreateUser)
-                                    ->maxLength(8)
+                                    ->minLength(8)
                                     ->columnSpanFull()
                                     ->dehydrateStateUsing(fn($state) => Hash::make($state))
                                     ->dehydrated(fn($state) => filled($state)),

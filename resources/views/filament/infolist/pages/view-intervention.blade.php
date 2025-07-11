@@ -241,7 +241,7 @@
                 <i class="icon">@svg('heroicon-s-cog')</i>
                 Heure de fonctionnement du GE:
             </span>
-            <span>{{$getRecord()->contract->generator->houres?? $getRecord()->devis->generator->houres ??""}}h</span>
+            <span>{{$getRecord()->generator?->houres?? 0}}h</span>
         </div>
 
 <br>
