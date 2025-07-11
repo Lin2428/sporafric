@@ -43,6 +43,7 @@ class Intervention extends Model implements Eventable
         'astrinte',
         'status',
         'montant',
+        'old_generator_id',
         'cancelled',
         'raison',
         'user_id',

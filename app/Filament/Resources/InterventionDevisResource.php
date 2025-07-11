@@ -163,6 +163,12 @@ public static function form(Form $form): Form
                                     ->columnSpanFull()
                                     ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value),
 
+                                 WidgetUtils::generatorSelectWidget(name: "old_generator_id", isgetAll: true)
+                                 ->label("GE remplacé")
+                                    ->columnSpanFull()
+                                    ->reactive()
+                                    ->required()
+                                    ->visible(fn(callable $get) => $get('type') == InterventionType::REMPLACEMENT->value),
 
                                 Textarea::make('description_panne')
                                     ->label('Description de la panne ou du travail à effectuer')

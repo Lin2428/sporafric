@@ -14,16 +14,18 @@ use Illuminate\Database\Eloquent\Builder;
 
 class WidgetUtils
 {
-    public static function generatorSelectWidget(?Closure $onUpdate = null, ?string $name = 'generator_id', bool $isDispo = true, null|int $type = 1): Select
+    public static function generatorSelectWidget(?Closure $onUpdate = null, ?string $name = 'generator_id', bool $isDispo = true, null|int $type = 1, $isgetAll = false): Select
     {
         $select = Select::make($name)
             ->allowHtml()
-            ->getSearchResultsUsing(function (string $search, callable $get) use ($isDispo, $type) {
+            ->getSearchResultsUsing(function (string $search, callable $get) use ($isDispo, $type, $isgetAll) {
                 $result = collect();
                 
                 $query = Generator::query();
                 
-                if ($get('contract_id') !=null) {
+                if($isgetAll == false) {
+                    
+                    if ($get('contract_id') !=null) {
                     $query->whereHas('contractGenerator', function (Builder $query) use ($get) {
                         $query->where('contract_id', $get('contract_id'));
                     });
@@ -33,6 +35,7 @@ class WidgetUtils
                         $query->where('devis_id', $get('devis_id'));
                     });
 
+                }
                 }
                 if($type != null) {
                     $query

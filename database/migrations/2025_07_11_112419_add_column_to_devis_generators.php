@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('devis_generators', function (Blueprint $table) {
              $table->integer('forfait')->default('0');
+             $table->integer('old_generator_id')->nullable();
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('devis_generators', function (Blueprint $table) {
             $table->dropColumn('forfait');
+            $table->dropColumn('old_generator_id');
         });
     }
 };

@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\InterventionDevisResource\Pages;
 
+use App\Enum\GeneratorStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\InterventionDevisResource;
+use App\Models\DevisGenerator;
 use App\Models\Generator;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -52,6 +54,31 @@ class EditInterventionDevis extends EditRecord
                 'prochain_visite' => $data['prochain_visite'],
                 'vidange' => $vidange
             ]);
+        }
+
+        if($data['type'] == InterventionType::REMPLACEMENT->value){
+            if( $data['old_generator_id'] == null || $this->record->old_generator_id != $data['old_generator_id']){
+                Generator::where('id', $data['generator_id'])
+            ->update([
+                'status' => GeneratorStatus::EN_REVU->value
+            ]);
+
+            Generator::where('id', $data['old_generator_id'])
+            ->update([
+                'status' => GeneratorStatus::EN_LOCATION->value
+            ]);
+
+            DevisGenerator::where('devis_id', $data['devis_id'])
+            ->where('generator_id', $data['generator_id'])
+            ->update([
+                'generator_id' => $data['old_generator_id'],
+                'old_generator_id' => $data['generator_id'],
+            ]);
+
+            $generatorId = $data['generator_id'];
+            $data['generator_id'] = $data['old_generator_id'];
+            $data['old_generator_id'] = $generatorId;
+            }
         }
 
         return $data;

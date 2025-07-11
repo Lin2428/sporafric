@@ -23,6 +23,7 @@ class InterventionHistory extends Component
         }else{
             $this->data = ReportLocation::query()
             ->where('generator_id', $this->generatorId)
+            // ->orWhere('old_generator_id', $this->generatorId)
             ->get();
         }
         

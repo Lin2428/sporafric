@@ -19,6 +19,7 @@ class LocationHistory extends Component
        
             $this->data = DevisGenerator::where('devis_id', '<>', null)
             ->where('generator_id', $this->generatorId)
+            ->orWhere('old_generator_id', $this->generatorId)
             ->distinct('devis_id')
             ->with('devis')
             ->get();

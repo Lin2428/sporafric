@@ -11,6 +11,7 @@ enum InterventionType: string
     case RETRAIT = '4';
     case RONDE = '5';
     case VIDANGE = '6';
+    case REMPLACEMENT = '7';
 
     public function label(): string
     {
@@ -22,6 +23,7 @@ enum InterventionType: string
             self::RETRAIT => 'Retrait',
             self::RONDE => 'Ronde',
             self::VIDANGE => 'Vidange',
+            self::REMPLACEMENT => 'Remplacement',
         };
     }
 }
