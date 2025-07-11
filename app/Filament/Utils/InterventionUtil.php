@@ -78,8 +78,16 @@ class InterventionUtil
                 ->dateTime("d/m/Y à H:i")
                 ->sortable(),
 
-            TextColumn::make('identifiant')
+            TextColumn::make('numero')
                 ->label('Numéro')
+                ->searchable()
+                ->sortable()
+                ->limit(50)
+                ->extraAttributes(['class' => 'font-bold'])
+                ->copyable(),
+
+            TextColumn::make('identifiant')
+                ->label('N° Bon d\'intervention')
                 ->searchable()
                 ->sortable()
                 ->limit(50),

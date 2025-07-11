@@ -19,6 +19,7 @@ class Intervention extends Model implements Eventable
     use SoftDeletes, HasFactory;
 
     protected $fillable = [
+        'numero',
         'type_service',
         'type_activite',
         'contract_id',

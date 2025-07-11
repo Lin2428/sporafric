@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('interventions', function (Blueprint $table) {
             $table->id();
+            $table->string('numero')->unique();
             $table->integer('type_service');
             $table->integer('type_activite')->nullable();
             $table->foreignId('contract_id')->nullable();

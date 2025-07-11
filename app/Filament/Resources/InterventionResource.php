@@ -10,6 +10,7 @@ use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
 use App\Models\Piece;
+use App\Utils\NumberUtils;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
@@ -71,6 +72,13 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                     ->options(["1" => "Maintenance", "0" => "Location"])
                                     ->default("1")
                                     ->disabled()
+                                    ->columnSpanFull(),
+
+                              TextInput::make('numero')
+                                    ->label('Numéro')
+                                    ->default(NumberUtils::intevention_numero('INT-MAINT'))
+                                    ->required()
+                                    ->unique(Intervention::class, 'numero', ignoreRecord: true)
                                     ->columnSpanFull(),
 
                                 Select::make('type_activite')

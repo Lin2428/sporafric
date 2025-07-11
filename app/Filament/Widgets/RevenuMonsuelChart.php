@@ -13,18 +13,21 @@ class RevenuMonsuelChart extends ChartWidget
 
     protected function getData(): array
     {
-        $data = static::$model::get();
+        // $data = static::$model::get();
+        $data = [];
         $labels = [];
         $totalPiece = [];
         $totalPaye = [];
         $totalDevis = [];
-        foreach ($data as $item) {
-            $labels[] = Carbon::parse($item->mois)->translatedFormat('F');
-            $totalPiece[] = (float)$item->revenu_pieces;
-            $totalIntervention[] = (float)$item->revenu_intervention;
-            $totalContract[] = (float)$item->revenu_contract;
-            $totalDevis[] = (float)$item->revenu_devis;
-        }
+        $totalIntervention = [];
+        $totalContract = [];
+        // foreach ($data as $item) {
+        //     $labels[] = Carbon::parse($item->mois)->translatedFormat('F');
+        //     $totalPiece[] = (float)$item->revenu_pieces;
+        //     $totalIntervention[] = (float)$item->revenu_intervention;
+        //     $totalContract[] = (float)$item->revenu_contract;
+        //     $totalDevis[] = (float)$item->revenu_devis;
+        // }
         return [
             'datasets' => [
                 [
