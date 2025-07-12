@@ -57,13 +57,13 @@ class EditInterventionDevis extends EditRecord
         }
 
         if($data['type'] == InterventionType::REMPLACEMENT->value){
-            if( $data['old_generator_id'] == null || $this->record->old_generator_id != $data['old_generator_id']){
+            if($this->record->new_generator_id != $data['new_generator_id']){
                 Generator::where('id', $data['generator_id'])
             ->update([
                 'status' => GeneratorStatus::EN_REVU->value
             ]);
 
-            Generator::where('id', $data['old_generator_id'])
+            Generator::where('id', $data['new_generator_id'])
             ->update([
                 'status' => GeneratorStatus::EN_LOCATION->value
             ]);
@@ -71,13 +71,9 @@ class EditInterventionDevis extends EditRecord
             DevisGenerator::where('devis_id', $data['devis_id'])
             ->where('generator_id', $data['generator_id'])
             ->update([
-                'generator_id' => $data['old_generator_id'],
+                'generator_id' => $data['new_generator_id'],
                 'old_generator_id' => $data['generator_id'],
             ]);
-
-            $generatorId = $data['generator_id'];
-            $data['generator_id'] = $data['old_generator_id'];
-            $data['old_generator_id'] = $generatorId;
             }
         }
 

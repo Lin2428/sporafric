@@ -16,7 +16,7 @@ return new class extends Migration
 SELECT
     i.id,
     i.devis_id,
-    i.identifiant,
+    i.numero,
     i.created_at AS intervention_at,
     i.type AS type_intervention,
     inf.devis_montant,

@@ -35,8 +35,8 @@ class NumberUtils
 
     public static function intevention_numero(string $prefix): string
     {
-        $last       = Intervention::latest()->first();
-
+        $last       = Intervention::withTrashed()->latest()->first();
+        
         $lastNumber = (int) $last?->numero;
 
         $parts = explode('-', $last?->numero);

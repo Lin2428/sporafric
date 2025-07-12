@@ -13,7 +13,7 @@
             <thead style="display: table-row-group">
                 <tr>
                     <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">Date</th>
-                    <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">Num
+                    <th class="px-3 py-4 text-sm text-left font-bold text-slate-800 border border-slate-400">Numéro
                     </th>
                     <th class="px-3 py-4 text-sm font-bold text-left text-slate-800 border border-slate-400">Type</th>
                     <th class="px-3 py-4 text-sm font-bold text-left text-slate-800 border border-slate-400">Techniciens
@@ -36,9 +36,15 @@
                     @foreach ($data as $intervention)
                         <tr class="border-b border-slate-400">
                             <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">{{ \App\Utils\DateUtils::format($intervention->intervention_at) }}</td>
-                            <td class="px-3 font-bold py-4 text-sm text-left text-slate-800 border border-slate-400">
-                                <a target="_blank" href="{{ url('/admin/interventions/' . $intervention->id) }}" class="text-blue-600 ">
-                                    #{{ $intervention->identifiant }}
+                            <td class="px-3 font-bold py-4 text-[12px] text-left text-slate-800 border border-slate-400">
+                                @php
+                                 $url = '/admin/interventions/' . $intervention->id;
+                                 if($intervention->devis_id != null){
+                                     $url = '/admin/intervention-devis/' . $intervention->id;
+                                 }
+                                @endphp
+                                <a target="_blank" href="{{ url($url) }}" class="text-blue-600 ">
+                                    {{ $intervention->numero }}
                                 </a></td>
                             <td class="px-3 py-4 text-blue-600 text-sm text-left border border-slate-400">
                                 {{ \App\Enum\InterventionType::from($intervention->type_intervention)->label() }}</td>

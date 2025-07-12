@@ -163,7 +163,7 @@ public static function form(Form $form): Form
                                     ->columnSpanFull()
                                     ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value),
 
-                                 WidgetUtils::generatorSelectWidget(name: "old_generator_id", isgetAll: true)
+                                 WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true)
                                  ->label("GE remplacé")
                                     ->columnSpanFull()
                                     ->reactive()
