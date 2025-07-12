@@ -41,7 +41,7 @@ class ShowGeneratorsTable extends Component implements HasForms, HasTable
             ->query($model)
             ->columns([
                 TextColumn::make('generator.name')
-                    ->label('Générateur')
+                    ->label('GE')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('generator.power')
@@ -57,7 +57,7 @@ class ShowGeneratorsTable extends Component implements HasForms, HasTable
                     ->label('Forfait de maintenance')
                     ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
                     ->columnSpanFull()
-                    ->visible(fn($record) => $record->forfait ?? false),
+                    ->visible(fn() => str_contains(request()->url(), 'contract')),
             ])
             ->recordUrl(function ($record) {
                 if (str_contains(request()->url(), 'devis')) {

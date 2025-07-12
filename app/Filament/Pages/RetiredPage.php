@@ -22,6 +22,7 @@ use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -65,6 +66,17 @@ class RetiredPage extends Page implements HasForms, HasTable
                             Section::make('Informations sur le retrait')
                                 ->columns(2)
                                 ->schema([
+                                TextInput::make('numero')
+                                    ->label('Numéro')
+                                    ->default(NumberUtils::intevention_numero('INT-LOC'))
+                                    ->required()
+                                    ->unique(Intervention::class, 'numero', ignoreRecord: true)
+                                    ->columnSpanFull(),
+
+                                     TextInput::make('identifiant')
+                                    ->label('Numéro de Bon de travaux')
+                                     ->columnSpanFull(),
+
                                    WidgetUtils::contractSelectWidget('devis_id')
                                     ->columnSpanFull()
                                     ->reactive()
@@ -76,15 +88,14 @@ class RetiredPage extends Page implements HasForms, HasTable
                                     ->visible(fn(callable $get) => $get('devis_id') != null),
                                     DatePicker::make('date_prise_appel')
                                         ->label('Date de prise d’appel')
+                                        ->default(now())
                                         ->required(),
 
                                     DatePicker::make('date_planifiee')
-                                        ->label('Date planifiée')
-                                        ->required(),
+                                        ->label('Date planifiée'),
 
                                     Textarea::make('description_panne')
                                         ->label('Note')
-                                        ->required()
                                         ->rows(3)
                                         ->columnSpanFull(),
                                 ])->columnSpan(['lg' => 1]),
@@ -92,11 +103,10 @@ class RetiredPage extends Page implements HasForms, HasTable
             ->columns(1)
             ->schema([
                 DatePicker::make('start_date')
-                    ->label('Date de début')
-                    ->required(),
+                    ->label('Date de début'),
+
                 DatePicker::make('end_date')
-                    ->label('Date limite')
-                    ->required(),
+                    ->label('Date limite'),
 
                 Select::make('status')
                     ->label('Statut')
@@ -118,7 +128,7 @@ class RetiredPage extends Page implements HasForms, HasTable
                     $devis = Devis::find($data['devis_id']);
                     $data['type_service'] = '0';
                     $data['type'] = InterventionType::RETRAIT->value;
-                    $data['identifiant'] = NumberUtils::generate();
+                    //$data['identifiant'] = NumberUtils::generate();
                 
                     $intervention = $devis->interventions()->create($data);
 

@@ -49,7 +49,7 @@ class Intervention extends Model implements Eventable
         'user_id',
     ];
 
-    protected $with = ['interventionTechniciens', 'pieces', 'generator'];
+    protected $with = ['interventionTechniciens', 'pieces', 'generator','newGenerator'];
 
 
     protected static function booted()
@@ -76,6 +76,11 @@ class Intervention extends Model implements Eventable
     public function generator()
     {
         return $this->belongsTo(Generator::class);
+    }
+    
+    public function newGenerator()
+    {
+        return $this->belongsTo(Generator::class, 'new_generator_id');
     }
 
     public function devis()
@@ -110,13 +115,13 @@ class Intervention extends Model implements Eventable
     {
         return CalendarEvent::make($this)
             ->title(InterventionType::from($this->type)->label())
-            ->start(Carbon::make($this->start_date))
-            ->end(Carbon::make($this->end_date))
+            ->start(Carbon::make($this->start_date != null ? $this->start_date : $this->date_planifiee))
+            ->end(Carbon::make($this->end_date != null ? $this->end_date : $this->date_planifiee))
             ->backgroundColor(
                 match ($this->status) {
                 (int) InterventionStatus::PLANIFIEE->value => '#3b82f6', 
                 (int) InterventionStatus::EN_COURS->value => '#f59e0b', // amber-500
-                (int) InterventionStatus::TERMINEE->value => '#6b7280', // gray-500 
+                (int) InterventionStatus::TERMINEE->value => '#36d16cff', // gray-500 
                 default => '#3b82f6', // default to blue-500
                 }
             )

@@ -449,6 +449,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                         }
                                                         return null;
                                                     })
+                                                    ->url(fn(Generator $record) => url('/admin/contracts/' . $record->contractGenerator->contract->id))
                                                     ->extraAttributes(['class' => 'font-bold']),
 
                                                 TextEntry::make('customer-name')
@@ -464,28 +465,6 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                     })
                                                     ->limit(10)
                                                     ->extraAttributes(['class' => 'font-bold']),
-
-                                                TextEntry::make('forfait')
-                                                    ->label(function (Generator $record) {
-                                                        if($record->contractGenerator){
-                                                            return 'Forfait mensuel';
-                                                        }
-                                                        if($record->devisGenerator){
-                                                            return 'Coût total du devis';
-                                                        }
-                                                    })
-                                                      ->getStateUsing(function (Generator $record) {
-                                                        if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->forfait;
-                                                        }
-                                                        if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->forfait;
-                                                        }
-                                                        return null;
-                                                    })
-                                                    ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
-                                                    ->extraAttributes(['class' => 'font-bold'])
-                                                    ->columnSpanFull(),
 
                                                
                                                 TextEntry::make('start_date')

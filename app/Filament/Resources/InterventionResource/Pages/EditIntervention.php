@@ -21,6 +21,8 @@ class EditIntervention extends EditRecord
             ->icon("heroicon-o-printer")
             ->color('primary')
             ->url(url('/admin/interventions/'.$this->record->id)),
+
+            Actions\DeleteAction::make()
         ];
     }
 

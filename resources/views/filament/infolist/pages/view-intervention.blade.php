@@ -169,13 +169,15 @@
     @if ($getRecord()->type == \App\Enum\InterventionType::REMPLACEMENT->value)
     <br>
         {{-- Numéro de bon de livraison --}}
-        <div class="container-1">
+        <a href="{{ url('admin/generators/' . $getRecord()->newGenerator->id) }}">
+            <div class="container-1">
             <span class="label">
                 <i class="icon">@svg('heroicon-s-arrow-path')</i>
                 Nouveau GE:
             </span>
-            <span>{{ $getRecord()->new_generator_name }}</span>
+            <span>{{ $getRecord()->newGenerator->name }}</span>
         </div>
+        </a>
 <br>
     @endif
 <br>

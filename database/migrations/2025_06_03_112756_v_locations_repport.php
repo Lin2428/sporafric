@@ -27,8 +27,10 @@ SELECT
     cu.name AS customer_name,
 
     -- Gestion du générateur
-    dg.generator_id AS generator_id,
+    i.generator_id,
+    i.new_generator_id,
     COALESCE(g.name, '-') AS generator_name,
+    COALESCE(g_new.name, '-') AS new_generator_name,
 
     -- Sous-requête pièces
     IFNULL(pieces_data.total_pieces, 0) AS total_pieces,
@@ -56,7 +58,8 @@ LEFT JOIN intervention_infos inf ON inf.intervention_id = i.id
 LEFT JOIN devis_generators dg ON dg.devis_id = i.devis_id
 
 -- Gestion du générateur (priorité à devis_generators)
-LEFT JOIN generators g ON g.id = dg.generator_id
+LEFT JOIN generators g ON g.id = i.generator_id
+LEFT JOIN generators g_new ON g_new.id = i.new_generator_id
 
 -- Sous-requête pièces
 LEFT JOIN (
