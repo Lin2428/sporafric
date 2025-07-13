@@ -25,37 +25,22 @@ class ListTechniciens extends ListRecords
             Actions\Action::make('sync')
                 ->label('Synchroniser')
                 ->icon('heroicon-o-arrow-path')
-                ->action(function() {
-set_time_limit(120);
+                ->action(function () {
+                    set_time_limit(120);
                     try {
-                        $data = OdooController::syncronizeTechnicians();
+                        OdooController::syncronizeTechnicians();
                     } catch (\Throwable $th) {
-                         Notification::make()
+                        Notification::make()
                             ->title('Une erreur est survenue lors de la synchronisation !')
                             ->danger()
                             ->send();
                         return;
-                    }
-                    
-
-                    foreach($data as $tecnhnician)
-                    {
-                        Technicien::updateOrCreate(
-                            [
-                                'odoo_id' => $tecnhnician['id']
-                            ],
-                            [
-                                'odoo_id' => $tecnhnician['id'],
-                                'name' => $tecnhnician['name'],
-                                'job' => $tecnhnician['job_id'][1]
-                            ]);
                     }
 
                     Notification::make()
                         ->title('Techniciens synchronisés')
                         ->success()
                         ->send();
-
                 })
                 ->requiresConfirmation()
                 ->color('primary')

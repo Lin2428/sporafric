@@ -1,8 +1,14 @@
 <?php
+
 namespace App\Http\Controllers;
 
+use App\Enum\GeneratorStatus;
+use App\Models\Customer;
 use App\Models\Devis;
+use App\Models\DevisGenerator;
 use App\Models\Generator;
+use App\Models\Piece;
+use App\Models\Technicien;
 use App\Services\OdooService;
 
 class OdooController extends Controller
@@ -17,7 +23,8 @@ class OdooController extends Controller
     public static function syncronizeClient()
     {
         $odoo = new OdooService();
-        $data = $odoo->searchRead('res.partner',
+        $data = $odoo->searchRead(
+            'res.partner',
             [],
             [
                 'id',
@@ -25,50 +32,94 @@ class OdooController extends Controller
                 'phone',
                 'email',
                 'city',
-            ]);
+            ]
+        );
 
-        return $data;
+
+        foreach ($data as $client) {
+
+            Customer::updateOrCreate(
+                [
+                    'odoo_id' => $client['id'],
+                ],
+                [
+                    'odoo_id'         => $client['id'],
+                    'name'            => $client['name'],
+                    'contact_c_name'  => $client['name'],
+                    'contact_c_phone' => $client['phone'],
+                    'contact_cemail'  => $client['email'],
+                    'city'            => $client['city'],
+                ]
+            );
+        }
     }
 
     public static function syncronizeTechnicians()
     {
         $odoo = new OdooService();
-        $data = $odoo->searchRead('hr.employee',
+        $data = $odoo->searchRead(
+            'hr.employee',
             [
                 (['department_id', '=', 6]),
-                (['job_id', 'in', [4,26,27,28,]]),
+                (['job_id', 'in', [4, 26, 27, 28,]]),
             ],
             [
                 'id',
                 'name',
                 'job_id',
-            ]);
+            ]
+        );
 
-        return $data;
+        foreach ($data as $tecnhnician) {
+            Technicien::updateOrCreate(
+                [
+                    'odoo_id' => $tecnhnician['id']
+                ],
+                [
+                    'odoo_id' => $tecnhnician['id'],
+                    'name' => $tecnhnician['name'],
+                    'job' => $tecnhnician['job_id'][1]
+                ]
+            );
+        }
     }
 
     public static function syncronizeGenerator(bool $all = false)
     {
         $odoo      = new OdooService();
         $generator = Generator::all()->pluck('odoo_id')->toArray();
-        $data      = $odoo->searchRead('product.template',
+        $data      = $odoo->searchRead(
+            'product.template',
             $all ? [
 
                 (['categ_id', 'in', [82, 240]]),
                 (['active', '=', true]),
             ] :
-            [
-                (['id', 'not in', $generator]),
-                (['categ_id', 'in', [82, 240]]),
-                (['active', '=', true]),
-            ],
+                [
+                    (['id', 'not in', $generator]),
+                    (['categ_id', 'in', [82, 240]]),
+                    (['active', '=', true]),
+                ],
             [
                 'id',
                 'name',
                 'default_code',
-            ]);
+            ]
+        );
 
-        return $data;
+        foreach ($data as $product) {
+            Generator::updateOrCreate(
+                [
+                    'odoo_id' => $product['id']
+                ],
+                [
+                    'odoo_id' => $product['id'],
+                    'name' => $product['name'],
+                    'type' => 1,
+                    'reference' => $product['default_code'],
+                ]
+            );
+        }
     }
 
     public static function syncronizeDevis(bool $all = false)
@@ -76,31 +127,33 @@ class OdooController extends Controller
         $odoo = new OdooService();
         $devis = Devis::all()->pluck('odoo_id')->toArray();
 
-        $orders = $odoo->searchRead('sale.order', 
-        $all ? [ 
-            ( ['is_rental_order', '=', true]),
-            (['state', 'not in', ['draft', 'sent', 'cancel']])
+        $orders = $odoo->searchRead(
+            'sale.order',
+            $all ? [
+                (['is_rental_order', '=', true]),
+                (['state', 'not in', ['draft', 'sent', 'cancel']])
             ] :
+                [
+                    (['id', 'not in', $devis]),
+                    (['is_rental_order', '=', true]),
+                    (['state', 'not in', ['draft', 'sent', 'cancel']])
+                ],
             [
-            (['id', 'not in', $devis]),
-            ( ['is_rental_order', '=', true]),
-            (['state', 'not in', ['draft', 'sent', 'cancel']])
-            ],
-             [
-            'id',
-            'name',
-            'partner_id',
-            'customer_info',
-            'order_line',
-            'amount_total',
-            'date_order',
-            'invoice_status',
-            'amount_total',
-            'expected_date',
-            'state'
-        ]);
+                'id',
+                'name',
+                'partner_id',
+                'customer_info',
+                'order_line',
+                'amount_total',
+                'date_order',
+                'invoice_status',
+                'amount_total',
+                'expected_date',
+                'state'
+            ]
+        );
 
-     
+
 
         $allLineIds = [];
 
@@ -119,17 +172,93 @@ class OdooController extends Controller
             ]);
         }
 
-        return [
-            'orders' => $orders,
-            'lines'  => $linesData,
-        ];
+        
+
+        foreach ($orders as $oder) {
+          
+            $customerId = Customer::where('odoo_id', $oder['partner_id'][0] ?? null)->value('id');
+            if ($customerId != null) {
+                Devis::updateOrCreate(
+                    [
+                        'odoo_id' => $oder['id'],
+                    ],
+                    [
+                        'odoo_id' => $oder['id'],
+                        'customer_name' => $oder['customer_info'] ?? '',
+                        'customer_id' => $customerId,
+                        'number' => $oder['name'],
+                        'start_date' => $oder['date_order'],
+                        'end_date' => $oder['expected_date'] == false ? null : $oder['expected_date'],
+                        'forfait' => $oder['amount_total'],
+                        'is_active' => $oder['invoice_status'] === 'to invoice' ? true : false,
+                        'state' => $oder['state'],
+                    ],
+                );
+            }
+        }
+
+        foreach ($linesData as $generator) {
+            
+            $generatorId = Generator::where('odoo_id', $generator['product_template_id'][0] ?? null)->value('id');
+
+            $devis = Devis::where('odoo_id', $generator['order_id'][0] ?? null)->first();
+
+            if (! $devis || ! $generatorId) {
+                continue; // Skip si l’un des deux est manquant
+            }
+
+            $devisId = $devis->id;
+            $status = $devis->is_active;
+
+            // Correction de la logique avec where groupé
+            $dataExiste = DevisGenerator::where('devis_id', $devisId)
+                ->where(function ($query) use ($generatorId) {
+                    $query->where('generator_id', $generatorId)
+                        ->orWhere('old_generator_id', $generatorId);
+                })
+                ->first();
+
+             
+
+            if (optional($dataExiste)->old_generator_id == null) {
+                
+                DevisGenerator::updateOrCreate(
+                    [
+                        'devis_id' => $devisId,
+                        'generator_id' => $generatorId,
+                    ],
+                    [
+                        'status' => $status,
+                    ]
+                );
+
+                // Met à jour le statut de tous les générateurs actifs
+                $generators = DevisGenerator::whereNotNull('generator_id')
+                    ->where('status', true)
+                    ->get();
+
+                foreach ($generators as $gen) {
+                    Generator::where('id', $gen->generator_id)
+                        ->update([
+                            'status' => GeneratorStatus::EN_LOCATION,
+                        ]);
+                }
+            } else {
+                // Juste une mise à jour du statut pour un ancien générateur
+                DevisGenerator::where('devis_id', $devisId)
+                    ->where('old_generator_id', $generatorId)
+                    ->update([
+                        'status' => $status,
+                    ]);
+            }
+        }
     }
 
     public static function syncronizePieces()
     {
         $odoo = new OdooService();
 
-        $orders = $odoo->searchRead('product.template', [
+        $data = $odoo->searchRead('product.template', [
             ['categ_id', '=', 239],
         ], [
             'id',
@@ -139,6 +268,20 @@ class OdooController extends Controller
             'default_code',
         ]);
 
-        return $orders;
+        foreach ($data as $piece) {
+            Piece::updateOrCreate(
+                [
+                    'odoo_id' => $piece['id']
+                ],
+                [
+                    'odoo_id' => $piece['id'],
+                    'reference' => $piece['name'],
+                    'designation' => $piece['default_code'],
+                    'duree_vie' => 0,
+                    'pr' => $piece['standard_price'],
+                    'pv' => $piece['list_price'],
+                ]
+            );
+        }
     }
 }

@@ -9,7 +9,7 @@
     $totalDevis = 0;
 
     if($data->isNotEmpty()){
-        $total1 = $data->sum('devis_montant') + $data->sum('montant_piece');
+        $total1 = $data->sum('montant') + $data->sum('montant_piece');
         $total2 = $total1 + $data->first()->forfait;
 
         $workDays = $data->first()->occupation;
@@ -76,9 +76,9 @@
                             <td class="px-3 py-4 text-sm text-right text-slate-800 border border-slate-400">
                                 {{ \App\Utils\NumberUtils::format($intervention->montant_piece) }}</td>
                             <td class="px-3 py-4 text-sm text-right text-slate-800 border border-slate-400">
-                                {{ \App\Utils\NumberUtils::format($intervention->devis_montant) }}</td>
+                                {{ \App\Utils\NumberUtils::format($intervention->montant) }}</td>
                             <td class="px-3 py-4 text-sm text-right font-bold text-slate-800 border border-slate-400">
-                                {{ \App\Utils\NumberUtils::format($intervention->devis_montant + $intervention->montant_piece) }}
+                                {{ \App\Utils\NumberUtils::format($intervention->montant + $intervention->montant_piece) }}
                             </td>
                         </tr>
                     @endforeach
@@ -97,7 +97,7 @@
                         {{ \App\Utils\NumberUtils::format(number: $data->isNotEmpty() ? $data->sum('montant_piece'): 0)  }}
                     </th>
                     <th class="px-3 py-4 text-sm text-right font-bold text-slate-800 border border-slate-400">
-                        {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('devis_montant') :0)  }}
+                        {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('montant') :0)  }}
                     </th>
                     <th class="px-3 py-4 text-sm text-right font-bold text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($total1) }}

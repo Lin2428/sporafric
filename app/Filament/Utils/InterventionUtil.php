@@ -11,6 +11,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\HtmlString;
+use App\Utils\NumberUtils;
 
 class InterventionUtil
 {
@@ -89,7 +90,7 @@ class InterventionUtil
                 ->copyable(),
 
             TextColumn::make('identifiant')
-                ->label('N° Bon d\'intervention')
+                ->label('N° Bon de travaux')
                 ->searchable()
                 ->sortable()
                 ->limit(50),
@@ -165,6 +166,12 @@ class InterventionUtil
             TextColumn::make('type')
                 ->label('Type')
                 ->getStateUsing(fn($record) => InterventionType::from($record->type)->label())
+                ->searchable()
+                ->sortable(),
+
+            TextColumn::make('montant')
+                ->label('Montant')
+                ->getStateUsing(fn($record) => NumberUtils::format($record->montant). " FCFA")
                 ->searchable()
                 ->sortable(),
         ];

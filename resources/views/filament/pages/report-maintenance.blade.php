@@ -7,10 +7,11 @@
     $total1 = 0;
     $total2 = 0;
     $revenuContrat = 0;
+    $forfait = 0;
 
     if($data->isNotEmpty()){
-        $total1 = $data->sum('devis_montant') + $data->sum('montant_piece');
-        $total2 = $total1 + $data->first()->montant_paye;
+        $total1 = $data->sum('montant') + $data->sum('montant_piece');
+        
 
         $workDays = $data->first()->occupation;
 
@@ -20,9 +21,17 @@
             ->sum(fn($report) => (int) -(now()->diffInDay($report->contract_start_at)));
 
         $txOcupation = ($workDays / 360) * 100;
+
         $revenuContrat = $data
-            ->unique('contract_id') 
+        ->unique('generator_id')
             ->sum('montant_paye');
+
+        $forfait = $data
+        ->unique('generator_id')
+        ->sum('forfait');
+
+            $total2 = $total1 + $revenuContrat;
+
     }
 
 @endphp
@@ -76,9 +85,9 @@
                             <td class="px-3 py-4 text-sm text-right text-slate-800 border border-slate-400">
                                 {{ \App\Utils\NumberUtils::format($intervention->montant_piece) }}</td>
                             <td class="px-3 py-4 text-sm text-right text-slate-800 border border-slate-400">
-                                {{ \App\Utils\NumberUtils::format($intervention->devis_montant) }}</td>
+                                {{ \App\Utils\NumberUtils::format($intervention->montant) }}</td>
                             <td class="px-3 py-4 text-sm text-right font-bold text-slate-800 border border-slate-400">
-                                {{ \App\Utils\NumberUtils::format($intervention->devis_montant + $intervention->montant_piece) }}
+                                {{ \App\Utils\NumberUtils::format($intervention->montant + $intervention->montant_piece) }}
                             </td>
                         </tr>
                     @endforeach
@@ -97,7 +106,7 @@
                         {{ \App\Utils\NumberUtils::format(number: $data->isNotEmpty() ? $data->sum('montant_piece'): 0)  }}
                     </th>
                     <th class="px-3 py-4 text-sm text-right font-bold text-slate-800 border border-slate-400">
-                        {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('devis_montant') :0)  }}
+                        {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('montant') :0)  }}
                     </th>
                     <th class="px-3 py-4 text-sm text-right font-bold text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($total1) }}
@@ -117,6 +126,8 @@
                     </th>
                     <th class="px-3 py-4 text-sm font-bold text-center text-slate-800 border border-slate-400">
                         Interventions</th>
+                     <th class="px-3 py-4 text-sm font-bold text-center text-slate-800 border border-slate-400">
+                        Nombre GE</th>
                     <th class="px-3 py-4 text-sm font-bold text-center text-slate-800 border border-slate-400">Forfait
                     </th>
                     <th class="px-3 py-4 text-sm font-bold text-center text-slate-800 border border-slate-400">Payé</th>
@@ -136,10 +147,13 @@
                         {{ $data->isNotEmpty() ? $data->count() :"" }}
                     </td>
                     <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ $data->isNotEmpty() ? \App\Utils\NumberUtils::format($data->first()->forfait) :"" }}
+                        {{ $data->isNotEmpty() ? $data->unique('generator_id')->count() :"" }}
                     </td>
                     <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ $data->isNotEmpty() ? \App\Utils\NumberUtils::format($data->first()->montant_paye) :"" }}
+                        {{ $data->isNotEmpty() ? \App\Utils\NumberUtils::format($forfait) :"" }}
+                    </td>
+                    <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
+                        {{ $data->isNotEmpty() ? \App\Utils\NumberUtils::format($revenuContrat) :"" }}
                     </td>
                     <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ \App\Utils\NumberUtils::format($total2) }} FCFA

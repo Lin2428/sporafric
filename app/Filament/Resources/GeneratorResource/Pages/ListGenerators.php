@@ -20,7 +20,6 @@ class ListGenerators extends ListRecords
 
     protected static ?string $title = 'Groupes électrogènes';
     public bool $category;
-    public array $products;
 
     
     public function getTabs(): array
@@ -28,7 +27,7 @@ class ListGenerators extends ListRecords
         return  [
             Tab::make("Tout"),
 
-            Tab::make("Actifs")->query(
+            Tab::make("En location")->query(
                 fn($query) =>
                 $query->where('status', '=', GeneratorStatus::EN_LOCATION->value)
             ),
@@ -66,34 +65,17 @@ class ListGenerators extends ListRecords
                              $this->category = $state;
                         }),
                 ])
-                ->beforeFormFilled(function () {
-                     $this->products = [];
-                 })
                 ->action(function ($data) {
                           set_time_limit(120);
 
                     try {
-                        $this->products = OdooController::syncronizeGenerator($this->category);
+                         OdooController::syncronizeGenerator($this->category);
                     } catch (\Throwable $th) {
                         Notification::make()
                             ->title('Une erreur est survenue lors de la synchronisation !')
                             ->danger()
                             ->send();
                         return;
-                    }
-                    foreach ($this->products as $product) {
-                        Generator::updateOrCreate(
-                            [
-                                'odoo_id' => $product['id']
-                            ],
-                            [
-                                'odoo_id' => $product['id'],
-                                'name' => $product['name'],
-                                'type' => 1,
-                                'reference' => $product['default_code'],
-                                'vidange' => true,
-                            ]
-                            );
                     }
 
                     Notification::make()

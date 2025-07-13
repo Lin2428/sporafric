@@ -60,7 +60,7 @@ class ReportMaintenancePage extends DailyReportPage implements HasForms
                 ->required(false)
                 ->visible(fn(callable $get) => $get('type') == '0'),
 
-            WidgetUtils::generatorSelectWidget(name:"generatorId", isDispo:false)
+            WidgetUtils::generatorSelectWidget(type:2, name:"generatorId", isDispo:false)
                 ->afterStateUpdated(function ($state) {
                     $this->contractId = null;
                     $this->generatorId = $state;

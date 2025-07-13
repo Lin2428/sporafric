@@ -24,9 +24,9 @@ class ListCustomers extends ListRecords
                 ->label('Synchroniser')
                 ->icon('heroicon-o-arrow-path')
                 ->action(function () {
-set_time_limit(120);
+                        set_time_limit(300);
                     try {
-                        $data = OdooController::syncronizeClient();
+                        OdooController::syncronizeClient();
                     } catch (\Throwable $th) {
                          Notification::make()
                             ->title('Une erreur est survenue lors de la synchronisation !')
@@ -35,24 +35,6 @@ set_time_limit(120);
                         return;
                     }
                    
-               
-                    foreach ($data as $client) {
-                    
-                        Customer::updateOrCreate(
-                            [
-                                'odoo_id' => $client['id'],
-                            ],
-                            [
-                                'odoo_id'         => $client['id'],
-                                'name'            => $client['name'],
-                                'contact_c_name'  => $client['name'],
-                                'contact_c_phone' => $client['phone'],
-                                'contact_cemail'  => $client['email'],
-                                'city'            => $client['city'],
-                            ]
-                        );
-                    }
-
                     Notification::make()
                         ->title('Clients synchronisés')
                         ->success()

@@ -190,6 +190,16 @@
             <span>{{ $getRecord()->identifiant }}</span>
         </div>
 <br>
+
+        <div class="container-1">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-banknotes')</i>
+                Montant:
+            </span>
+            <span>{{  \App\Utils\NumberUtils::format($getRecord()->montant) }} FCFA</span>
+        </div>
+<br>
+
         {{-- Description panne / travaux --}}
         <div class="">
             <span class="label">
@@ -205,13 +215,13 @@
 <hr>
 <br>
 
-<div class="container-1">
+<div class="data">
     <div class="">
         <span class="label">
             <i class="icon">@svg('heroicon-s-user-circle')</i>
             Techniciens affectés :
         </span>
-        <table class="techniciens-table">
+        <table class="materiel-table">
             <thead>
                 <tr>
                     <th>Nom</th>
@@ -259,6 +269,26 @@
                 Heure de fonctionnement du GE:
             </span>
             <span>{{$getRecord()->generator?->houres?? 0}}h</span>
+        </div>
+
+
+<br>
+        <div class="container-1">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-arrow-path-rounded-square')</i>
+                Prochain vidange:
+            </span>
+            <span>{{$getRecord()->generator?->next_vidange?? 0}}h</span>
+        </div>
+
+<br>
+
+        <div class="container-1">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-clipboard-document-check')</i>
+                Prochain visite:
+            </span>
+            <span>{{$getRecord()->generator?->prochain_visite ?? 0}}h</span>
         </div>
 
 <br>

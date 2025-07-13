@@ -12,22 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         DB::statement("
-        CREATE OR REPLACE VIEW v_location_repport AS
+        CREATE OR REPLACE VIEW v_maintenance_repport AS
 SELECT
     i.id,
-    i.devis_id,
-    i.identifiant,
+    i.contract_id,
+    i.numero,
     i.created_at AS intervention_at,
     i.type AS type_intervention,
-    inf.devis_montant,
-    dg.site,
-    dg.code_site,
-    d.forfait,
-    d.start_date AS devis_start_at,
+    i.montant,
+    cg.site,
+    cg.code_site,
+    cg.forfait,
+    c.start_date AS contract_start_at,
     cu.name AS customer_name,
 
     -- Gestion du générateur
-    dg.generator_id AS generator_id,
+    cg.generator_id AS generator_id,
     COALESCE(g.name, '-') AS generator_name,
 
     -- Sous-requête pièces
@@ -39,24 +39,36 @@ SELECT
     IFNULL(techs.techniciens, '') AS techniciens,
 
     -- Infos durée contrat et mensualité
-    TIMESTAMPDIFF(DAY, d.start_date, d.end_date) AS duree_contrat,
-    TIMESTAMPDIFF(DAY, d.start_date, NOW()) AS jour_ecoules,
+    TIMESTAMPDIFF(MONTH, c.start_date, c.end_date) AS duree_contrat,
+    TIMESTAMPDIFF(MONTH, c.start_date, NOW()) AS mois_ecoules,
+    TIMESTAMPDIFF(MONTH, c.start_date, NOW()) * cg.forfait AS montant_paye,
 
-    -- Ajout du champ occupation seulement si devis_generators est utilisé
-    TIMESTAMPDIFF(DAY, dg.created_at, dg.updated_at) AS occupation
+    -- Durée d'occupation du générateur
+    TIMESTAMPDIFF(DAY, cg.created_at, cg.updated_at) AS occupation
 
 FROM interventions i
 
 -- Joins communs
-LEFT JOIN devis d ON d.id = i.devis_id
-LEFT JOIN customers cu ON cu.id = d.customer_id
+LEFT JOIN contracts c ON c.id = i.contract_id
+LEFT JOIN customers cu ON cu.id = c.customer_id
 LEFT JOIN intervention_infos inf ON inf.intervention_id = i.id
 
--- Jointure avec devis_generators
-LEFT JOIN devis_generators dg ON dg.devis_id = i.devis_id
+-- Jointure filtrée avec contract_generators (1 seul par contrat)
+LEFT JOIN (
+    SELECT *
+    FROM (
+        SELECT *,
+               ROW_NUMBER() OVER (
+                   PARTITION BY contract_id, generator_id
+                   ORDER BY created_at DESC
+               ) AS rn
+        FROM contract_generators
+    ) AS ranked_cg
+    WHERE rn = 1
+) AS cg ON cg.contract_id = i.contract_id AND cg.generator_id = i.generator_id
 
--- Gestion du générateur (priorité à devis_generators)
-LEFT JOIN generators g ON g.id = dg.generator_id
+-- Gestion du générateur (lié à contract_generator)
+LEFT JOIN generators g ON g.id = cg.generator_id
 
 -- Sous-requête pièces
 LEFT JOIN (
@@ -80,7 +92,7 @@ LEFT JOIN (
     GROUP BY it.intervention_id
 ) AS techs ON techs.intervention_id = i.id
 
-WHERE i.type_service = 0 
+WHERE i.type_service = 1 
         ");
     }
 
@@ -89,6 +101,6 @@ WHERE i.type_service = 0
      */
     public function down(): void
     {
-        DB::statement("DROP VIEW IF EXISTS v_location_repport");
+        DB::statement("DROP VIEW IF EXISTS v_maintenance_repport");
     }
 };

@@ -23,29 +23,13 @@ class ListPieces extends ListRecords
                 ->action(function() {
                           set_time_limit(120);
                     try {
-                         $data = OdooController::syncronizePieces();
+                        OdooController::syncronizePieces();
                     } catch (\Throwable $th) {
                         Notification::make()
                             ->title('Une erreur est survenue lors de la synchronisation !')
                             ->danger()
                             ->send();
                         return;
-                    }
-                   
-                    foreach($data as $piece)
-                    {
-                        Piece::updateOrCreate(
-                            [
-                                'odoo_id' => $piece['id']
-                            ],
-                            [
-                                'odoo_id' => $piece['id'],
-                                'reference' => $piece['name'],
-                                'designation' => $piece['default_code'],
-                                'duree_vie' => 0,
-                                'pr' => $piece['standard_price'],
-                                'pv' => $piece['list_price'],
-                            ]);
                     }
 
                     Notification::make()

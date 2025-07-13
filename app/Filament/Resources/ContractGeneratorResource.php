@@ -449,7 +449,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                         }
                                                         return null;
                                                     })
-                                                    ->url(fn(Generator $record) => url('/admin/contracts/' . $record->contractGenerator->contract->id))
+                                                    ->url(fn(Generator $record) =>$record->contractGenerator !=  null ? url('/admin/contracts/' . $record->contractGenerator?->contract?->id): null)
                                                     ->extraAttributes(['class' => 'font-bold']),
 
                                                 TextEntry::make('customer-name')

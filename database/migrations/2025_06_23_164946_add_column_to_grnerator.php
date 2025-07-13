@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('generators', function (Blueprint $table) {
             $table->integer('prochain_visite')->nullable();
-            $table->boolean('vidange')->nullable();
+            $table->boolean('vidange')->nullable()->default(true);
         });
     }
 

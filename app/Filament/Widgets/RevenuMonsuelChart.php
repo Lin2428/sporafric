@@ -13,21 +13,20 @@ class RevenuMonsuelChart extends ChartWidget
 
     protected function getData(): array
     {
-        // $data = static::$model::get();
-        $data = [];
+        $data = static::$model::get();
         $labels = [];
         $totalPiece = [];
         $totalPaye = [];
         $totalDevis = [];
         $totalIntervention = [];
         $totalContract = [];
-        // foreach ($data as $item) {
-        //     $labels[] = Carbon::parse($item->mois)->translatedFormat('F');
-        //     $totalPiece[] = (float)$item->revenu_pieces;
-        //     $totalIntervention[] = (float)$item->revenu_intervention;
-        //     $totalContract[] = (float)$item->revenu_contract;
-        //     $totalDevis[] = (float)$item->revenu_devis;
-        // }
+        foreach ($data as $item) {
+            $labels[] = Carbon::parse($item->mois)->translatedFormat('F');
+            $totalPiece[] = (float)$item->revenu_pieces;
+            $totalIntervention[] = (float)$item->revenu_intervention;
+            $totalContract[] = (float)$item->revenu_contract;
+            $totalDevis[] = (float)$item->revenu_devis;
+        }
         return [
             'datasets' => [
                 [
@@ -59,17 +58,17 @@ class RevenuMonsuelChart extends ChartWidget
         ];
     }
 
-    // protected function getEloquentQuery()
-    // {
-    //     return static::$model::selectRaw("
-    //         DATE_FORMAT(intervention_at, '%Y-%m') as mois,
-    //         SUM(DISTINCT montant_piece) as total_piece,
-    //         SUM(DISTINCT montant_paye) as total_paye,
-    //         SUM(DISTINCT devis_montant) as total_devis
+    protected function getEloquentQuery()
+    {
+        return static::$model::selectRaw("
+            DATE_FORMAT(intervention_at, '%Y-%m') as mois,
+            SUM(DISTINCT montant_piece) as total_piece,
+            SUM(DISTINCT montant_paye) as total_paye,
+            SUM(DISTINCT devis_montant) as total_devis
 
-    //     ") ->groupBy(DB::raw("DATE_FORMAT(intervention_at, '%Y-%m')"))
-    //     ->orderBy('mois');
-    // }
+        ") ->groupBy(DB::raw("DATE_FORMAT(intervention_at, '%Y-%m')"))
+        ->orderBy('mois');
+    }
 
     protected function getType(): string
     {

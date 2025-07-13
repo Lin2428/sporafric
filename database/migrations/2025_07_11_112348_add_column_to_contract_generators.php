@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('contract_generators', function (Blueprint $table) {
-            $table->integer('forfait')->default('0');
+            $table->integer('forfait')->nullable();
         });
     }
 

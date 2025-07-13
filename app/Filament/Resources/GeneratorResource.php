@@ -415,7 +415,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                         }
                                                         return null;
                                                     })
-                                                    ->url(fn(Generator $record) => url('/admin/devis/' . $record->devisGenerator->devis->id))
+                                                    ->url(fn(Generator $record) => $record->devisGenerator != null ? url('/admin/devis/' . $record->devisGenerator?->devis?->id ) : null)
                                                     ->extraAttributes(['class' => 'font-bold']),
 
                                                 TextEntry::make('customer-name')
