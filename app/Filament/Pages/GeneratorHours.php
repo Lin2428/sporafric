@@ -63,7 +63,8 @@ class GeneratorHours extends Page implements HasTable
             ->defaultPaginationPageOption('all')
             ->columns([
                 TextColumn::make('name')->label('GE')->limit(8),
-                TextColumn::make('reference'),
+                TextColumn::make('reference')
+                    ->searchable(),
                 TextColumn::make('client') // Nom arbitraire, car on utilise getStateUsing
                     ->label('Client')
                     ->searchable(true, function ($search) {
