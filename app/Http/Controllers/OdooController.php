@@ -92,12 +92,12 @@ class OdooController extends Controller
             'product.template',
             $all ? [
 
-                (['categ_id', 'in', [82, 240]]),
+                (['categ_id', '=', 240]),
                 (['active', '=', true]),
             ] :
                 [
                     (['id', 'not in', $generator]),
-                    (['categ_id', 'in', [240]]),
+                    (['categ_id', '=', 240]),
                     (['active', '=', true]),
                 ],
             [
