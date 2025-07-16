@@ -78,10 +78,6 @@ class UserResource extends Resource implements HasShieldPermissions
                     ->label("Création")
                     ->dateTime("d/m/Y H:i"),
 
-                TextColumn::make("last_login")
-                    ->label("Dernière connexion")
-                    ->dateTime("d/m/Y H:i"),
-
                 TextColumn::make("name")
                     ->label("Nom")
                     ->searchable(),
