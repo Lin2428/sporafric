@@ -97,7 +97,7 @@ class OdooController extends Controller
             ] :
                 [
                     (['id', 'not in', $generator]),
-                    (['categ_id', 'in', [82, 240]]),
+                    (['categ_id', 'in', [240]]),
                     (['active', '=', true]),
                 ],
             [
