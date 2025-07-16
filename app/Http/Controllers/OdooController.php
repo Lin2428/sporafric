@@ -148,7 +148,7 @@ class OdooController extends Controller
                 'date_order',
                 'invoice_status',
                 'amount_total',
-                'expected_date',
+                'next_action_date',
                 'state'
             ]
         );
@@ -188,7 +188,7 @@ class OdooController extends Controller
                         'customer_id' => $customerId,
                         'number' => $oder['name'],
                         'start_date' => $oder['date_order'],
-                        'end_date' => $oder['expected_date'] == false ? null : $oder['expected_date'],
+                        'end_date' => $oder['next_action_date'] == false ? null : $oder['next_action_date'],
                         'forfait' => $oder['amount_total'],
                         'is_active' => $oder['invoice_status'] === 'to invoice' ? true : false,
                         'state' => $oder['state'],
