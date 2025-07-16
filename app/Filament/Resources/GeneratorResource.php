@@ -73,7 +73,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                             ->columnSpan(2)
                             ->schema([
                                 TextInput::make('name')
-                                    ->label('Infomations du GE & SN')
+                                    ->label('Identification GE & SN')
                                     ->columnSpanFull(),
 
                                 // TextInput::make('reference')
