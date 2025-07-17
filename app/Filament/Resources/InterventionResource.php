@@ -356,11 +356,10 @@ class InterventionResource extends Resource implements HasShieldPermissions
 
                 TextEntry::make('generator')
                     ->getStateUsing(function (Intervention $record) {
-                       return $record->contract != null ? $record->generator?->name . ' ' . $record->generator?->power . 'kVA - N/S: ' . $record?->generator?->serial_number : $record->generator_name . '-' . $record->power . 'kVA - N/S: ' . $record->serial_number;
+                       return $record->contract != null ? $record->generator?->name . ' ' . $record->generator?->power . 'kVA': $record->generator_name . '-' . $record->power . 'kVA';
                     })->hiddenLabel()
                     ->size(10)
                     ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])
-                    ->columnSpanFull()
                     ->url(fn (Intervention $record): ?string => $record->generator?->id ? url('admin/contract-generators', ['record' => $record->generator->id]) : null),
                 \Filament\Infolists\Components\View::make('filament.infolist.pages.view-intervention')
                     ->columnSpanFull(),
