@@ -1,6 +1,6 @@
 <div>
     <div class="">
-        <img src="{{ asset('logo_light.png') }}" alt="Logo cowema" class="w-[210px] h-[20px] object-contain">
+        <img src="{{ asset('storage/logo_light.png') }}" alt="Logo sporafric" class="w-[210px] h-[20px] object-contain">
         <div class="">
         </div>
         <br>
