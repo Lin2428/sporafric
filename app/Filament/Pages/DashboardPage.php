@@ -23,6 +23,10 @@ class DashboardPage extends Page
 
     protected static string $view = 'filament.pages.dashboard-page';
 
+       public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermissionTo('page_DashboardPage');
+    }
     public $interventionsDuJour = [];
 
     public $ExpiredLocation = [];

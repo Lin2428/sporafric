@@ -196,6 +196,19 @@
             tfoot {
                 display: table-footer-group;
             }
+
+             .fi-header {
+        display: none;
+    }
+
+    @page {
+        margin: 20px 40px 10px 40px; /* top, right, bottom, left */
+    }
+
+    body {
+        margin: 0; /* Réinitialise les marges internes */
+    }
         }
+
     </style>
 </x-filament-panels::page>

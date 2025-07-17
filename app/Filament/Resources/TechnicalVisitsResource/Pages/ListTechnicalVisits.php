@@ -70,18 +70,35 @@ class ListTechnicalVisits extends ListRecords
                                 padding: 4px;
                                 text-align: start;
                             }
-                            .signature-section {
-                                margin-top: 30px;
+                                @media print {
+                                .fi-header {
+                                    display: none;
+                                }
+
+                                @page {
+                                    margin: 30px 40px 1px 40px; /* top, right, bottom, left */
+                                }
+
+                                body {
+                                    margin: 0; /* Réinitialise les marges internes */
+                                }
+                            }
+
+                            .entete{
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                width: 100%;
                             }
                         </style>
                     </head>
                     <body>
                       <h2 style="font-size: 22px;">VISITE TECHNIQUE</h2>
 
+                       <divclass="entete">
                         <div class="half">
-                            <div class="field"><label>MARQUE:</label><input type="text"></div>
+                            <div class="field"><label>Identification du GE:</label><input type="text"></div>
                             <div class="field"><label>PUISSANCE:</label><input type="text"></div>
-                            <div class="field"><label>N° Série:</label><input type="text"></div>
                             <div class="field"><label>Horamètre:</label><input type="text"></div>
                             <div class="field"><label>Date:</label><input type="text"></div>
                         </div>
@@ -91,6 +108,7 @@ class ListTechnicalVisits extends ListRecords
                             <div class="field"><label>ALTERNATEUR N° Série:</label><input type="text"></div>
                             <div class="field"><label>CARTE PUPITRE N° Série:</label><input type="text"></div>
                             <div class="field"><label>Inverseur:</label><input type="text"></div>
+                        </div>
                         </div>
 
                         <div class="section-title">Action préalable à la visite :</div>

@@ -50,6 +50,8 @@
     <div class="grid grid-cols-2 gap-4 mt-4">
         {{-- Widget stat 2 --}}
         @livewire(\App\Filament\Widgets\InterventionTypeChart::class)
+        @if(auth()->user()->hasPermissionTo('widget_RevenuMonsuelChart'))
         @livewire(\App\Filament\Widgets\RevenuMonsuelChart::class)
+        @endif
     </div>
 </x-filament-panels::page>

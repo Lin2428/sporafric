@@ -21,6 +21,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -138,7 +139,7 @@ public static function form(Form $form): Form
                                         return $generator?->houres;
                                     })
                                     ->reactive()
-                                    ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value),
+                                    ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value),
 
                                TextInput::make('next_vidange')
                                     ->numeric()
@@ -149,7 +150,7 @@ public static function form(Form $form): Form
                                   
                                         return $generator?->next_vidange;
                                     })
-                                       ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value),
+                                       ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value),
 
                                         TextInput::make('prochain_visite')
                                     ->numeric()
@@ -161,7 +162,7 @@ public static function form(Form $form): Form
                                         return $generator?->prochain_visite;
                                     })
                                     ->columnSpanFull()
-                                    ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value),
+                                    ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value),
 
                                  WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true)
                                  ->label("GE remplacé")
@@ -170,14 +171,12 @@ public static function form(Form $form): Form
                                     ->required()
                                     ->visible(fn(callable $get) => $get('type') == InterventionType::REMPLACEMENT->value),
 
-                                Textarea::make('description_panne')
+                                RichEditor::make('description_panne')
                                     ->label('Constat')
-                                    ->rows(5)
                                     ->columnSpanFull(),
 
-                                Textarea::make('travaux')
+                                RichEditor::make('travaux')
                                     ->label('Travaux effectués')
-                                    ->rows(5)
                                     ->columnSpanFull(),
                             ])
                     ])->columnSpan(['lg' => 2]),
@@ -189,7 +188,7 @@ public static function form(Form $form): Form
                             ->columns(2)
                             ->schema([
                                 TextInput::make('montant')
-                                    ->label('Montant')
+                                    ->label('Montant Global HT de l\'intervention')
                                     ->columnSpanFull(),
 
                                 Repeater::make('fiches')

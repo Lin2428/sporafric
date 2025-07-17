@@ -21,6 +21,10 @@ class PrintGeneratorList extends Page implements HasForms
     protected static ?string $navigationLabel = 'Impression de fiche';
     protected static ?string $title = 'Fiche de visite technique';
 
+        public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermissionTo('page_PrintGeneratorList');
+    }
     public $data = [];
 
     public $customer_id = null;

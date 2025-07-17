@@ -19,6 +19,7 @@ class InterventionHistory extends Component
         if($model == ReportMaintenance::class){
             $this->data = ReportMaintenance::query()
             ->where('generator_id', $this->generatorId)
+             ->orWhere('new_generator_id', $this->generatorId)
             ->get();
         }else{
             $this->data = ReportLocation::query()

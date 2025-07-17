@@ -109,9 +109,35 @@
         display: flex;
         gap: 1rem;
     }
+
+@media print {
+    .fi-header {
+        display: none;
+    }
+
+    @page {
+        margin: 20px 40px 10px 40px; /* top, right, bottom, left */
+    }
+
+    body {
+        margin: 0; /* Réinitialise les marges internes */
+    }
+}
 </style>
 <strong style="font-size: 1.3em;">
-   {{ $getRecord()->contract?->customer?->name ?? $getRecord()->devis?->customer?->name ?? $getRecord()->customer_name }}
+   {{ 
+    $getRecord()->contract?->customer?->name 
+    ?? (
+        $getRecord()->devis?->customer?->name || $getRecord()->devis?->customer_name 
+            ? trim(
+                ($getRecord()->devis?->customer?->name ?? '') 
+                . ' ' . 
+                ($getRecord()->devis?->customer_name ?? '')
+              )
+            : null
+    ) 
+    ?? $getRecord()->customer?->name 
+     }}
 </strong><br>
 <br>
 <div class="container-1">
@@ -169,7 +195,6 @@
         </div>
 
     @if ($getRecord()->type == \App\Enum\InterventionType::REMPLACEMENT->value)
-    <br>
         {{-- Numéro de bon de livraison --}}
         <a href="{{ url('admin/generators/' . $getRecord()->newGenerator->id) }}">
             <div class="container-1">
@@ -189,6 +214,7 @@
             </span>
             <span>{{ $getRecord()->identifiant }}</span>
         </div>
+        <br>
 
         {{-- Description panne / travaux --}}
         <div class="">
@@ -196,7 +222,7 @@
                 <i class="icon">@svg('heroicon-s-clipboard-document')</i>
                 Description :
             </span>
-            <span>{{ $getRecord()->description_panne }}</span>
+            <div>{!! $getRecord()->description_panne !!}</div>
         </div>
         <br>
             {{-- Description panne / travaux --}}
@@ -205,7 +231,7 @@
                 <i class="icon">@svg('heroicon-s-clipboard-document')</i>
                 Travaux effectué  :
             </span>
-            <span>{{ $getRecord()->travaux }}</span>
+            <div>{!!   $getRecord()->travaux !!}</div>
         </div>
     </div>
 
@@ -250,7 +276,6 @@
 
     </div>
 </div>
-<hr>
 <div class="container-1">
     <div class="w-full">
 
@@ -279,7 +304,7 @@
         <div class="container-1">
             <span class="label">
                 <i class="icon">@svg('heroicon-s-clipboard-document-check')</i>
-                Prochain visite:
+                Prochaine visite:
             </span>
             <span>{{$getRecord()->generator?->prochain_visite ?? 0}}h</span>
         </div>

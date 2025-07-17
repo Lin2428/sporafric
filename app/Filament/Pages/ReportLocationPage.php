@@ -21,6 +21,11 @@ class ReportLocationPage extends DailyReportPage implements HasForms
     private $data;
     public $type;
 
+         public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermissionTo('page_ReportLocationPage');
+    }
+
     protected function refresh(): void
     {
         if (empty($this->devisId) && empty($this->generatorId)) {

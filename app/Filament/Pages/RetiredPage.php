@@ -46,6 +46,10 @@ class RetiredPage extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.pages.retired-page';
 
+            public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermissionTo('page_RetiredPage');
+    }
       public static function getNavigationBadge(): ?string
     {
         $count = Intervention::where('type',  InterventionType::RETRAIT->value)->count();

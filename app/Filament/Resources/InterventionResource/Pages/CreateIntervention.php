@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\InterventionResource\Pages;
 
+use App\Enum\GeneratorStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\InterventionResource;
+use App\Models\ContractGenerator;
 use App\Models\Generator;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
@@ -22,7 +24,7 @@ class CreateIntervention extends CreateRecord
         }
 
    
-         if($data['type_activite'] == '1' &&($data['type'] == InterventionType::RONDE->value || $data['type'] == InterventionType::VIDANGE->value)){
+         if($data['type_activite'] == '1' && $data['type'] == InterventionType::VIDANGE->value){
            $houres = $data['houres'];
              $nexTvidange = $data['prochain_visite'] -  $houres;
             $vidange =  $nexTvidange > 30;
@@ -33,6 +35,25 @@ class CreateIntervention extends CreateRecord
                 'next_vidange' => $data['next_vidange'],
                 'prochain_visite' => $data['prochain_visite'],
                 'vidange' => $vidange
+            ]);
+        }
+
+        if($data['type_activite'] == '1' && $data['type'] == InterventionType::REMPLACEMENT->value){
+                Generator::where('id', $data['generator_id'])
+            ->update([
+                'status' => GeneratorStatus::EN_REVU->value
+            ]);
+
+            Generator::where('id', $data['new_generator_id'])
+            ->update([
+                'status' => GeneratorStatus::EN_LOCATION->value
+            ]);
+
+            ContractGenerator::where('contract_id', $data['contract_id'])
+            ->where('generator_id', $data['generator_id'])
+            ->update([
+                'generator_id' => $data['new_generator_id'],
+                'old_generator_id' => $data['generator_id'],
             ]);
         }
 

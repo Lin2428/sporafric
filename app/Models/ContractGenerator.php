@@ -18,6 +18,7 @@ class ContractGenerator extends Model
         'contact_email',
         'status',
         'forfait',
+        'old_generator_id',
         'user_id',
     ];
 

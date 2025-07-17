@@ -20,6 +20,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -98,7 +99,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                     ->required()
                                     ->visible(fn(callable $get) => $get('type_activite') == "1"),
 
-                                WidgetUtils::generatorSelectWidget(type: 2, isDispo:false, onUpdate: function (Set $set, $state) {
+                                WidgetUtils::generatorSelectWidget(type: null, isDispo:false, onUpdate: function (Set $set, $state) {
                                         $generator = Generator::find($state);
 
                                         $set('houres', $generator?->houres);
@@ -156,7 +157,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                         return $generator?->houres;
                                     })
                                     ->reactive()
-                                    ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value)),
+                                    ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value)),
 
                                TextInput::make('next_vidange')
                                     ->numeric()
@@ -167,7 +168,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                   
                                         return $generator?->next_vidange;
                                     })
-                                       ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value)),
+                                       ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value)),
 
                                         TextInput::make('prochain_visite')
                                     ->numeric()
@@ -178,17 +179,21 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                   
                                         return $generator?->prochain_visite;
                                     })->columnSpanFull()
-                                       ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value ||$get('type') == InterventionType::RONDE->value)),
+                                       ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value)),
 
+                                WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true)
+                                 ->label("GE remplacé")
+                                    ->columnSpanFull()
+                                    ->reactive()
+                                    ->required()
+                                    ->visible(fn(callable $get) => $get('type') == InterventionType::REMPLACEMENT->value),
 
-                                Textarea::make('description_panne')
+                                RichEditor::make('description_panne')
                                     ->label('Constat')
-                                    ->rows(5)
                                     ->columnSpanFull(),
 
-                                Textarea::make('travaux')
+                                RichEditor::make('travaux')
                                     ->label('Travaux effectués')
-                                    ->rows(5)
                                     ->columnSpanFull(),
                             ])
                     ])->columnSpan(['lg' => 2]),

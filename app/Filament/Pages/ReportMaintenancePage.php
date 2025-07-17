@@ -23,6 +23,11 @@ class ReportMaintenancePage extends DailyReportPage implements HasForms
     private $data;
     public $type;
 
+           public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermissionTo('page_ReportMaintenancePage');
+    }
+
     protected function refresh(): void
     {
         if (empty($this->contractId) && empty($this->generatorId)) {

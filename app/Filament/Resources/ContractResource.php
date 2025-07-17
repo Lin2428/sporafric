@@ -130,7 +130,7 @@ class ContractResource extends Resource implements HasShieldPermissions
                     ->createItemButtonLabel('Ajouter un GE')
                     ->deleteAction(fn(\Filament\Forms\Components\Actions\Action $action) => $action->requiresConfirmation())
                     ->schema([
-                        WidgetUtils::generatorSelectWidget(type: 2)
+                        WidgetUtils::generatorSelectWidget(type: 2, isDispo: false)
                             ->columnSpanFull()
                             ->required(),
 

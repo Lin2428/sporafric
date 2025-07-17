@@ -48,7 +48,7 @@ class EditInterventionDevis extends EditRecord
         }
 
 
-        if($data['type'] == InterventionType::RONDE->value || $data['type'] == InterventionType::VIDANGE->value){
+        if( $data['type'] == InterventionType::VIDANGE->value){
            $houres = $data['houres'];
              $nexTvidange = $data['prochain_visite'] -  $houres;
             $vidange =  $nexTvidange > 30;
@@ -73,7 +73,6 @@ class EditInterventionDevis extends EditRecord
             ->update([
                 'status' => GeneratorStatus::EN_LOCATION->value
             ]);
-
             DevisGenerator::where('devis_id', $data['devis_id'])
             ->where('generator_id', $data['generator_id'])
             ->update([

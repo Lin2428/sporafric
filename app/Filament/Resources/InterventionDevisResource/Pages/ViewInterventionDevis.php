@@ -12,6 +12,7 @@ use ArielMejiaDev\FilamentPrintable\Actions\PrintBulkAction;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\HtmlString;
 
 class ViewInterventionDevis extends ViewRecord
@@ -19,12 +20,12 @@ class ViewInterventionDevis extends ViewRecord
     protected static string $resource = InterventionDevisResource::class;
     public $showForm = false;
 
-    public function getTitle(): string | Htmlable
+      public function getTitle(): string | Htmlable 
     {
-
 
         return " ";
     }
+
 
 
 

@@ -147,7 +147,14 @@
                         {{ $data->isNotEmpty() ? $data->count() :"" }}
                     </td>
                     <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
-                        {{ $data->isNotEmpty() ? $data->unique('generator_id')->count() :"" }}
+                        @php
+                         if($data->isNotEmpty()){
+                         $count = $data->unique('generator_id')->count();
+                         $countNewGenerator = $data->whereNotNull('new_generator_id')->unique('new_generator_id')->count() ?? 0;
+                         $count -= $countNewGenerator;
+                         }
+                        @endphp
+                        {{ $data->isNotEmpty() ? $count :"" }}
                     </td>
                     <td class="px-3 py-2 text-sm font-semibold text-right text-slate-800 border border-slate-400">
                         {{ $data->isNotEmpty() ? \App\Utils\NumberUtils::format($forfait) :"" }}
@@ -214,6 +221,18 @@
         @media print {
             tfoot {
                 display: table-footer-group;
+            }
+
+             .fi-header {
+                display: none;
+            }
+
+            @page {
+                margin: 20px 40px 10px 40px; /* top, right, bottom, left */
+            }
+
+            body {
+                margin: 0; /* Réinitialise les marges internes */
             }
         }
     </style>

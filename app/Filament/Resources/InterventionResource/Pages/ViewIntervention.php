@@ -15,7 +15,7 @@ class ViewIntervention extends ViewRecord
     protected static string $resource = InterventionResource::class;
     public $showForm = false;
 
-  public function getTitle(): string | Htmlable
+  public function getTitle(): string | Htmlable 
     {
 
 

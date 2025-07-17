@@ -17,6 +17,10 @@ class CanlendarPage extends Page implements HasForms
     use InteractsWithForms;
     
 
+        public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermissionTo('page_CanlendarPage');
+    }
     protected static ?string $navigationIcon  = 'heroicon-o-calendar-days';
     protected static ?string $title           = 'Planning des interventions';
     protected static ?string $navigationGroup = 'Tableau de bord';
@@ -29,6 +33,7 @@ class CanlendarPage extends Page implements HasForms
     public $customer_id;
     public $type;
 
+ 
     public function getFooterWidgets(): array
     {
         return [

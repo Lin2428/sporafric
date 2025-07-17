@@ -29,6 +29,11 @@ class GeneratorHours extends Page implements HasTable
     protected static ?string $navigationLabel = 'Vidanges';
     protected static ?string $title = 'Vidanges';
 
+        public static function canAccess(): bool
+    {
+        return auth()->user()->hasPermissionTo('page_GeneratorHours');
+    }
+
     protected static function getBaseQuery(): Builder|Relation
     {
         return Generator::query()

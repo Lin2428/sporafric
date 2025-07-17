@@ -154,10 +154,10 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                     Section::make('Données de la carte')
                             ->columns(2)
                             ->schema([
-                            //    Textarea::make('adresse')
-                            //         ->label('Adresse')
-                            //         ->rows(2)  
-                            //         ->columnSpanFull(),
+                               Textarea::make('adresse')
+                                    ->label('Adresse')
+                                    ->rows(2)  
+                                    ->columnSpanFull(),
 
                                 TextInput::make('lat')
                                     ->label('Latitude')

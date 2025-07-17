@@ -64,8 +64,8 @@ return [
     */
 
     'resource_permission_prefixes_labels' => [
-        'view' => 'Voir',
-        'view_any' => 'Voir tout',
+        'view' => 'voir un élément',
+        'view_any' => 'Voir la liste',
         'create' => 'Créer',
         'update' => 'Mettre à jour',
         'delete' => 'Supprimer',
@@ -76,5 +76,6 @@ return [
         'replicate' => 'Répliquer',
         'reorder' => 'Réordonner',
         'restore_any' => 'Restaurer tout',
+        'cancell' => 'Annuler'
     ],
 ];

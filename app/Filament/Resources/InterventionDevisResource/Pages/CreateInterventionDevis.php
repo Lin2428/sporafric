@@ -23,7 +23,7 @@ class CreateInterventionDevis extends CreateRecord
             $data['type_service'] = 0; // Assuming 1 is for Maintenance
         }
 
-          if($data['type'] == InterventionType::RONDE->value || $data['type'] == InterventionType::VIDANGE->value){
+          if($data['type'] == InterventionType::VIDANGE->value){
              $houres = $data['houres'];
              $nexTvidange = $data['prochain_visite'] -  $houres;
             $vidange =  $nexTvidange > 30;
