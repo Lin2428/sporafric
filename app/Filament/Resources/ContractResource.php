@@ -98,8 +98,6 @@ class ContractResource extends Resource implements HasShieldPermissions
 
                                 DatePicker::make('end_date')
                                     ->label('Date de fin')
-                                    ->required()
-                                    ->default(now()->addYears(10))
                                     ->columnSpanFull(),
 
                                 Toggle::make('is_active')

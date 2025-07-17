@@ -185,7 +185,7 @@
         <div class="container-1">
             <span class="label">
                 <i class="icon">@svg('heroicon-s-document-text')</i>
-                Numéro de bon de livraison:
+                Numéro de bon de travaux:
             </span>
             <span>{{ $getRecord()->identifiant }}</span>
         </div>
