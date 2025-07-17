@@ -15,17 +15,12 @@ class ViewIntervention extends ViewRecord
     protected static string $resource = InterventionResource::class;
     public $showForm = false;
 
-    public function getTitle(): string | Htmlable
+  public function getTitle(): string | Htmlable
     {
 
-        $title = '
-        <div class="flex items-center space-x-4">
-            <strong class="text-primary text-3xl">'. e($this->record->numero) .'</strong>
-        </div>
-    ';
-        return new HtmlString($title);
-    }
 
+        return " ";
+    }
 
 
     protected function getHeaderActions(): array

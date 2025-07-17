@@ -171,7 +171,12 @@ public static function form(Form $form): Form
                                     ->visible(fn(callable $get) => $get('type') == InterventionType::REMPLACEMENT->value),
 
                                 Textarea::make('description_panne')
-                                    ->label('Description de la panne ou du travail à effectuer')
+                                    ->label('Constat')
+                                    ->rows(5)
+                                    ->columnSpanFull(),
+
+                                Textarea::make('travaux')
+                                    ->label('Travaux effectués')
                                     ->rows(5)
                                     ->columnSpanFull(),
                             ])
@@ -338,15 +343,16 @@ public static function form(Form $form): Form
     {
         return $infolist
             ->schema([
-
-                TextEntry::make('generator')
-                    ->getStateUsing(function (Intervention $record) {
-                        return $record->devis != null ? $record->generator?->name . '-' . $record->generator?->power . ' kVA ' . $record->generator?->serial_number:"";
-                    })->hiddenLabel()
-                    ->size(10)
-                    ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])
-                    ->columnSpanFull()
-                    ->url(fn(Intervention $record) => url('/admin/generators/' . $record->generator?->id)),
+    \Filament\Infolists\Components\View::make('components.report-header')
+                    ->columnSpanFull(),
+                // TextEntry::make('generator')
+                //     ->getStateUsing(function (Intervention $record) {
+                //         return $record->devis != null ? $record->generator?->name . '-' . $record->generator?->power . ' kVA ' . $record->generator?->serial_number:"";
+                //     })->hiddenLabel()
+                //     ->size(10)
+                //     ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])
+                //     ->columnSpanFull()
+                //     ->url(fn(Intervention $record) => url('/admin/generators/' . $record->generator?->id)),
                 \Filament\Infolists\Components\View::make('filament.infolist.pages.view-intervention')
                     ->columnSpanFull(),
             ]);

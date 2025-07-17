@@ -16,6 +16,7 @@ use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Repeater;
@@ -181,7 +182,12 @@ class InterventionResource extends Resource implements HasShieldPermissions
 
 
                                 Textarea::make('description_panne')
-                                    ->label('Description de la panne ou du travail à effectuer')
+                                    ->label('Constat')
+                                    ->rows(5)
+                                    ->columnSpanFull(),
+
+                                Textarea::make('travaux')
+                                    ->label('Travaux effectués')
                                     ->rows(5)
                                     ->columnSpanFull(),
                             ])
@@ -189,12 +195,39 @@ class InterventionResource extends Resource implements HasShieldPermissions
 
                 Group::make()
                     ->schema([
-                        InterventionUtil::infoInterne(),
+                        Section::make('Infos internes')
+            ->columns(1)
+            ->schema([
+                DateTimePicker::make('start_date')
+                    ->label('Date de début')
+                    ->reactive(),
+
+                DateTimePicker::make('end_date')
+                    ->label('Date limite'),
+
+                Select::make('status')
+                    ->label('Statut')
+                    ->options(collect(InterventionStatus::cases())
+                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                        ->toArray())
+                        ->required(),
+
+                Select::make('interventionTechniciens.technicien_id')
+                    ->relationship('interventionTechniciens', 'name')
+                    ->label('Techniciens assignés')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->placeholder('Sélectionner un technicien'),
+
+                TextInput::make('numero_devis')
+                ->label('Numéro du devis')
+            ]),
                         Section::make('Autre information')
                             ->columns(2)
                             ->schema([
                                 TextInput::make('montant')
-                                    ->label('Montant')
+                                    ->label('Montant Global HT de l\'intervention')
                                     ->columnSpanFull(),
 
                                 Repeater::make('fiches')
@@ -353,14 +386,15 @@ class InterventionResource extends Resource implements HasShieldPermissions
     {
         return $infolist
             ->schema([
-
-                TextEntry::make('generator')
-                    ->getStateUsing(function (Intervention $record) {
-                       return $record->contract != null ? $record->generator?->name . ' ' . $record->generator?->power . 'kVA': $record->generator_name . '-' . $record->power . 'kVA';
-                    })->hiddenLabel()
-                    ->size(10)
-                    ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])
-                    ->url(fn (Intervention $record): ?string => $record->generator?->id ? url('admin/contract-generators', ['record' => $record->generator->id]) : null),
+                  \Filament\Infolists\Components\View::make('components.report-header')
+                    ->columnSpanFull(),
+                // TextEntry::make('generator')
+                //     ->getStateUsing(function (Intervention $record) {
+                //        return ;
+                //     })->hiddenLabel()
+                //     ->size(10)
+                //     ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])
+                //     ->url(fn (Intervention $record): ?string => $record->generator?->id ? url('admin/contract-generators', ['record' => $record->generator->id]) : null),
                 \Filament\Infolists\Components\View::make('filament.infolist.pages.view-intervention')
                     ->columnSpanFull(),
             ]);

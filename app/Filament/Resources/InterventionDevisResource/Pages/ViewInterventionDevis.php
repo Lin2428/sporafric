@@ -23,12 +23,7 @@ class ViewInterventionDevis extends ViewRecord
     {
 
 
-        $title = '
-        <div class="flex items-center space-x-4">
-            <strong class="text-primary text-3xl">' . e($this->record->numero) . '</strong>
-        </div>
-    ';
-        return new HtmlString($title);
+        return " ";
     }
 
 

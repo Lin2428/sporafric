@@ -11,14 +11,14 @@
         align-items: center;
         font-size: 1rem;
         line-height: 1.25rem;
-        color: rgb(107 114 128);
+        color: black;
         font-weight: 400;
         margin-bottom: 0.5rem;
     }
 
     .icon {
         margin-right: 0.5rem;
-        color: rgb(107 114 128);
+        color: black;
         display: flex;
         align-items: center;
     }
@@ -110,27 +110,32 @@
         gap: 1rem;
     }
 </style>
-<span class="text-red-800">
-   {{ $getRecord()->type_service === 1 ? 'Maintenance' : ($getRecord()->type_service === 0 ? 'Location' : '') }}
-</span>
-
-<span class="text-blue-800">
-{{ $getRecord()->type_activite === 1 ? '- Sous contrat' : ($getRecord()->type_activite === 0 ? '- Hors contrat' : '') }}
-</span>
-<br>
+<strong style="font-size: 1.3em;">
+   {{ $getRecord()->contract?->customer?->name ?? $getRecord()->devis?->customer?->name ?? $getRecord()->customer_name }}
+</strong><br>
 <br>
 <div class="container-1">
     <div class="w-full">
 
            <div class="container-1">
             <span class="label">
-                <i class="icon">@svg('heroicon-s-user')</i>
-                Client:
+                <i class="icon">@svg('icon-generator')</i>
+                GE:
             </span>
-            <span>{{ $getRecord()->contract?->customer?->name ?? ($getRecord()->devis != null ? $getRecord()->devis?->customer?->name .' '. $getRecord()->devis?->customer?->customer_name:null) ?? $getRecord()->customer?->name }}</span>
+            <span>{{ $getRecord()->generator?->name ?? $getRecord()->generator_name }}</span>
+            <!-- <span>{{ $getRecord()->contract?->customer?->name ?? ($getRecord()->devis != null ? $getRecord()->devis?->customer?->name .' '. $getRecord()->devis?->customer?->customer_name:null) ?? $getRecord()->customer?->name }}</span> -->
         </div>
-<br>
+<div class="container-1">
+    <div class="w-full">
 
+           <div class="container-1">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-home')</i>
+                Site:
+            </span>
+            <span>{{ $getRecord()->generator?->contractGenerator?->site ?? $getRecord()->generator?->devisGenerator?->site }}</span>
+            <!-- <span>{{ $getRecord()->contract?->customer?->name ?? ($getRecord()->devis != null ? $getRecord()->devis?->customer?->name .' '. $getRecord()->devis?->customer?->customer_name:null) ?? $getRecord()->customer?->name }}</span> -->
+        </div>
  <div class="container-1">
             <span class="label">
                 <i class="icon">@svg('heroicon-s-phone')</i>
@@ -138,16 +143,14 @@
             </span>
             <span>{{ $getRecord()->contract?->customer?->contact_c_phone ??  $getRecord()->devis?->customer?->contact_c_phone ?? $getRecord()->customer?->contact_c_phone }}</span>
         </div>
-<br>
         {{-- Date de prise d'appel --}}
         <div class="container-1">
             <span class="label">
-                <i class="icon">@svg('heroicon-s-phone')</i>
+                <i class="icon">@svg('heroicon-s-calendar')</i>
                 Date de prise d'appel:
             </span>
             <span>{{ \App\Utils\DateUtils::format($getRecord()->date_prise_appel) }}</span>
         </div>
-<br>
         {{-- Date planifiée --}}
         <div class="container-1">
             <span class="label">
@@ -156,7 +159,6 @@
             </span>
             <span>{{ \App\Utils\DateUtils::format($getRecord()->date_planifiee) }}</span>
         </div>
-<br>
         {{-- Type d'intervention --}}
         <div class="container-1">
             <span class="label">
@@ -178,9 +180,7 @@
             <span>{{ $getRecord()->newGenerator->name }}</span>
         </div>
         </a>
-<br>
     @endif
-<br>
         {{-- Numéro de bon de livraison --}}
         <div class="container-1">
             <span class="label">
@@ -189,16 +189,6 @@
             </span>
             <span>{{ $getRecord()->identifiant }}</span>
         </div>
-<br>
-
-        <div class="container-1">
-            <span class="label">
-                <i class="icon">@svg('heroicon-s-banknotes')</i>
-                Montant:
-            </span>
-            <span>{{  \App\Utils\NumberUtils::format($getRecord()->montant) }} FCFA</span>
-        </div>
-<br>
 
         {{-- Description panne / travaux --}}
         <div class="">
@@ -208,7 +198,19 @@
             </span>
             <span>{{ $getRecord()->description_panne }}</span>
         </div>
+        <br>
+            {{-- Description panne / travaux --}}
+        <div class="">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-clipboard-document')</i>
+                Travaux effectué  :
+            </span>
+            <span>{{ $getRecord()->travaux }}</span>
+        </div>
     </div>
+
+     
+    
 
 </div>
 <br>
@@ -242,14 +244,13 @@
                 @endforeach
             </tbody>
         </table>
+        <br>
     </div>
     <div>
 
     </div>
 </div>
-<br>
 <hr>
-<br>
 <div class="container-1">
     <div class="w-full">
 
@@ -261,8 +262,6 @@
             <span>{{ \App\Utils\DateUtils::format($getRecord()->start_date) }} - {{
                 \App\Utils\DateUtils::format($getRecord()->end_date) }}</span>
         </div>
-
-<br>
         <div class="container-1">
             <span class="label">
                 <i class="icon">@svg('heroicon-s-cog')</i>
@@ -270,9 +269,6 @@
             </span>
             <span>{{$getRecord()->generator?->houres?? 0}}h</span>
         </div>
-
-
-<br>
         <div class="container-1">
             <span class="label">
                 <i class="icon">@svg('heroicon-s-arrow-path-rounded-square')</i>
@@ -280,9 +276,6 @@
             </span>
             <span>{{$getRecord()->generator?->next_vidange?? 0}}h</span>
         </div>
-
-<br>
-
         <div class="container-1">
             <span class="label">
                 <i class="icon">@svg('heroicon-s-clipboard-document-check')</i>
@@ -290,8 +283,6 @@
             </span>
             <span>{{$getRecord()->generator?->prochain_visite ?? 0}}h</span>
         </div>
-
-<br>
         <div class="data">
             <span class="label">
                 <i class="icon">@svg('heroicon-s-cog-6-tooth')</i>

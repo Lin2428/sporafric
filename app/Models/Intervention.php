@@ -44,8 +44,10 @@ class Intervention extends Model implements Eventable
         'status',
         'montant',
         'new_generator_id',
+        'numero_devis',
         'cancelled',
         'raison',
+        'travaux',
         'user_id',
     ];
 
