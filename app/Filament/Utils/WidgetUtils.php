@@ -72,7 +72,8 @@ class WidgetUtils
                 return WidgetUtils::getGeneratorSelect($generator);
             })
             ->searchable()
-            ->label('Groupe électrogène');
+            ->label('Groupe électrogène')
+            ->placeholder("Récherchez par identification");
 
         if ($onUpdate !== null) {
             $select = $select->afterStateUpdated($onUpdate)->reactive();
@@ -118,7 +119,8 @@ class WidgetUtils
                 }
 
                 $customer->save();
-            });
+            })
+            ->placeholder("Récherchez par nom ou par téléphone");
         //->createOptionForm([Grid::make(2)->schema(CustomerUtils::form())]);
 
         return $select;
@@ -138,6 +140,7 @@ class WidgetUtils
             ->reactive()
             ->allowHtml()
             ->label('Contrat')
+             ->placeholder("Récherchez par numéro, par nom ou téléphone du client")
             ->getSearchResultsUsing(function (string $search) use($name) {
                 $model = Contract::where("number", "like", "%$search%")
                 ->orWhereHas('customer', function ($query) use ($search) {
@@ -286,7 +289,8 @@ class WidgetUtils
                 return WidgetUtils::getPieceSelect($piece);
             })
             ->searchable()
-            ->label('Pièces');
+            ->label('Pièces')
+             ->placeholder("Récherchez par reference ou par designation");
 
         if ($onUpdate !== null) {
             $select = $select->afterStateUpdated($onUpdate)->reactive();

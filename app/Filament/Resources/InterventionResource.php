@@ -171,7 +171,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                         TextInput::make('prochain_visite')
                                     ->numeric()
                                     ->reactive()
-                                    ->label('Prochaine vidange')
+                                    ->label('Prochaine visite')
                                     ->formatStateUsing(function (Get $get) {
                                         $generator = Generator::find($get('generator_id'));
                                   

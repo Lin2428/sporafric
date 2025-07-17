@@ -16,11 +16,11 @@ class EditIntervention extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('print')
-            ->label("Imprimer")
-            ->icon("heroicon-o-printer")
-            ->color('primary')
-            ->url(url('/admin/interventions/'.$this->record->id)),
+            // Actions\Action::make('print')
+            // ->label("Imprimer")
+            // ->icon("heroicon-o-printer")
+            // ->color('primary')
+            // ->url(url('/admin/interventions/'.$this->record->id)),
 
             Actions\DeleteAction::make()
         ];
