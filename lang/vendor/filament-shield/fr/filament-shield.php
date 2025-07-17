@@ -66,7 +66,7 @@ return [
     'resource_permission_prefixes_labels' => [
         'view' => 'voir un élément',
         'view_any' => 'Voir la liste',
-        'create' => 'Créer',
+        'create' => 'Créer ou Synchroniser',
         'update' => 'Mettre à jour',
         'delete' => 'Supprimer',
         'delete_any' => 'Supprimer tout',
