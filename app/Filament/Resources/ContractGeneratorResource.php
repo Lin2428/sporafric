@@ -77,7 +77,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                             ->columnSpan(2)
                             ->schema([
                                 TextInput::make('name')
-                                    ->label('Identification GE & SN')
+                                    ->label('Identification du GE')
                                     ->columnSpanFull(),
 
                                 // TextInput::make('reference')
@@ -196,7 +196,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                     ->extraAttributes(['style' => 'width: 100px, height: 100px;']),
 
                 TextColumn::make('name')
-                    ->label('Marque')
+                    ->label('Identification du GE')
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 

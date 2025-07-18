@@ -9,4 +9,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateContractGenerator extends CreateRecord
 {
     protected static string $resource = ContractGeneratorResource::class;
+
+    protected static ?string $title = "Créer un nouveau GE de maintenance";
 }

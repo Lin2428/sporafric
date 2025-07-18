@@ -192,7 +192,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                     ->extraAttributes(['style' => 'width: 100px, height: 100px;']),
 
                 TextColumn::make('name')
-                    ->label('Marque')
+                    ->label('Identification du GE')
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 
