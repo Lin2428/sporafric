@@ -15,7 +15,7 @@ class ViewContract extends ViewRecord
 
     public function getTitle(): string | Htmlable
     {
-        $title =  "<strong class='text-primary'> {$this->record->customer->name} - {$this->record->site}</strong>";
+        $title =  "<strong class='text-primary'> {$this->record->customer->name}</strong>";
         return new HtmlString($title);
     }
 

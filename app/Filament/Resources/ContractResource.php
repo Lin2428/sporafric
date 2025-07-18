@@ -102,6 +102,7 @@ class ContractResource extends Resource implements HasShieldPermissions
 
                                 Toggle::make('is_active')
                                     ->label('Statut')
+                                    ->default(true)
                                     ->onIcon('heroicon-o-check-circle')
                                     ->offIcon('heroicon-o-x-circle')
                                     ->onColor('success')
