@@ -151,6 +151,14 @@
             <span>{{ $getRecord()->generator?->name ?? $getRecord()->generator_name }}</span>
             <!-- <span>{{ $getRecord()->contract?->customer?->name ?? ($getRecord()->devis != null ? $getRecord()->devis?->customer?->name .' '. $getRecord()->devis?->customer?->customer_name:null) ?? $getRecord()->customer?->name }}</span> -->
         </div>
+          {{-- Type d'intervention --}}
+        <div class="container-1">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-wrench')</i>
+                Type d’intervention:
+            </span>
+            <span>{{\App\Enum\InterventionType::from($getRecord()->type)->label() }}</span>
+        </div>
 <div class="container-1">
     <div class="w-full">
 
@@ -185,15 +193,7 @@
             </span>
             <span>{{ \App\Utils\DateUtils::format($getRecord()->date_planifiee) }}</span>
         </div>
-        {{-- Type d'intervention --}}
-        <div class="container-1">
-            <span class="label">
-                <i class="icon">@svg('heroicon-s-wrench')</i>
-                Type d’intervention:
-            </span>
-            <span>{{\App\Enum\InterventionType::from($getRecord()->type)->label() }}</span>
-        </div>
-
+      
     @if ($getRecord()->type == \App\Enum\InterventionType::REMPLACEMENT->value)
         {{-- Numéro de bon de livraison --}}
         <a href="{{ url('admin/generators/' . $getRecord()->newGenerator->id) }}">
@@ -297,14 +297,14 @@
         <div class="container-1">
             <span class="label">
                 <i class="icon">@svg('heroicon-s-arrow-path-rounded-square')</i>
-                Prochain vidange:
+                Temps restant avant vidange:
             </span>
             <span>{{$getRecord()->generator?->next_vidange?? 0}}h</span>
         </div>
         <div class="container-1">
             <span class="label">
                 <i class="icon">@svg('heroicon-s-clipboard-document-check')</i>
-                Prochaine visite:
+                Vidange programmée:
             </span>
             <span>{{$getRecord()->generator?->prochain_visite ?? 0}}h</span>
         </div>

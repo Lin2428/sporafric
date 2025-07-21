@@ -55,7 +55,7 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
 
                     WidgetUtils::contractSelectWidget('devis_id')->label('Devis')->visible(fn(callable $get) => $get('type_service') == '0'),
 
-                    WidgetUtils::generatorSelectWidget(type: null)->visible(fn(callable $get) => $get('type_service') !== null),
+                    WidgetUtils::generatorSelectWidget(type: null, isDispo: false)->visible(fn(callable $get) => $get('type_service') !== null),
                 ])
                 ->columnSpanFull(),
 
@@ -273,7 +273,7 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(50)
             ->columns([
-            TextColumn::make('created_at')
+            TextColumn::make('date')
                 ->label('Créé le')
                 ->dateTime("d/m/Y à H:i")
                 ->sortable(),

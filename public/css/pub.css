@@ -3,6 +3,14 @@
         tfoot {
             display: table-footer-group;
         }
+
+        @page {
+            size:landscape; marks:none;size: 21.0cm;margin: 0cm ;
+        }
     }
+
+.invisible{
+    display: none;
+}
 
     

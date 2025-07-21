@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Carbon\Carbon;
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\GeneratorResource\Pages\ViewInterventionDevis;
@@ -63,7 +64,7 @@ public static function form(Form $form): Form
 
            if ($pieces) {
                 foreach ($pieces as $piece) {
-                $price = Piece::find($piece['piece_id'])?->pv;
+                $price = Piece::find($piece['piece_id'])?->pr;
 
                 $set('price', $price?? 0);
             }
@@ -90,8 +91,7 @@ public static function form(Form $form): Form
                                 TextInput::make('numero')
                                     ->label('Numéro')
                                     ->default(NumberUtils::intevention_numero('INT-LOC'))
-                                    ->required()
-                                    ->unique(Intervention::class, 'numero', ignoreRecord: true)
+                                    ->disabled()
                                     ->columnSpanFull(),
 
                                 WidgetUtils::contractSelectWidget('devis_id')
@@ -138,31 +138,17 @@ public static function form(Form $form): Form
                                   
                                         return $generator?->houres;
                                     })
-                                    ->reactive()
-                                    ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value),
-
-                               TextInput::make('next_vidange')
+                                    ->reactive(),
+                                    
+                                TextInput::make('prochain_visite')
                                     ->numeric()
                                     ->reactive()
-                                    ->label('Prochaine vidange')
-                                    ->formatStateUsing(function (Get $get) {
-                                        $generator = Generator::find($get('generator_id'));
-                                  
-                                        return $generator?->next_vidange;
-                                    })
-                                       ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value),
-
-                                        TextInput::make('prochain_visite')
-                                    ->numeric()
-                                    ->reactive()
-                                    ->label('Prochaine visite')
+                                    ->label('Vidange programmée')
                                     ->formatStateUsing(function (Get $get) {
                                         $generator = Generator::find($get('generator_id'));
                                   
                                         return $generator?->prochain_visite;
-                                    })
-                                    ->columnSpanFull()
-                                    ->visible(fn(callable $get) => $get('type') == InterventionType::VIDANGE->value),
+                                    }),
 
                                  WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true)
                                  ->label("GE remplacé")
@@ -188,7 +174,7 @@ public static function form(Form $form): Form
                             ->columns(2)
                             ->schema([
                                 TextInput::make('montant')
-                                    ->label('Montant Global HT de l\'intervention')
+                                    ->label('Montant de la main d\'oeuvre')
                                     ->columnSpanFull(),
 
                                 Repeater::make('fiches')
@@ -340,9 +326,14 @@ public static function form(Form $form): Form
 
     public static function buildInfolist(Infolist $infolist): Infolist
     {
+        
         return $infolist
             ->schema([
-    \Filament\Infolists\Components\View::make('components.report-header')
+         \Filament\Infolists\Components\View::make('components.report-header')
+                    ->viewData([
+                        'numero' => $infolist->record->numero,
+                        'date' => Carbon::parse($infolist->record->date_planifiee)->format('d/m/Y'),
+                    ])
                     ->columnSpanFull(),
                 // TextEntry::make('generator')
                 //     ->getStateUsing(function (Intervention $record) {

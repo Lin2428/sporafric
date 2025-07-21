@@ -27,17 +27,25 @@ class ListGenerators extends ListRecords
         return  [
             Tab::make("Tout"),
 
+            Tab::make("Disponible")->query(
+                fn($query) =>
+                $query->where('status', '=', GeneratorStatus::DISPONIBLE->value)
+            ),
+
             Tab::make("En location")->query(
                 fn($query) =>
                 $query->where('status', '=', GeneratorStatus::EN_LOCATION->value)
             ),
 
-            Tab::make("Inactifs")->query(
+            Tab::make("En révision")->query(
                 fn($query) =>
-                $query->where('status', '<>', GeneratorStatus::EN_LOCATION->value)
+                $query->where('status', '=', GeneratorStatus::EN_REVU->value)
             ),
 
-
+            Tab::make("Indisponible")->query(
+                fn($query) =>
+                $query->where('status', '=', GeneratorStatus::INDISPONIBLE->value)
+            ),
 
         ];
     }

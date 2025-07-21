@@ -80,9 +80,9 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                     ->label('Identification du GE')
                                     ->columnSpanFull(),
 
-                                // TextInput::make('reference')
-                                //     ->label('referencee')
-                                //     ->columnSpanFull(),
+                                TextInput::make('reference')
+                                    ->label('referencee')
+                                    ->columnSpanFull(),
 
                                 // TextInput::make('serial_number')
                                 //     ->label('Numéro de série')
@@ -139,11 +139,11 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                 //     ->preload()
 
 
-                                TextInput::make('houres')
+                               TextInput::make('houres')
                                     ->label('Heures de fonctionnement'),
 
-                                TextInput::make('next_vidange')
-                                    ->label('Prochaine vidange (h)')
+                                TextInput::make('prochain_visite')
+                                    ->label('Vidange programmée (h)')
                                     ->numeric(),
                             ]),
                     ])
@@ -151,8 +151,8 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
 
                      Section::make('Localisation sur la carte')
                             ->schema([
-                                \Filament\Forms\Components\View::make('filament.forms.components.map-picker')
-                                    ->label(''),
+                                // \Filament\Forms\Components\View::make('filament.forms.components.map-picker')
+                                //     ->label(''),
                             ])->columnSpan(['lg' => 2]),
 
                     Section::make('Données de la carte')
@@ -347,12 +347,12 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
 
                                                 TextEntry::make('name')
                                                     ->label('GE')
-                                                    ->columnSpanFull()
+                                                    ->columnSpan(2)
                                                     ->extraAttributes(['class' => 'font-bold text-danger']),
 
-                                                // TextEntry::make('reference')
-                                                //     ->label('referencee')
-                                                //     ->extraAttributes(['class' => 'font-bold text-danger']),
+                                                TextEntry::make('reference')
+                                                    ->label('referencee')
+                                                    ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                                 // TextEntry::make('serial_number')
                                                 //     ->label('Numéro de série')

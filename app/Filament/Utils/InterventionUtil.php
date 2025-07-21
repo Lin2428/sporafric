@@ -25,7 +25,7 @@ class InterventionUtil
                     ->reactive(),
 
                 DateTimePicker::make('end_date')
-                    ->label('Date limite'),
+                    ->label('Date de fin'),
 
                 Select::make('status')
                     ->label('Statut')
@@ -85,6 +85,7 @@ class InterventionUtil
                 ->label('Numéro')
                 ->searchable()
                 ->sortable()
+                ->copyable()
                 ->limit(50)
                 ->extraAttributes(['class' => 'font-bold'])
                 ->copyable(),
@@ -145,8 +146,10 @@ class InterventionUtil
                 ->getStateUsing(function (Intervention $record) {
                     return  optional($record->contract)->number ??
                          optional($record->devis)->number
+                       
                          ?? "Hors contrat";
                 })
+                ->copyable()
                 ->extraAttributes(['class' => 'font-bold']),
 
             TextColumn::make('generator_name')

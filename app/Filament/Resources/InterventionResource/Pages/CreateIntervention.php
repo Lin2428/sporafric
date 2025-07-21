@@ -9,6 +9,7 @@ use App\Models\ContractGenerator;
 use App\Models\Generator;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use App\Utils\NumberUtils;
 
 class CreateIntervention extends CreateRecord
 {
@@ -20,19 +21,20 @@ class CreateIntervention extends CreateRecord
     {
         // Set the default type_service to 'Maintenance' if not provided
         if (!isset($data['type_service'])) {
-            $data['type_service'] = 1; // Assuming 1 is for Maintenance
+            $data['type_service'] = 1;
+            $data['numero'] = NumberUtils::intevention_numero('INT-MAINT');
         }
 
    
-         if($data['type_activite'] == '1' && $data['type'] == InterventionType::VIDANGE->value){
+         if($data['type_activite'] == '1'){
            $houres = $data['houres'];
-             $nexTvidange = $data['prochain_visite'] -  $houres;
+             $nexTvidange = $data['prochain_visite']  -  $houres;
             $vidange =  $nexTvidange > 30;
 
             Generator::where('id', $data['generator_id'])
             ->update([
                 'houres' => $data['houres'],
-                'next_vidange' => $data['next_vidange'],
+                'next_vidange' => $nexTvidange,
                 'prochain_visite' => $data['prochain_visite'],
                 'vidange' => $vidange
             ]);

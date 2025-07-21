@@ -5,12 +5,8 @@
 
         <div class=" ml-10 justify-center text-xs w-full">
             <div class="font-medium pb-1">{{ $piece->reference}} - {{ $piece->designation }}</div>
-            <div class="flex items-center">
-                {{\App\Utils\NumberUtils::format($piece->pv)}} FCFA
-            </div>
-
-            <span class="inline-flex ">
-                {{ $piece->duree_vie}} h</span>
+            <!-- <span class="inline-flex ">
+                {{ $piece->duree_vie}} h</span> -->
         </div>
     </div>
 </div>

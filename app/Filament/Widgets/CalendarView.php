@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -136,7 +137,7 @@ class CalendarView extends CalendarWidget
                     ->schema([WidgetUtils::customerSelectWidget()->default($intervention->customer_id)->columnSpanFull(), TextInput::make('generator_name')->label('Marque du GE')->default($intervention->generator_name), TextInput::make('power')->label('Puissance (kVA)')->numeric()->default($intervention->power), TextInput::make('serial_number')->label('Numéro de série')->default($intervention->power)->columnSpanFull()])
                     ->visible(fn() => $this->getRecord()->type_activite == '0'),
 
-                WidgetUtils::generatorSelectWidget(type:null)
+                WidgetUtils::generatorSelectWidget(type:null, isDispo: false)
                     ->required()
                     ->default($this->getRecord()->generator_id)
                     ->visible(fn() => $this->getRecord()->generator_id != null),
@@ -144,10 +145,15 @@ class CalendarView extends CalendarWidget
                 Group::make()
                     ->columns(2)
                     ->schema([DateTimePicker::make('start_date')->required()->label('Date de début')->default($intervention->start_date), DateTimePicker::make('end_date')->required()->label('Date de fin')->default($intervention->end_date)]),
-                Textarea::make('description_panne')
-                    ->label('Description')
-                    ->default($this->getRecord()->description_panne)
-                    ->rows(5),
+               
+                RichEditor::make('description_panne')
+                    ->label('Constat')
+                    ->default($this->getRecord()->description_panne),
+
+                RichEditor::make('travaux')
+                    ->label('Travaux effectués')
+                     ->default($this->getRecord()->travaux)
+                    ->columnSpanFull(),
             ])
             ->action(function (array $data) use ($intervention) {
                 Intervention::where('id', '=', $this->getRecord()->id)->update($data);
@@ -190,7 +196,7 @@ class CalendarView extends CalendarWidget
     {
     parent::onEventResize($info);
         $this->getEventRecord()->update([
-        'end_date' => Carbon::make($info['event']['end'])->format('Y-m-d H:i:s'),
+        'end_date' => Carbon::make($info['event']['end'])->format('Y-m-d').'-'. Carbon::make($this->getEventRecord()->end_date)->format('H:i'),
         ]);
     $this->dispatch('reloadCalendar');
     return true;
@@ -200,9 +206,11 @@ class CalendarView extends CalendarWidget
     {
         // Don't forget to call the parent method to resolve the event record
         parent::onEventDrop($info);
+        $start = Carbon::make($info['event']['start'])->addDay()->format('Y-m-d') .'-'. Carbon::make($this->getEventRecord()->start_date)->format('H:i');
+        $end = Carbon::make($info['event']['end'])->format('Y-m-d') .'-'. Carbon::make($this->getEventRecord()->end_date)->format('H:i');
         $this->getEventRecord()->update([
-            'start_date' => Carbon::make($info['event']['start'])->addDay()->format('Y-m-d H:i:s'),
-            'end_date' => Carbon::make($info['event']['end'])->format('Y-m-d H:i:s'),
+            'start_date' => $start,
+            'end_date' => $end
         ]);
 
         $this->dispatch('reloadCalendar');

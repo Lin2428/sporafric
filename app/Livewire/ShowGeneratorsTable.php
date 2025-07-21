@@ -46,7 +46,7 @@ class ShowGeneratorsTable extends Component implements HasForms, HasTable
                     ->searchable(),
                 TextColumn::make('generator.power')
                     ->label('Puissance ')
-                    ->getStateUsing(fn($record) => NumberUtils::format($record->power) . " kVA")
+                    ->getStateUsing(fn($record) => NumberUtils::format($record->generator?->power) . " kVA")
                     ->searchable(),
 
                 TextColumn::make('site')

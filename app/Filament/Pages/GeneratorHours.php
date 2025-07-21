@@ -67,7 +67,8 @@ class GeneratorHours extends Page implements HasTable
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption('all')
             ->columns([
-                TextColumn::make('name')->label('GE')->limit(8),
+                TextColumn::make('name')->label('GE')->limit(8)
+                     ->searchable(),
                 TextColumn::make('reference')
                     ->searchable(),
                 TextColumn::make('client') // Nom arbitraire, car on utilise getStateUsing
@@ -100,25 +101,23 @@ class GeneratorHours extends Page implements HasTable
                         return $state;
                     }),
 
-                     TextInputColumn::make('prochain_visite')
-                    ->label('Prochaine visite')
-                    ->extraAttributes(['style' => 'width: 100px;'])
-                    ->type('number')
-                    ->updateStateUsing(function (string $state, $record) {
-                        $record->prochain_visite = $state;
-                        $record->next_vidange = $record->prochain_visite - $record->houres;
-                        $record->vidange = $record->next_vidange > 30;
-                        $record->save();
-                        return $state;
-                    }),
+                     TextColumn::make('prochain_visite')
+                    ->label('Vidange programmée')
+                    ->extraAttributes(['style' => 'width: 100px;']),
 
                 
 
-                TextColumn::make('next_vidange')->label('Prochaine vidange')->getStateUsing(fn($record) => $record->next_vidange . 'h'),
+                TextColumn::make('next_vidange')
+                ->label('Temps avant vidange')
+                ->getStateUsing(fn($record) => $record->next_vidange . 'h'),
+                
                 TextColumn::make('vidange')
                     ->label('Vidange')
                     ->getStateUsing(function ($record) {
-                        return BadgetWidget::boleanToBadget($record->vidange, 'Ok', 'Vidange');
+                        if($record->vidange !== null){
+                            return BadgetWidget::boleanToBadget($record->vidange, 'Ok', 'Vidange');
+                        }
+
                     })
                     ->html(),
 

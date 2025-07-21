@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Carbon\Carbon;
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
@@ -82,8 +83,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                               TextInput::make('numero')
                                     ->label('Numéro')
                                     ->default(NumberUtils::intevention_numero('INT-MAINT'))
-                                    ->required()
-                                    ->unique(Intervention::class, 'numero', ignoreRecord: true)
+                                    ->disabled()
                                     ->columnSpanFull(),
 
                                 Select::make('type_activite')
@@ -157,29 +157,29 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                         return $generator?->houres;
                                     })
                                     ->reactive()
-                                    ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value)),
+                                    ->visible(fn(callable $get) => $get('type_activite')),
 
-                               TextInput::make('next_vidange')
-                                    ->numeric()
-                                    ->reactive()
-                                    ->label('Prochaine vidange')
-                                    ->formatStateUsing(function (Get $get) {
-                                        $generator = Generator::find($get('generator_id'));
+                            //    TextInput::make('next_vidange')
+                            //         ->numeric()
+                            //         ->reactive()
+                            //         ->disabled()
+                            //         ->dehydrated(true)
+                            //         ->label('Temps restant avant vidange')
+                            //         ->formatStateUsing(function (Get $get) {
+                            //             $generator = Generator::find($get('generator_id'));
                                   
-                                        return $generator?->next_vidange;
-                                    })
-                                       ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value)),
-
+                            //             return $generator?->next_vidange;
+                            //         })->visible(fn(callable $get) => $get('type_activite')),
+                                    
                                         TextInput::make('prochain_visite')
                                     ->numeric()
                                     ->reactive()
-                                    ->label('Prochaine visite')
+                                    ->label('Vidange programmée')
                                     ->formatStateUsing(function (Get $get) {
                                         $generator = Generator::find($get('generator_id'));
                                   
                                         return $generator?->prochain_visite;
-                                    })->columnSpanFull()
-                                       ->visible(fn(callable $get) => $get('type_activite') == '1' && ($get('type') == InterventionType::VIDANGE->value)),
+                                    })->visible(fn(callable $get) => $get('type_activite')),
 
                                 WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true)
                                  ->label("GE remplacé")
@@ -208,7 +208,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                     ->reactive(),
 
                 DateTimePicker::make('end_date')
-                    ->label('Date limite'),
+                    ->label('Date de fin'),
 
                 Select::make('status')
                     ->label('Statut')
@@ -228,12 +228,12 @@ class InterventionResource extends Resource implements HasShieldPermissions
                 TextInput::make('numero_devis')
                 ->label('Numéro du devis')
             ]),
-                        Section::make('Autre information')
+                        Section::make('Pièces jointe')
                             ->columns(2)
                             ->schema([
-                                TextInput::make('montant')
-                                    ->label('Montant Global HT de l\'intervention')
-                                    ->columnSpanFull(),
+                                // TextInput::make('montant')
+                                //     ->label('Montant de la main d\'oeuvre')
+                                //     ->columnSpanFull(),
 
                                 Repeater::make('fiches')
                                     ->label('')
@@ -392,14 +392,11 @@ class InterventionResource extends Resource implements HasShieldPermissions
         return $infolist
             ->schema([
                   \Filament\Infolists\Components\View::make('components.report-header')
-                    ->columnSpanFull(),
-                // TextEntry::make('generator')
-                //     ->getStateUsing(function (Intervention $record) {
-                //        return ;
-                //     })->hiddenLabel()
-                //     ->size(10)
-                //     ->extraAttributes(['style' => 'font-weight: bold;font-size: 25px;'])
-                //     ->url(fn (Intervention $record): ?string => $record->generator?->id ? url('admin/contract-generators', ['record' => $record->generator->id]) : null),
+                    ->columnSpanFull()  ->viewData([
+                        'numero' => $infolist->record->numero,
+                        'date' => Carbon::parse($infolist->record->date_planifiee)->format('d/m/Y'),
+                    ]),
+
                 \Filament\Infolists\Components\View::make('filament.infolist.pages.view-intervention')
                     ->columnSpanFull(),
             ]);

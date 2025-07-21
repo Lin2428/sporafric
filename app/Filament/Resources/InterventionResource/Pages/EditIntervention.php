@@ -60,15 +60,15 @@ class EditIntervention extends EditRecord
             $data['generator_id'] = null;
         }
 
-        if($data['type_activite'] == '1' &&  $data['type'] == InterventionType::VIDANGE->value){
+         if($data['type_activite'] == '1'){
            $houres = $data['houres'];
-            $nexTvidange = $data['prochain_visite'] -  $houres;
+             $nexTvidange = $data['prochain_visite']  -  $houres;
             $vidange =  $nexTvidange > 30;
 
             Generator::where('id', $data['generator_id'])
             ->update([
                 'houres' => $data['houres'],
-                'next_vidange' => $data['next_vidange'],
+                'next_vidange' => $nexTvidange,
                 'prochain_visite' => $data['prochain_visite'],
                 'vidange' => $vidange
             ]);

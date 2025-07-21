@@ -47,8 +47,6 @@ class EditInterventionDevis extends EditRecord
             ]);
         }
 
-
-        if( $data['type'] == InterventionType::VIDANGE->value){
            $houres = $data['houres'];
              $nexTvidange = $data['prochain_visite'] -  $houres;
             $vidange =  $nexTvidange > 30;
@@ -56,11 +54,10 @@ class EditInterventionDevis extends EditRecord
             Generator::where('id', $data['generator_id'])
             ->update([
                 'houres' => $data['houres'],
-                'next_vidange' => $data['next_vidange'],
+                'next_vidange' => $nexTvidange,
                 'prochain_visite' => $data['prochain_visite'],
                 'vidange' => $vidange
             ]);
-        }
 
         if($data['type'] == InterventionType::REMPLACEMENT->value){
             if($this->record->new_generator_id != $data['new_generator_id']){

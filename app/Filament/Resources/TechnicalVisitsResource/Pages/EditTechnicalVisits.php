@@ -129,7 +129,6 @@ class EditTechnicalVisits extends EditRecord
                         <div class="half">
                             <div class="field"><label>MARQUE:</label><input type="text" value="$generator"></div>
                             <div class="field"><label>PUISSANCE:</label><input type="text" value="$power"></div>
-                            <div class="field"><label>N° Série:</label><input type="text" value="$serial"></div>
                             <div class="field"><label>Horamètre:</label><input type="text"></div>
                             <div class="field"><label>Date:</label><input type="text" value="$date"></div>
                         </div>

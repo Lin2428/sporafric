@@ -19,6 +19,7 @@ use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -73,8 +74,7 @@ class RetiredPage extends Page implements HasForms, HasTable
                                 TextInput::make('numero')
                                     ->label('Numéro')
                                     ->default(NumberUtils::intevention_numero('INT-LOC'))
-                                    ->required()
-                                    ->unique(Intervention::class, 'numero', ignoreRecord: true)
+                                    ->disabled()
                                     ->columnSpanFull(),
 
                                      TextInput::make('identifiant')
@@ -98,9 +98,8 @@ class RetiredPage extends Page implements HasForms, HasTable
                                     DatePicker::make('date_planifiee')
                                         ->label('Date planifiée'),
 
-                                    Textarea::make('description_panne')
+                                    RichEditor::make('description_panne')
                                         ->label('Note')
-                                        ->rows(3)
                                         ->columnSpanFull(),
                                 ])->columnSpan(['lg' => 1]),
                             Section::make('Infos internes')
@@ -128,7 +127,7 @@ class RetiredPage extends Page implements HasForms, HasTable
             ])->columnSpan(['lg' => 1]),
                         ])
                 ])->action(function (array $data) {
-                    
+                    $data['numero'] = NumberUtils::intevention_numero('INT-LOC');
                     $devis = Devis::find($data['devis_id']);
                     $data['type_service'] = '0';
                     $data['type'] = InterventionType::RETRAIT->value;

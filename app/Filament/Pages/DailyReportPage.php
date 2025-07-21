@@ -13,6 +13,10 @@ abstract class DailyReportPage extends Page
 
     public $generatorId;
 
+    public $startDate;
+    public $endDate;
+    public $selectDateRange;
+
     public function mount(): void
     {
         $this->refresh();
@@ -41,6 +45,9 @@ abstract class DailyReportPage extends Page
             'devis' => Devis::all(),
             'generator' => $this->generatorId,
             "generators" => Generator::all(),
+            "startDate" => $this->startDate,
+            "endDate" => $this->endDate,
+            'selectDateRange' => $this->selectDateRange,
             ...$this->viewData(),
         ];
     }

@@ -33,6 +33,32 @@
 
         <x-daily-report-header title="Rapport de location" :contracts="$contracts" />
 
+        @if ($this->devis != null)
+         <div class="flex justify-between border border-slate-400 p-3 mt-1 rounded-md bg-white">
+            <div>
+                @include('filament.forms.components.select-contract-result', ['contract' => $this->devis])
+            </div>
+
+            <div class="flex items-end">
+                <p class="text-sm font-bold text-gray-700 text-right">
+                    Période : du {{ $this->selectDateRange }}
+                </p>
+            </div>
+        </div>
+        @endif
+         @if ($this->generator != null)
+         <div class="flex justify-between border border-slate-400 p-3 mt-1 rounded-md bg-white">
+            <div>
+                @include('filament.forms.components.select-generator-result', ['generator' => $this->generator])
+            </div>
+
+            <div class="flex items-end">
+                <p class="text-sm font-bold text-gray-700 text-right">
+                    Période : du {{ $this->selectDateRange }}
+                </p>
+            </div>
+        </div>
+        @endif
         <h3 class="text-lg font-semibold mb-2">Interventions</h3>
         <table class="min-w-full divide-y divide-slate-800">
             <thead style="display: table-row-group">
@@ -63,7 +89,7 @@
                             {{-- <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">{{ \App\Utils\DateUtils::format($intervention->date) }}</td> --}}
                             <td class="px-3 py-4 text-sm text-left text-slate-800 border border-slate-400">
                                 <a target="_blank" href="{{ url('/admin/interventions/' . $intervention->id) }}" class="text-blue-600 ">
-                                    #{{ $intervention->identifiant }}
+                                    #{{ $intervention->numero }}
                                 </a></td>
                             <td class="px-3 py-4 text-blue-600 text-sm text-left border border-slate-400">
                                 {{ \App\Enum\InterventionType::from($intervention->type_intervention)->label() }}</td>
@@ -202,12 +228,11 @@
     }
 
     @page {
-        margin: 20px 40px 10px 40px; /* top, right, bottom, left */
+        size:landscape; marks:none;size: 21.0cm;
+        margin: 20px 40px 10px 40px; 
     }
 
-    body {
-        margin: 0; /* Réinitialise les marges internes */
-    }
+    body {margin: 0;}
         }
 
     </style>

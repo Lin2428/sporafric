@@ -22,7 +22,7 @@ class BadgetWidget
             'En révision' => 'bg-yellow-500',
             'En location' => 'bg-blue-500',
             'Indisponible ' => 'bg-red-500',
-            default => 'bg-blue-500',
+            default => 'bg-red-500',
         };
 
         return "<span class='{$color} text-white font-bold text-medium px-4 py-1 rounded-full'>{$status}</span>";
