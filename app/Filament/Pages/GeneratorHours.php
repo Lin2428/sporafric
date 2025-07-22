@@ -76,10 +76,10 @@ class GeneratorHours extends Page implements HasTable
                     ->searchable(true, function ($search) {
                         return fn($query, $search) => $query
                             ->whereHas('devisGenerator.devis.customer', function ($query) use ($search) {
-                                $query->where('name', 'like', "%{$search}%");
+                                $query->where('name', 'like', "%$search%");
                             })
-                            ->orWhereHas('ContractGenerator.contract.customer', function ($query) use ($search) {
-                                $query->where('name', 'like', "%{$search}%");
+                            ->orWhereHas('contractGenerator.contract.customer', function ($query) use ($search) {
+                                $query->where('name', 'like', "%$search%");
                             });
                     })
                     ->getStateUsing(function ($record) {

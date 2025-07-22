@@ -36,10 +36,11 @@ class DashboardPage extends Page
     public function mount()
     {
         $this->interventionsDuJour = Intervention::whereBetween('start_date', [now()->subWeek(), now()->addDays(1)->endOfDay()])
+        ->orWhereBetween('date_planifiee', [now()->subWeek(), now()->addDays(1)->endOfDay()])
         ->where('status', '!=', InterventionStatus::TERMINEE->value)
         ->where('status', '!=', InterventionStatus::EN_COURS->value)
         ->with(['interventionTechniciens', 'pieces', 'contract', 'customer'])
-        ->orderBy('start_date', 'asc')
+        ->orderBy('date_planifiee', 'asc')
         ->get();
 
         $this->ExpiredLocation = DevisGenerator::whereHas('devis', function ($query) {
@@ -58,7 +59,7 @@ class DashboardPage extends Page
         $vidandeCount = Generator::where('vidange', '=', false)->count();
 
         foreach ($this->interventionsDuJour as $intervention) {
-             $date = \Carbon\Carbon::parse($intervention->start_date)->locale('fr');
+             $date = \Carbon\Carbon::parse($intervention->date_planifiee)->locale('fr');
                         $today = now()->startOfDay();
             
                         if ($date->lt($today)) {

@@ -181,7 +181,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                         return $generator?->prochain_visite;
                                     })->visible(fn(callable $get) => $get('type_activite')),
 
-                                WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true)
+                                WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true, type: null, isDispo: false)
                                  ->label("GE remplacé")
                                     ->columnSpanFull()
                                     ->reactive()

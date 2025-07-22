@@ -17,7 +17,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
-class ShowGeneratorsTable extends Component implements HasForms, HasTable
+class ShowOldGenerators extends Component implements HasForms, HasTable
 {
     use InteractsWithTable;
     use InteractsWithForms;
@@ -31,21 +31,25 @@ class ShowGeneratorsTable extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        $model = ContractGenerator::where('contract_id', $this->contractId)->with('generator');
+        $model = ContractGenerator::where('contract_id', $this->contractId)
+        ->where('old_generator_id','<>', null)
+        ->with('oldGenerator');
 
         if(str_contains(request()->url(), 'devis')) {
-            $model = DevisGenerator::where('devis_id', $this->contractId)->with('generator');
+            $model = DevisGenerator::where('devis_id', $this->contractId)
+             ->where('old_generator_id','<>', null)
+             ->with('oldGenerator');
         }
         return $table
-            ->heading('Groupes électrogènes')
+            ->heading('Groupes électrogènes remplacés')
             ->query($model)
             ->columns([
-                TextColumn::make('generator.name')
+                TextColumn::make('oldGenerator.name')
                     ->label('GE')
                     ->sortable()
-                    ->copyable()
+                       ->copyable()
                     ->searchable(),
-                TextColumn::make('generator.power')
+                TextColumn::make('oldGenerator.power')
                     ->label('Puissance ')
                     ->getStateUsing(fn($record) => NumberUtils::format($record->generator?->power) . " kVA")
                     ->searchable(),
@@ -62,17 +66,16 @@ class ShowGeneratorsTable extends Component implements HasForms, HasTable
             ])
             ->recordUrl(function ($record) {
                 if (str_contains(request()->url(), 'devis')) {
-                    return url('/admin/generators/'. $record->generator_id);
+                    return url('/admin/generators/'. $record->old_generator_id);
                 }
-                return url('/admin/contract-generators/'. $record->generator_id);
+                return url('/admin/contract-generators/'. $record->old_generator_id);
             })
             ->filters([
                 // ...
             ]);
     }
-
-    public function render(): View
+    public function render()
     {
-        return view('livewire.show-generators-table');
+        return view('livewire.show-old-generators');
     }
 }

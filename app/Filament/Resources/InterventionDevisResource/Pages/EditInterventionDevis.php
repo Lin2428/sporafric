@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\InterventionDevisResource\Pages;
 
 use App\Enum\GeneratorStatus;
+use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\InterventionDevisResource;
 use App\Models\DevisGenerator;
@@ -77,6 +78,15 @@ class EditInterventionDevis extends EditRecord
                 'old_generator_id' => $data['generator_id'],
             ]);
             }
+        }
+
+        if($data['type'] == InterventionType::RETRAIT->value && $data['status'] == InterventionStatus::TERMINEE->value){
+            $this->record->generator->status = GeneratorStatus::EN_REVU->value;
+            $this->record->generator->save();
+
+             DevisGenerator::where('devis_id', $this->record->devis_id)
+                    ->where('generator_id', $this->record->generator_id)
+                    ->update(['is_retired' => true]);
         }
 
         return $data;

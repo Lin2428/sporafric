@@ -31,4 +31,9 @@ class ContractGenerator extends Model
     {
         return $this->belongsTo(Generator::class);
     }
+
+    public function oldGenerator()
+    {
+        return $this->belongsTo(Generator::class, 'old_generator_id');
+    }
 }

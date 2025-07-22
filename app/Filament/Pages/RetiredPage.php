@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Enum\GeneratorStatus;
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
@@ -142,7 +143,10 @@ class RetiredPage extends Page implements HasForms, HasTable
                     DevisGenerator::where('devis_id', $devis->id)
                         ->where('generator_id', $data['generator_id'])
                         ->update(['is_retired' => true]);
-
+                    if($data['status'] == InterventionStatus::TERMINEE->value){
+                        $intervention->generator->status = GeneratorStatus::EN_REVU->value;
+                        $intervention->generator->save();
+                    }
                     
                     Notification::make()
                         ->title('Retrait enregistré')

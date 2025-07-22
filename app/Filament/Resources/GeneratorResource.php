@@ -73,7 +73,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                             ->columnSpan(2)
                             ->schema([
                                 TextInput::make('name')
-                                    ->label('Identification GE & SN')
+                                    ->label('Identification GE')
                                     ->columnSpanFull(),
 
                                 TextInput::make('reference')
@@ -141,34 +141,39 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                 TextInput::make('prochain_visite')
                                     ->label('Vidange programmée (h)')
                                     ->numeric(),
+
+                                 Textarea::make('adresse')
+                                    ->label('Adresse')
+                                    ->rows(2)  
+                                    ->columnSpanFull(),
                             ]),
                     ])
                     ->columnSpan(['lg' => 1]),
 
-                     Section::make('Localisation sur la carte')
-                            ->schema([
-                                // \Filament\Forms\Components\View::make('filament.forms.components.map-picker')
-                                //     ->label(''),
-                            ])->columnSpan(['lg' => 2]),
+                    //  Section::make('Localisation sur la carte')
+                    //         ->schema([
+                    //             // \Filament\Forms\Components\View::make('filament.forms.components.map-picker')
+                    //             //     ->label(''),
+                    //         ])->columnSpan(['lg' => 2]),
 
-                    Section::make('Données de la carte')
-                            ->columns(2)
-                            ->schema([
-                               Textarea::make('adresse')
-                                    ->label('Adresse')
-                                    ->rows(2)  
-                                    ->columnSpanFull(),
+                    // Section::make('Données de la carte')
+                    //         ->columns(2)
+                    //         ->schema([
+                    //            Textarea::make('adresse')
+                    //                 ->label('Adresse')
+                    //                 ->rows(2)  
+                    //                 ->columnSpanFull(),
 
-                                TextInput::make('lat')
-                                    ->label('Latitude')
-                                    ->reactive()
-                                    ->columnSpanFull(),
+                    //             TextInput::make('lat')
+                    //                 ->label('Latitude')
+                    //                 ->reactive()
+                    //                 ->columnSpanFull(),
 
-                                TextInput::make('lng')
-                                    ->label('Longitude')
-                                    ->reactive()
-                                    ->columnSpanFull(),
-                            ])->columnSpan(['lg' => 1]),
+                    //             TextInput::make('lng')
+                    //                 ->label('Longitude')
+                    //                 ->reactive()
+                    //                 ->columnSpanFull(),
+                    //         ])->columnSpan(['lg' => 1]),
 
             ])->columns(3);
     }
@@ -606,27 +611,27 @@ class GeneratorResource extends Resource implements HasShieldPermissions
 
                                                 
 
-                                                TextEntry::make('vu')
-                                                    ->label('Vue sur la carte')
-                                                    ->inlineLabel()
-                                                    ->columnSpanFull(),
+                                                // TextEntry::make('vu')
+                                                //     ->label('Vue sur la carte')
+                                                //     ->inlineLabel()
+                                                //     ->columnSpanFull(),
 
-                                                \Filament\Infolists\Components\View::make('filament.infolist.components.map-pointer')
-                                                    ->label('')
-                                                    ->getStateUsing(function (Generator $record) {
-                                                        if($record->devisGenerator){
-                                                            return [
-                                                            'lat' => $record->devisGenerator->devis->lat,
-                                                            'lng' => $record->devisGenerator->devis->lng,
-                                                            ];
-                                                        }
-                                                        return [
-                                                            'lat' => $record->devisGenerator->devis->lat,
-                                                            'lng' => $record->devisGenerator->devis->lng,
-                                                        ];
-                                                    })
-                                                    ->extraAttributes(['class' => 'w-full d-flex justify-center'])
-                                                    ->columnSpanFull(),
+                                                // \Filament\Infolists\Components\View::make('filament.infolist.components.map-pointer')
+                                                //     ->label('')
+                                                //     ->getStateUsing(function (Generator $record) {
+                                                //         if($record->devisGenerator){
+                                                //             return [
+                                                //             'lat' => $record->devisGenerator->devis->lat,
+                                                //             'lng' => $record->devisGenerator->devis->lng,
+                                                //             ];
+                                                //         }
+                                                //         return [
+                                                //             'lat' => $record->devisGenerator->devis->lat,
+                                                //             'lng' => $record->devisGenerator->devis->lng,
+                                                //         ];
+                                                //     })
+                                                //     ->extraAttributes(['class' => 'w-full d-flex justify-center'])
+                                                //     ->columnSpanFull(),
 
                                             ]),
                                     ]),

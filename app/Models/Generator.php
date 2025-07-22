@@ -54,7 +54,9 @@ class Generator extends Model
 
     public function devisGenerator()
     {
-        return $this->hasOne(DevisGenerator::class)->where('status', true);
+        return $this->hasOne(DevisGenerator::class)
+        ->where('status', true)
+        ->where('is_retired',false);
     }
 
     public function pieces()

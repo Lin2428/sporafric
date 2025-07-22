@@ -150,7 +150,8 @@ public static function form(Form $form): Form
                                         return $generator?->prochain_visite;
                                     }),
 
-                                 WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true)
+                                 
+                                WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true, type: null, isDispo: false)
                                  ->label("GE remplacé")
                                     ->columnSpanFull()
                                     ->reactive()

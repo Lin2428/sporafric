@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\InterventionDevisResource\Pages;
 
 use App\Enum\GeneratorStatus;
+use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Filament\Resources\InterventionDevisResource;
 use App\Models\DevisGenerator;
@@ -27,7 +28,7 @@ class CreateInterventionDevis extends CreateRecord
 
              $houres = $data['houres'];
              $nexTvidange = $data['prochain_visite'] -  $houres;
-            $vidange =  $nexTvidange > 30;
+             $vidange =  $nexTvidange > 30;
 
             Generator::where('id', $data['generator_id'])
             ->update([
@@ -63,6 +64,15 @@ class CreateInterventionDevis extends CreateRecord
         protected function afterCreate()
 {
     $data = $this->form->getState();
+     if($data['type'] == InterventionType::RETRAIT->value && $data['status'] == InterventionStatus::TERMINEE->value){
+            $this->record->generator->status = GeneratorStatus::EN_REVU->value;
+            $this->record->generator->save();
+
+              DevisGenerator::where('devis_id', $this->record->devis_id)
+                    ->where('generator_id', $data['generator_id'])
+                    ->update(['is_retired' => true]);
+        }
+
     foreach ($data['pieces'] as $pieceData) {
         $this->record->pieces()->attach(
             $pieceData['piece_id'],

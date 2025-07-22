@@ -335,6 +335,12 @@ class DevisResource extends Resource implements HasShieldPermissions
                     ->extraAttributes(['class' => 'w-full d-flex justify-center'])
                     ->columnSpanFull(),
 
+                  \Filament\Infolists\Components\View::make('filament.infolist.components.generator-show-odl')
+                    ->label('Groupe électrogènes')
+                    ->extraAttributes(['class' => 'w-full d-flex justify-center'])
+                    ->columnSpanFull(),
+
+
             ]);
     }
 }
