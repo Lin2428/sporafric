@@ -469,10 +469,10 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                     })
                                                      ->getStateUsing(function (Generator $record) {
                                                         if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->number;
+                                                            return $record->contractGenerator?->contract?->number;
                                                         }
                                                         if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->number;
+                                                            return $record->devisGenerator?->devis?->number;
                                                         }
                                                         return null;
                                                     })
