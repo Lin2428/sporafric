@@ -483,10 +483,10 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                     ->label('Client')
                                                      ->getStateUsing(function (Generator $record) {
                                                         if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->customer->name;
+                                                            return $record->contractGenerator?->contract?->customer?->name;
                                                         }
                                                         if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->customer->name;
+                                                            return $record->devisGenerator?->devis?->customer?->name;
                                                         }
                                                         return null;
                                                     })
@@ -498,10 +498,10 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                     ->date('d/m/Y')
                                                     ->getStateUsing(function (Generator $record) {
                                                         if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->start_date;
+                                                            return $record->contractGenerator?->contract?->start_date;
                                                         }
                                                         if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->start_date;
+                                                            return $record->devisGenerator?->devis?->start_date;
                                                         }
                                                         return null;
                                                     })
@@ -511,10 +511,10 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                     ->date('d/m/Y')
                                                     ->getStateUsing(function (Generator $record) {
                                                         if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->end_date;
+                                                            return $record->contractGenerator?->contract?->end_date;
                                                         }
                                                         if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->end_date;
+                                                            return $record->devisGenerator?->devis?->end_date;
                                                         }
                                                         return null;
                                                     })
@@ -548,7 +548,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                             ->limit(20)
                                                             ->getStateUsing(function (Generator $record) {
                                                             if($record->contractGenerator){
-                                                                return $record->contractGenerator->contract->customer->contact_c_name;
+                                                                return $record->contractGenerator->contract?->customer?->contact_c_name;
                                                             }
                                                             return null;
                                                         })
@@ -557,7 +557,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Téléphone')
                                                              ->getStateUsing(function (Generator $record) {
                                                             if($record->contractGenerator){
-                                                                return $record->contractGenerator->contract->customer->contact_c_phone;
+                                                                return $record->contractGenerator?->contract?->customer?->contact_c_phone;
                                                             }
                                                             return null;
                                                         })
@@ -567,10 +567,10 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Email')
                                                              ->getStateUsing(function (Generator $record) {
                                                             if($record->contractGenerator){
-                                                                return $record->contractGenerator->contract->customer->contact_c_email;
+                                                                return $record->contractGenerator?->contract?->customer?->contact_c_email;
                                                             }
                                                             if($record->devisGenerator){
-                                                                return $record->devisGenerator->devis->customer->contact_c_email;
+                                                                return $record->devisGenerator?->devis?->customer?->contact_c_email;
                                                             }
                                                             return null;
                                                         })
@@ -586,7 +586,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Nom')
                                                             ->getStateUsing(function (Generator $record) {
                                                             if($record->contractGenerator){
-                                                                return $record->contractGenerator->contact_name;
+                                                                return $record->contractGenerator?->contact_name;
                                                             }
                                                             return null;
                                                         })
@@ -595,7 +595,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Téléphone')
                                                              ->getStateUsing(function (Generator $record) {
                                                             if($record->contractGenerator){
-                                                                return $record->contractGenerator->contact_phone;
+                                                                return $record->contractGenerator?->contact_phone;
                                                             }
                                                             return null;
                                                         })
@@ -605,7 +605,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Email')
                                                              ->getStateUsing(function (Generator $record) {
                                                             if($record->contractGenerator){
-                                                                return $record->contractGenerator->contact_email;
+                                                                return $record->contractGenerator?->contact_email;
                                                             }
                                                             return null;
                                                         })
@@ -621,7 +621,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Site')
                                                             ->getStateUsing(function (Generator $record) {
                                                             if($record->contractGenerator){
-                                                                return $record->contractGenerator->site;
+                                                                return $record->contractGenerator?->site;
                                                             }
                                                             return null;
                                                         })
@@ -630,7 +630,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Code')
                                                              ->getStateUsing(function (Generator $record) {
                                                             if($record->contractGenerator){
-                                                                return $record->contractGenerator->code_site;
+                                                                return $record->contractGenerator?->code_site;
                                                             }
                                                             return null;
                                                         })
