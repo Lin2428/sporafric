@@ -80,9 +80,9 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                     ->label('Identification du GE')
                                     ->columnSpanFull(),
 
-                                TextInput::make('reference')
-                                    ->label('referencee')
-                                    ->columnSpanFull(),
+                                // TextInput::make('reference')
+                                //     ->label('referencee')
+                                //     ->columnSpanFull(),
 
                                 // TextInput::make('serial_number')
                                 //     ->label('Numéro de série')
@@ -374,12 +374,12 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
 
                                                 TextEntry::make('name')
                                                     ->label('GE')
-                                                    ->columnSpan(2)
+                                                    ->columnSpan(3)
                                                     ->extraAttributes(['class' => 'font-bold text-danger']),
 
-                                                TextEntry::make('reference')
-                                                    ->label('referencee')
-                                                    ->extraAttributes(['class' => 'font-bold text-danger']),
+                                                // TextEntry::make('reference')
+                                                //     ->label('referencee')
+                                                //     ->extraAttributes(['class' => 'font-bold text-danger']),
 
                                                 // TextEntry::make('serial_number')
                                                 //     ->label('Numéro de série')

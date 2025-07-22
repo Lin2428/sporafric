@@ -228,12 +228,12 @@ class InterventionResource extends Resource implements HasShieldPermissions
                 TextInput::make('numero_devis')
                 ->label('Numéro du devis')
             ]),
-                        Section::make('Pièces jointe')
+                        Section::make('Autre information')
                             ->columns(2)
                             ->schema([
-                                // TextInput::make('montant')
-                                //     ->label('Montant de la main d\'oeuvre')
-                                //     ->columnSpanFull(),
+                                TextInput::make('montant')
+                                    ->label('Montant de la main d\'oeuvre')
+                                    ->columnSpanFull(),
 
                                 Repeater::make('fiches')
                                     ->label('')

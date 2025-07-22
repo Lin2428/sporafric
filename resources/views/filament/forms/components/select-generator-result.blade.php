@@ -28,7 +28,7 @@ $ring = match($generator->status) {
         <img src="{{asset($generator->image != null ? "storage/$generator->image" : 'storage/generateur.png')}}" class="img-g overflow-hidden" alt="">
 
         <div class=" ml-10 justify-center text-xs w-full">
-            <div class="font-medium pb-1">{{ $generator->name}} - {{ $generator->reference }}</div>
+            <div class="font-medium pb-1">{{ $generator->name}}</div>
             <div class="flex items-center">
                 {{$generator->power}}kVA
             </div>
@@ -37,6 +37,19 @@ $ring = match($generator->status) {
             <span
                 class="no-print inline-flex items-center rounded-md {{$bg}} px-2 py-1 text-xs font-medium {{$text}} ring-1 {{$ring}} ring-inset">
                 {{ \App\Enum\GeneratorStatus::from($generator->status)->label() }}
+            </span>
+            @endif
+              @if ($generator->type === 2 && $generator->status == \App\Enum\GeneratorStatus::EN_LOCATION->value )
+            <span
+                class="no-print inline-flex items-center rounded-md {{$bg}} px-2 py-1 text-xs font-medium {{$text}} ring-1 {{$ring}} ring-inset">
+                A un contract
+            </span>
+            @endif
+
+              @if ($generator->type === 2 && $generator->status == \App\Enum\GeneratorStatus::EN_REVU->value )
+            <span
+                class="no-print inline-flex items-center rounded-md {{$bg}} px-2 py-1 text-xs font-medium {{$text}} ring-1 {{$ring}} ring-inset">
+                A été remplacé
             </span>
             @endif
             

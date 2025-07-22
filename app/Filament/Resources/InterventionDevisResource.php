@@ -171,12 +171,12 @@ public static function form(Form $form): Form
                 Group::make()
                     ->schema([
                         InterventionUtil::infoInterne(),
-                        Section::make('Autre information')
+                        Section::make('Pièces jointes')
                             ->columns(2)
                             ->schema([
-                                TextInput::make('montant')
-                                    ->label('Montant de la main d\'oeuvre')
-                                    ->columnSpanFull(),
+                                // TextInput::make('montant')
+                                //     ->label('Montant de la main d\'oeuvre')
+                                //     ->columnSpanFull(),
 
                                 Repeater::make('fiches')
                                     ->label('')
