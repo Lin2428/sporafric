@@ -5,8 +5,8 @@
     } else {
         $groupes = $this->data->groupBy(function ($generator) {
             // Retourne le customer_id selon la relation existante
-            return $generator->contractGenerator->contract->customer_id
-                ?? $generator->devisGenerator->devis->customer_id;
+            return $generator->contractGenerator?->contract?->customer_id
+                ?? $generator->devisGenerator?->devis?->customer_id;
         });
     }
 @endphp
