@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Utils\WidgetUtils;
+use App\Models\Customer;
 use App\Models\Generator;
 use App\Models\Technicien;
 use ArielMejiaDev\FilamentPrintable\Actions\PrintAction;
@@ -25,9 +26,12 @@ class PrintGeneratorList extends Page implements HasForms
     {
         return auth()->user()->hasPermissionTo('page_PrintGeneratorList');
     }
-    public $data = [];
+    public $data;
 
-    public $customer_id = null;
+    public $groupes;
+
+    public $clients = null;
+    public $selectTechniciens;
 
      public function mount(): void
     {
@@ -35,23 +39,20 @@ class PrintGeneratorList extends Page implements HasForms
     }
     protected function refresh(): void
     {
-        if ($this->customer_id == null) {
+        if ($this->clients == null) {
             return;
         }
+        
 
-        $this->data = Generator::whereHas('contractGenerator', function (Builder $query) {
-            $query->whereHas('contract', function (Builder $query) {
-                $query->where('customer_id', $this->customer_id);
-            });
-        })
-        ->orWhereHas('devisGenerator', function (Builder $query) {
-            $query->whereHas('devis', function (Builder $query) {
-                $query->where('customer_id', $this->customer_id);
+        $this->data = Generator::with(['contractGenerator.contract', 'devisGenerator.devis'])
+        ->where(function ($query) {
+            $query->whereHas('contractGenerator.contract', function ($q) {
+                $q->whereIn('customer_id', array_values($this->clients));
+            })->orWhereHas('devisGenerator.devis', function ($q) {
+                $q->whereIn('customer_id', array_values($this->clients));
             });
         })
         ->get();
-
-
     }
 
 
@@ -69,17 +70,26 @@ class PrintGeneratorList extends Page implements HasForms
         return $form
             ->schema([
 
-                WidgetUtils::customerSelectWidget()
+                Select::make('clients')
                     ->label('Client')
+                    ->options(Customer::all()->pluck('name','id'))
                     ->afterStateUpdated(function ($state) {
-                        $this->customer_id  = $state;
                         $this->refresh();
                     })
+                    ->searchable()
+                    ->multiple()
                     ->live(true)
                     ->required(),
 
-                Select::make('technicien_id')
+                Select::make('selectTechniciens')
                     ->label('Technicien')
+                     ->options($techniciens)
+                     ->default($this->selectTechniciens)
+                    ->afterStateUpdated(function ($state)use($techniciens) {
+                        $this->selectTechniciens = $techniciens[$state];
+                        $this->refresh();
+                    })
+                    ->live(true)
                     ->options($techniciens),
             ])
             ->columns(2);

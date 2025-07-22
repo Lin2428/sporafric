@@ -66,6 +66,21 @@ class EditTechnicalVisits extends EditRecord
                     $controlIntensite2 = $record->control_intensite['i2'];
                     $controlIntensite3 = $record->control_intensite['i3'];
 
+                    $controleBat = null;
+                    if($record->control_battery == 1){
+                        $controleBat = "1,26 à 1,28";
+                    }
+                    
+                    if($record->control_battery == 2){
+                        $controleBat = "1,22 à 1,26";
+                    }
+                    
+                    if($record->control_battery == 3){
+                        $controleBat = "&lt; 1,22";
+                    }
+
+                    $source = asset('storage/logo_light.png');
+                  
         $livewire->js(<<<JS
 
             const printWindow = window.open('', '', 'width=800,height=600');
@@ -74,6 +89,19 @@ class EditTechnicalVisits extends EditRecord
                     <head>
                         <title>Impression</title>
                         <style>
+                        @media print {
+                                .fi-header {
+                                    display: none;
+                                }
+
+                                @page {
+                                    margin: 20px 40px 10px 40px; /* top, right, bottom, left */
+                                }
+
+                                body {
+                                    margin: 0; /* Réinitialise les marges internes */
+                                }
+                            }
                             body {
                                 font-family: Arial, sans-serif;
                                 margin-left: 30px;
@@ -121,13 +149,26 @@ class EditTechnicalVisits extends EditRecord
                             .signature-section {
                                 margin-top: 30px;
                             }
+                            .image {
+                                width: 210px;
+                                height: 20px;
+                                object-fit: contain;
+                            }
+
+                            .mon-container {
+                                display: flex;
+                                justify-content: space-between;
+                            }
                         </style>
                     </head>
                     <body>
+                    <div class="">
+                         <img src="$source" class="image">
+                    </div>
                       <h2 style="font-size: 22px;">VISITE TECHNIQUE</h2>
 
                         <div class="half">
-                            <div class="field"><label>MARQUE:</label><input type="text" value="$generator"></div>
+                            <div class="field"><label>Identification du GE:</label><input type="text" value="$generator"></div>
                             <div class="field"><label>PUISSANCE:</label><input type="text" value="$power"></div>
                             <div class="field"><label>Horamètre:</label><input type="text"></div>
                             <div class="field"><label>Date:</label><input type="text" value="$date"></div>
@@ -160,7 +201,7 @@ class EditTechnicalVisits extends EditRecord
                             <tr><td>Contrôle du filtre à carburant</td><td>$control6</td></tr>
                             <tr><td>Contrôle du circuit carburant</td><td>$control7</td></tr>
                             <tr><td>Contrôle du circuit de refroidissement</td><td>$control8</td></tr>
-                            <tr><td>Contrôle de la batterie et de la densité (3ans)</td><td>1,26 à 1,28</td><td>1,22 à 1,26</td><td>&lt; 1,22</td></tr>
+                            <tr><td>Contrôle de la batterie et de la densité (3ans)</td><td>$controleBat</td></tr>
                             <tr><td>Contrôle de l’état et de la présence des courroies</td><td>$control9</td></tr>
                             <tr><td>Contrôle de charge de batterie</td><td>$control10</td></tr>
                             <tr><td>Contrôle de la résistance chauffante</td><td>$control11</td></tr>

@@ -66,7 +66,7 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                     ->options([
                         'control_1' => 'Niveau d\'huile moteur',
                         'control_2' => 'Niveau du liquide de refroidissement',
-                        'control_3' => 'Niveau de l\'electrolute Batterie',
+                        'control_3' => 'Niveau de l\'electrolyte Batterie',
                     ])
                     ->columns(3)
                     ->afterStateHydrated(function ($component, $record) {

@@ -100,7 +100,7 @@ public static function form(Form $form): Form
                                     ->required()
                                     ->label("Devis"),
 
-                                 WidgetUtils::generatorSelectWidget(isDispo:false, onUpdate: function (Set $set, $state) {
+                                 WidgetUtils::generatorSelectWidget(isDispo:false, isgetAll: true, onUpdate: function (Set $set, $state) {
                                         $generator = Generator::find($state);
 
                                         $set('houres', $generator?->houres);

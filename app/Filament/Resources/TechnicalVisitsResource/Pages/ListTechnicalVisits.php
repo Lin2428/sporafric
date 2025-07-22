@@ -18,6 +18,7 @@ class ListTechnicalVisits extends ListRecords
                 ->icon('heroicon-o-printer')
                 ->color('info')
                 ->action(function ($record, $data, $livewire) {
+                          $source = asset('storage/logo_light.png');
                     $livewire->js(<<<'JS'
 
             const printWindow = window.open('', '', 'width=800,height=600');
@@ -26,6 +27,20 @@ class ListTechnicalVisits extends ListRecords
                     <head>
                         <title>Impression</title>
                         <style>
+
+                        @media print {
+                                .fi-header {
+                                    display: none;
+                                }
+
+                                @page {
+                                    margin: 20px 40px 10px 40px; /* top, right, bottom, left */
+                                }
+
+                                body {
+                                    margin: 0; /* Réinitialise les marges internes */
+                                }
+                            }
                             body {
                                 font-family: Arial, sans-serif;
                                 margin-left: 30px;
@@ -90,9 +105,17 @@ class ListTechnicalVisits extends ListRecords
                                 align-items: center;
                                 width: 100%;
                             }
+                                 .image {
+                                width: 210px;
+                                height: 20px;
+                                object-fit: contain;
+                            }
                         </style>
                     </head>
                     <body>
+                      <div class="">
+                         <img src="$source" class="image">
+                    </div>
                       <h2 style="font-size: 22px;">VISITE TECHNIQUE</h2>
 
                        <divclass="entete">
