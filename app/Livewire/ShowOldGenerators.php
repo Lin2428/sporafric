@@ -33,11 +33,17 @@ class ShowOldGenerators extends Component implements HasForms, HasTable
     {
         $model = ContractGenerator::where('contract_id', $this->contractId)
         ->where('old_generator_id','<>', null)
+          ->whereHas('oldGenerator', function($query){
+            return $query->where('deleted_at','=', null);
+        })
         ->with('oldGenerator');
 
         if(str_contains(request()->url(), 'devis')) {
             $model = DevisGenerator::where('devis_id', $this->contractId)
              ->where('old_generator_id','<>', null)
+              ->whereHas('oldGenerator', function($query){
+            return $query->where('deleted_at','=', null);
+        })
              ->with('oldGenerator');
         }
         return $table

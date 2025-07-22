@@ -31,10 +31,18 @@ class ShowGeneratorsTable extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        $model = ContractGenerator::where('contract_id', $this->contractId)->with('generator');
+        $model = ContractGenerator::where('contract_id', $this->contractId)
+        ->whereHas('generator', function($query){
+            return $query->where('deleted_at','=', null);
+        })
+        ->with('generator');
 
         if(str_contains(request()->url(), 'devis')) {
-            $model = DevisGenerator::where('devis_id', $this->contractId)->with('generator');
+            $model = DevisGenerator::where('devis_id', $this->contractId)
+              ->whereHas('generator', function($query){
+            return $query->where('deleted_at','=', null);
+        })
+            ->with('generator');
         }
         return $table
             ->heading('Groupes électrogènes')
