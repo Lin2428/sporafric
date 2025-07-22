@@ -15,6 +15,7 @@ class Piece extends Model
         'designation',
         'image',
         'duree_vie',
+        'odoo_id',
         'pr',
         'pv',
         'user_id',

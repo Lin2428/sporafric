@@ -27,7 +27,7 @@ class SynchronizationAutomatic extends Command
      */
     public function handle()
     {
-            set_time_limit(500);
+            
 
             OdooController::syncronizeClient();
             OdooController::syncronizeTechnicians();

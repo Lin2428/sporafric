@@ -15,6 +15,7 @@ class OdooController extends Controller
 {
     public function index(OdooService $odoo)
     {
+        set_time_limit(5000);
         $companies = $odoo->getCompany();
 
         return $companies;
@@ -22,6 +23,7 @@ class OdooController extends Controller
 
     public static function syncronizeClient()
     {
+        set_time_limit(5000);
         $odoo = new OdooService();
         $data = $odoo->searchRead(
             'res.partner',
@@ -56,6 +58,7 @@ class OdooController extends Controller
 
     public static function syncronizeTechnicians()
     {
+        set_time_limit(5000);
         $odoo = new OdooService();
         $data = $odoo->searchRead(
             'hr.employee',
@@ -86,6 +89,8 @@ class OdooController extends Controller
 
     public static function syncronizeGenerator(bool $all = false)
     {
+        set_time_limit(5000);
+
         $odoo      = new OdooService();
         $generator = Generator::all()->pluck('odoo_id')->toArray();
         $data      = $odoo->searchRead(
@@ -124,6 +129,8 @@ class OdooController extends Controller
 
     public static function syncronizeDevis(bool $all = false)
     {
+        set_time_limit(5000);
+
         $odoo = new OdooService();
         $devis = Devis::all()->pluck('odoo_id')->toArray();
 
@@ -256,6 +263,8 @@ class OdooController extends Controller
 
     public static function syncronizePieces()
     {
+        
+        set_time_limit(5000);
         $odoo = new OdooService();
 
         $data = $odoo->searchRead('product.template', [
@@ -267,6 +276,8 @@ class OdooController extends Controller
             'list_price',
             'default_code',
         ]);
+
+    
 
         foreach ($data as $piece) {
             Piece::updateOrCreate(

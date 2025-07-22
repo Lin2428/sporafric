@@ -19,7 +19,7 @@
             <p class="text-sm">Pointe-Noire: 05 208 80 08</p>
             <p class="text-sm">Brazzaville: 05 208 80 13</p>
             @if ($numero != null)
-                <div class="p-3 bg-gray-200 mb-2 text-center" style="border: solid 1px black">
+                <div class="py-3 px bg-gray-200 mb-2 text-center" style="border: solid 1px black">
                 <p class="font-bold">N° : {{ $numero }}</p>
                 <p class="">{{$date }}</p>
             </div>
