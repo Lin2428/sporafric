@@ -117,8 +117,8 @@ class Intervention extends Model implements Eventable
     {
         return CalendarEvent::make($this)
             ->title(InterventionType::from($this->type)->label())
-            ->start(Carbon::make($this->start_date != null ? $this->start_date : $this->date_planifiee))
-            ->end(Carbon::make($this->end_date != null ? $this->end_date : $this->date_planifiee))
+            ->start($this->start_date != null ? $this->start_date : $this->date_planifiee)
+            ->end($this->end_date != null ? $this->end_date : $this->date_planifiee)
             ->backgroundColor(
                 match ($this->status) {
                 (int) InterventionStatus::PLANIFIEE->value => '#3b82f6', 

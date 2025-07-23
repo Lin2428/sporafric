@@ -195,8 +195,18 @@ class CalendarView extends CalendarWidget
     public function onEventResize(array $info = []): bool
     {
     parent::onEventResize($info);
+
+    $record = $this->getEventRecord();
+
+     $eventEndDate = Carbon::make($info['event']['end'])->format('Y-m-d');
+        $eventEndTime = $record->end_date
+            ? Carbon::make($record->end_date)->format('H:i')
+            : '12:00';
+
+        $end = $eventEndDate . '-' . $eventEndTime;
+
         $this->getEventRecord()->update([
-        'end_date' => Carbon::make($info['event']['end'])->format('Y-m-d').'-'. Carbon::make($this->getEventRecord()->end_date)->format('H:i'),
+        'end_date' => $end,
         ]);
     $this->dispatch('reloadCalendar');
     return true;
@@ -206,12 +216,24 @@ class CalendarView extends CalendarWidget
     {
         // Don't forget to call the parent method to resolve the event record
         parent::onEventDrop($info);
-        $start = Carbon::make($info['event']['start'])->addDay()->format('Y-m-d') .'-'. Carbon::make($this->getEventRecord()->start_date)->format('H:i');
-        $end = Carbon::make($info['event']['end'])->format('Y-m-d') .'-'. Carbon::make($this->getEventRecord()->end_date)->format('H:i');
-        $this->getEventRecord()->update([
-            'start_date' => $start,
-            'end_date' => $end
-        ]);
+       $record = $this->getEventRecord();
+
+        $eventStartDate = Carbon::make($info['event']['start'])->addDay()->format('Y-m-d');
+        $eventStartTime = $record->start_date
+            ? Carbon::make($record->start_date)->format('H:i')
+            : '11:00';
+
+        $eventEndDate = Carbon::make($info['event']['end'])->format('Y-m-d');
+        $eventEndTime = $record->end_date
+            ? Carbon::make($record->end_date)->format('H:i')
+            : '12:00';
+
+            $start = $eventStartDate . '-' . $eventStartTime;
+            $end = $eventEndDate . '-' . $eventEndTime;
+            $this->getEventRecord()->update([
+                'start_date' => $start,
+                'end_date' => $end
+            ]);
 
         $this->dispatch('reloadCalendar');
         return true;

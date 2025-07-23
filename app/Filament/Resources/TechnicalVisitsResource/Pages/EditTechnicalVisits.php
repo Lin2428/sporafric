@@ -79,8 +79,6 @@ class EditTechnicalVisits extends EditRecord
                         $controleBat = "&lt; 1,22";
                     }
 
-                    $source = asset('storage/logo_light.png');
-                  
         $livewire->js(<<<JS
 
             const printWindow = window.open('', '', 'width=800,height=600');
@@ -155,15 +153,11 @@ class EditTechnicalVisits extends EditRecord
                                 object-fit: contain;
                             }
 
-                            .mon-container {
-                                display: flex;
-                                justify-content: space-between;
-                            }
                         </style>
                     </head>
                     <body>
                     <div class="">
-                         <img src="$source" class="image">
+                         <img src="https://sporafric.test/storage/logo_light.png" class="image">
                     </div>
                       <h2 style="font-size: 22px;">VISITE TECHNIQUE</h2>
 

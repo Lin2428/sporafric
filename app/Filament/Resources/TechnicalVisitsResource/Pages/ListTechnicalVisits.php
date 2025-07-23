@@ -18,7 +18,7 @@ class ListTechnicalVisits extends ListRecords
                 ->icon('heroicon-o-printer')
                 ->color('info')
                 ->action(function ($record, $data, $livewire) {
-                          $source = asset('storage/logo_light.png');
+                        
                     $livewire->js(<<<'JS'
 
             const printWindow = window.open('', '', 'width=800,height=600');
@@ -105,7 +105,7 @@ class ListTechnicalVisits extends ListRecords
                                 align-items: center;
                                 width: 100%;
                             }
-                                 .image {
+                            .image {
                                 width: 210px;
                                 height: 20px;
                                 object-fit: contain;
@@ -114,7 +114,7 @@ class ListTechnicalVisits extends ListRecords
                     </head>
                     <body>
                       <div class="">
-                         <img src="$source" class="image">
+                         <img src="https://sporafric.test/storage/logo_light.png" class="image">
                     </div>
                       <h2 style="font-size: 22px;">VISITE TECHNIQUE</h2>
 

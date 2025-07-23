@@ -57,7 +57,18 @@ class DashboardPage extends Page
         ->get();
 
         $vidandeCount = Generator::where('vidange', '=', false)->count();
-
+       
+        if($vidandeCount != 0){
+            $this->alerts[] = [
+                'title' => "Vidange en attente",
+                'label' => $vidandeCount.' GE',
+                'date' => \Carbon\Carbon::parse(now())->locale('fr'),
+                'icon' => 'heroicon-o-arrow-path-rounded-square',
+                'color' => 'red',
+                'url' => '/admin/generator-hours'
+            ];
+        }
+        
         foreach ($this->interventionsDuJour as $intervention) {
              $date = \Carbon\Carbon::parse($intervention->date_planifiee)->locale('fr');
                         $today = now()->startOfDay();
@@ -103,15 +114,5 @@ class DashboardPage extends Page
             ];
         }
 
-        if($vidandeCount != 0){
-            $this->alerts[] = [
-                'title' => "Vidange en attente",
-                'label' => $vidandeCount.' GE',
-                'date' => \Carbon\Carbon::parse(now())->locale('fr'),
-                'icon' => 'heroicon-o-arrow-path-rounded-square',
-                'color' => 'red',
-                'url' => '/admin/generator-hours'
-            ];
-        }
     }
 }
