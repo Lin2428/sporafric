@@ -15,7 +15,7 @@ class EditInterventionDevis extends EditRecord
 {
     protected static string $resource = InterventionDevisResource::class;
     protected static ?string $title = 'Modifier une intervention';
-    
+
     protected function getHeaderActions(): array
     {
         return [
@@ -31,6 +31,7 @@ class EditInterventionDevis extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+
 
         $submittedPieces = collect($data['pieces'])->pluck('piece_id')->toArray();
 
@@ -48,11 +49,11 @@ class EditInterventionDevis extends EditRecord
             ]);
         }
 
-           $houres = $data['houres'];
-             $nexTvidange = $data['prochain_visite'] -  $houres;
-            $vidange =  $nexTvidange > 30;
+        $houres = $data['houres'];
+        $nexTvidange = $data['prochain_visite'] -  $houres;
+        $vidange =  $nexTvidange > 30;
 
-            Generator::where('id', $data['generator_id'])
+        Generator::where('id', $data['generator_id'])
             ->update([
                 'houres' => $data['houres'],
                 'next_vidange' => $nexTvidange,
@@ -60,36 +61,52 @@ class EditInterventionDevis extends EditRecord
                 'vidange' => $vidange
             ]);
 
-        if($data['type'] == InterventionType::REMPLACEMENT->value){
-            if($this->record->new_generator_id != $data['new_generator_id']){
-                Generator::where('id', $data['generator_id'])
-            ->update([
-                'status' => GeneratorStatus::EN_REVU->value
-            ]);
+        if ($data['type'] == InterventionType::REMPLACEMENT->value) {
+
+
+            Generator::where('id', $data['generator_id'])
+                ->update([
+                    'status' => GeneratorStatus::EN_REVU->value
+                ]);
 
             Generator::where('id', $data['new_generator_id'])
-            ->update([
-                'status' => GeneratorStatus::EN_LOCATION->value
-            ]);
-            DevisGenerator::where('devis_id', $data['devis_id'])
-            ->where('generator_id', $data['generator_id'])
-            ->update([
-                'generator_id' => $data['new_generator_id'],
-                'old_generator_id' => $data['generator_id'],
-            ]);
+                ->update([
+                    'status' => GeneratorStatus::EN_LOCATION->value
+                ]);
+
+            $oldeGeneratorId =
+                DevisGenerator::where('devis_id', '=', $data['devis_id'])
+                ->where('generator_id', '=', $data['generator_id'])
+                ->where('old_generator_id', '=', $data['new_generator_id'])
+                ->first()?->old_generator_id;
+
+            if ($data['new_generator_id'] == $oldeGeneratorId) {
+                DevisGenerator::where('devis_id', $data['devis_id'])
+                    ->where('old_generator_id', $data['generator_id'])
+                    ->update([
+                        'generator_id' => $data['new_generator_id'],
+                        'old_generator_id' => null,
+                    ]);
+            } else {
+                DevisGenerator::where('devis_id', $data['devis_id'])
+                    ->where('old_generator_id', $data['generator_id'])
+                    ->update([
+                        'generator_id' => $data['new_generator_id'],
+                        'old_generator_id' => $data['generator_id'],
+                    ]);
             }
         }
 
-        if($data['type'] == InterventionType::RETRAIT->value && $data['status'] == InterventionStatus::TERMINEE->value){
+
+        if ($data['type'] == InterventionType::RETRAIT->value && $data['status'] == InterventionStatus::TERMINEE->value) {
             $this->record->generator->status = GeneratorStatus::EN_REVU->value;
             $this->record->generator->save();
 
-             DevisGenerator::where('devis_id', $this->record->devis_id)
-                    ->where('generator_id', $this->record->generator_id)
-                    ->update(['is_retired' => true]);
+            DevisGenerator::where('devis_id', $this->record->devis_id)
+                ->where('generator_id', $this->record->generator_id)
+                ->update(['is_retired' => true]);
         }
 
         return $data;
-
     }
 }
