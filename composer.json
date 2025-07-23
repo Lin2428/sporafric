@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.0",
         "arielmejiadev/filament-printable": "^3.0",
+        "awcodes/filament-table-repeater": "^3.1",
         "bezhansalleh/filament-shield": "^3.3",
         "codewithkyrian/filament-date-range": "^1.1",
         "darkaonline/ripcord": "^0.3.0",

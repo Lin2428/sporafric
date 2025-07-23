@@ -1,7 +1,7 @@
 <div class="rounded-md w-full">
     <div class="flex w-full">
 
-        <img src="{{asset('storage/' . $piece->image)}}" class="img overflow-hidden" alt="">
+        <!-- <img src="{{asset('storage/' . $piece->image)}}" class="img overflow-hidden" alt=""> -->
 
         <div class=" ml-10 justify-center text-xs w-full">
             <div class="font-medium pb-1">{{ $piece->reference}} - {{ $piece->designation }}</div>

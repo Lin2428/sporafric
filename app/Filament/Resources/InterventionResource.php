@@ -13,6 +13,8 @@ use App\Models\Generator;
 use App\Models\Intervention;
 use App\Models\Piece;
 use App\Utils\NumberUtils;
+use Awcodes\TableRepeater\Components\TableRepeater;
+use Awcodes\TableRepeater\Header;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
@@ -251,11 +253,20 @@ class InterventionResource extends Resource implements HasShieldPermissions
                         ])->columnSpan(['lg' => 1]),
 
 
-                Section::make('Pièces livrées')
-                    ->columns(2)
-                    ->schema([
-                        Repeater::make('pieces')
-                    ->label('')
+                // Section::make('Pièces livrées')
+                //     ->columns(2)
+                    // ->schema([
+                    TableRepeater::make('pieces')
+                    ->label('Pièces livrées')
+                    ->emptyLabel('Aucune pièce livrée')
+                      ->headers([
+                            Header::make('piece_id')
+                            ->label('Pièce'),
+                            Header::make('qty')
+                            ->label('Quantité'),
+                            Header::make('price')
+                            ->label('Prix'),
+                        ])
                     ->formatStateUsing(function ($record) {
                         if(empty($record->pieces)) return [];
                       
@@ -270,7 +281,6 @@ class InterventionResource extends Resource implements HasShieldPermissions
                     ->addActionLabel('Ajouter une pièce')
                     ->schema([
                         WidgetUtils::pieceSelectWidget($onUpdate)
-                            ->columnSpanFull()
                             ->reactive()
                             ->required(),
                         TextInput::make('qty')
@@ -286,9 +296,8 @@ class InterventionResource extends Resource implements HasShieldPermissions
                             ->reactive()
                             ->required(),
                     ])->columnSpanFull()
-                    ->grid(2)
-                    ->columns(2)
-                    ])->columnSpanFull(),
+                    ->columns(3)
+                    // ])->columnSpanFull(),
 
             ])->columns(3);
     }

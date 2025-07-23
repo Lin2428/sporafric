@@ -319,25 +319,26 @@
                     <tr>
                         <th>Référence</th>
                         <th>Désignation</th>
-                        <th>Image</th>
-                        <th>Prix</th>
-                        <th>Usure</th>
+                        <th>Quantité</th>
+                        <th>Prix Unitaire</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($getRecord()->pieces as $piece)
+            
                     <tr>
-                        <td>{{$piece->designation}}</td>
                         <td>{{$piece->reference}}</td>
-                        <td><img class="piece-img" src="{{asset('storage/'.$piece->image)}}" alt="">
+                        <td>{{$piece->designation}}</td>
+                        <!-- <td><img class="piece-img" src="{{asset('storage/'.$piece->image)}}" alt=""> -->
+                        </td>
+                        
+                        <td>
+                            {{ $piece->pivot->qty}}
                         </td>
                         <td>
-                            {{\App\Utils\NumberUtils::format($piece->pv)}} FCFA
+                            {{\App\Utils\NumberUtils::format($piece->pivot->price)}} FCFA
                         </td>
 
-                        <td>
-                            {{ $piece->duree_vie}} h
-                        </td>
                     </tr>
                     @endforeach
                 </tbody>

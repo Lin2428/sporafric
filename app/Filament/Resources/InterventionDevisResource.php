@@ -15,6 +15,8 @@ use App\Models\Intervention;
 use App\Models\InterventionDevis;
 use App\Models\Piece;
 use App\Utils\NumberUtils;
+use Awcodes\TableRepeater\Components\TableRepeater;
+use Awcodes\TableRepeater\Header;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
@@ -33,6 +35,7 @@ use Filament\Forms\Set;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\Alignment;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -194,11 +197,20 @@ public static function form(Form $form): Form
                         ])->columnSpan(['lg' => 1]),
 
 
-                Section::make('Pièces livrées')
-                    ->columns(2)
-                    ->schema([
-                        Repeater::make('pieces')
-                    ->label('')
+                // Section::make('Pièces livrées')
+                //     ->columns(2)
+                    // ->schema([
+                    TableRepeater::make('pieces')
+                    ->emptyLabel('Aucune pièce livrée')
+                    ->label('Pièces livrées')
+                      ->headers([
+                            Header::make('piece_id')
+                            ->label('Pièce'),
+                            Header::make('qty')
+                            ->label('Quantité'),
+                            Header::make('price')
+                            ->label('Prix'),
+                        ])
                     ->formatStateUsing(function ($record) {
                         if(empty($record->pieces)) return [];
                       
@@ -213,7 +225,6 @@ public static function form(Form $form): Form
                     ->addActionLabel('Ajouter une pièce')
                     ->schema([
                         WidgetUtils::pieceSelectWidget($onUpdate)
-                            ->columnSpanFull()
                             ->reactive()
                             ->required(),
                         TextInput::make('qty')
@@ -229,9 +240,8 @@ public static function form(Form $form): Form
                             ->reactive()
                             ->required(),
                     ])->columnSpanFull()
-                    ->grid(2)
-                    ->columns(2)
-                    ])->columnSpanFull(),
+                    ->columns(3)
+                    // ])->columnSpanFull(),
 
             ])->columns(3);
     }
