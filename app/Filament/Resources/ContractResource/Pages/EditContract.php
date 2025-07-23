@@ -25,7 +25,8 @@ class EditContract extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-
+        $this->record->generators()->detach();
+        
         $record->update($data);
         foreach ($data['generators'] as $generatorData) {
             $this->record->generators()->syncWithoutDetaching([
