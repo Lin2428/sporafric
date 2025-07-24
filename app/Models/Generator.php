@@ -40,6 +40,7 @@ class Generator extends Model
 
     protected $with = [
         'contractGenerator',
+        'etat',
     ];
 
     public function user()

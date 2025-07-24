@@ -699,6 +699,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                         TextEntry::make('description_panne')
                                             ->label('Description de la panne')
                                             ->color('secondary')
+                                            ->html()
                                             ->columnSpanFull(),
 
                                         \Filament\Infolists\Components\Group::make()
@@ -774,7 +775,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                         //             ->columnSpanFull(),
                         //     ]),
 
-                        Tabs\Tab::make('Etat avant/après')
+                        Tabs\Tab::make('Etat de la dernière location')
                             ->icon('heroicon-o-arrow-path')
                             ->iconPosition(IconPosition::After)
                             ->schema([

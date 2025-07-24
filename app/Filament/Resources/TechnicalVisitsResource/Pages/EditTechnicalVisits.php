@@ -152,7 +152,28 @@ class EditTechnicalVisits extends EditRecord
                                 height: 20px;
                                 object-fit: contain;
                             }
+                                
+                            .section-container {
+                                margin-bottom: 1rem;
+                            }
 
+                            .section-container label {
+                                font-weight: bold;
+                            }
+
+                            .grid-container {
+                                display: grid;
+                                grid-template-columns: 1fr 1fr;
+                                width: 100%;
+                                gap: 1rem;
+                            }
+
+                            .column {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 0.5rem;
+                                text-align: left;
+                            }
                         </style>
                     </head>
                     <body>
@@ -161,18 +182,22 @@ class EditTechnicalVisits extends EditRecord
                     </div>
                       <h2 style="font-size: 22px;">VISITE TECHNIQUE</h2>
 
-                        <div class="half">
-                            <div class="field"><label>Identification du GE:</label><input type="text" value="$generator"></div>
-                            <div class="field"><label>PUISSANCE:</label><input type="text" value="$power"></div>
-                            <div class="field"><label>Horamètre:</label><input type="text"></div>
-                            <div class="field"><label>Date:</label><input type="text" value="$date"></div>
-                        </div>
+                    
 
-                        <div class="half">
-                            <div class="field"><label>MOTEUR N° Série:</label><input type="text"></div>
-                            <div class="field"><label>ALTERNATEUR N° Série:</label><input type="text"></div>
-                            <div class="field"><label>CARTE PUPITRE N° Série:</label><input type="text"></div>
-                            <div class="field"><label>Inverseur:</label><input type="text"></div>
+                        <div><label>Identification du GE:</label> $generator</div>
+
+                        <div class="grid-container">
+                            <div class="column">
+                                <div><label>PUISSANCE:</label> $power</div>
+                                <div><label>Horamètre:</label></div>
+                                <div><label>Date:</label> $date</div>
+                            </div>
+                            <div class="column">
+                                <div><label>MOTEUR N° Série:</label></div>
+                                <div><label>ALTERNATEUR N° Série:</label></div>
+                                <div><label>CARTE PUPITRE N° Série:</label></div>
+                                <div><label>Inverseur:</label></div>
+                            </div>
                         </div>
 
                         <div class="section-title">Action préalable à la visite :</div>

@@ -24,7 +24,6 @@ return new class extends Migration
             $table->float('mechanical_value')->nullable();
             $table->string('hour_number')->nullable();
             $table->string('next_vidange')->nullable();
-            $table->integer('technicien_id_after');
             $table->string('is_clean_after')->nullable();
             $table->string('is_functional_after')->nullable();
             $table->float('electrical_value_after')->nullable();

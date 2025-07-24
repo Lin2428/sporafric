@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Livewire;
 
 use App\Models\Checklist;
@@ -38,7 +39,7 @@ class ChecklistModal extends Component implements HasForms, HasActions
                 Group::make()
                     ->columns(2)
                     ->schema([
-                        Section::make('État avant location')
+                        Section::make('CONTROLE RETOUR LOCATION')
                             ->columns(2)
                             ->schema([
                                 Select::make('technicien_id')
@@ -46,128 +47,195 @@ class ChecklistModal extends Component implements HasForms, HasActions
                                     ->label('Technicien(e)')
                                     ->searchable()
                                     ->placeholder('Sélectionner un(e) technicien(e)')
-                                    ->columnSpanFull()
                                     ->required()
                                     ->default($this->record->etat?->technicien_id),
 
-                                CheckboxList::make('etat')
-                                    ->columnSpanFull()
+                                TextInput::make('responsable')
+                                    ->label('Visa responsable')
+                                    ->default($this->record->etat?->responsable),
+
+                                Section::make('Contrôle général')->schema([
+
+                                    CheckboxList::make('checklist_1')
+                                        ->label('Contrôle technique')
+                                        ->bulkToggleable()
+                                        ->options([
+                                            'control_1' => 'Contrôle des poignées',
+                                            'control_2' => 'contrôle carroserrie',
+                                            'control_3' => "Niveau d’huile Moteur",
+                                            'control_4' => 'Niveau du Liquide de Refroidissement',
+                                            'control_5' => 'Contrôle du filtre à huile',
+                                            'control_6' => 'Contrôle du filtre à air',
+                                            'control_7' => 'Contrôle du filtre à carburant',
+                                            'control_8' => 'Contrôle du circuit carburant',
+                                            'control_9' => 'Contrôle du circuit de refroidissement',
+                                            'control_10' => 'Contrôle de l’état  des courroies',
+                                            'control_11' => 'Contrôle de charge de batterie',
+                                        ])
+                                        ->afterStateHydrated(function ($component, $record) {
+                                            $data = [];
+
+                                            if ($this->record->etat?->control_1 == true) {
+                                                $data[] = 'control_1';
+                                            }
+                                            if ($this->record->etat?->control_2 == true) {
+                                                $data[] = 'control_2';
+                                            }
+                                            if ($this->record->etat?->control_3 == true) {
+                                                $data[] = 'control_3';
+                                            }
+                                            if ($this->record->etat?->control_4 == true) {
+                                                $data[] = 'control_4';
+                                            }
+                                            if ($this->record->etat?->control_5 == true) {
+                                                $data[] = 'control_5';
+                                            }
+                                            if ($this->record->etat?->control_6 == true) {
+                                                $data[] = 'control_6';
+                                            }
+                                            if ($this->record->etat?->control_7 == true) {
+                                                $data[] = 'control_7';
+                                            }
+                                            if ($this->record->etat?->control_8 == true) {
+                                                $data[] = 'control_8';
+                                            }
+                                            if ($this->record->etat?->control_9 == true) {
+                                                $data[] = 'control_9';
+                                            }
+                                            if ($this->record->etat?->control_10 == true) {
+                                                $data[] = 'control_10';
+                                            }
+                                            if ($this->record->etat?->control_11 == true) {
+                                                $data[] = 'control_11';
+                                            }
+
+                                            $component->state($data);
+                                        })
+                                        ->columns(2),
+
+                                ]),
+
+                                Section::make('Contrôle en fonctionnement')
                                     ->columns(2)
-                                    ->label('État')
-                                    ->options([
-                                        'is_clean'      => 'Propre',
-                                        'is_functional' => 'Démarre',
-                                        'is_maintained' => 'Bien entretenu',
-                                    ])->default([
-                                        $this->record->etat?->is_clean,
-                                        $this->record->etat?->is_functional,
-                                        $this->record->etat?->is_maintained,
+                                    ->schema([
+                                        CheckboxList::make('checklist_2')
+                                            ->bulkToggleable()
+                                            ->label('')
+                                            ->options([
+                                                'control_12' => 'Démarrage du GE',
+                                                'control_13' => 'Contrôle du circuit de charge moteur',
+                                                'control_14' => 'Contrôle ATU',
+                                            ])
+                                            ->afterStateHydrated(function ($component, $record) {
+                                                $data = [];
+                                                if ($this->record->etat?->control_12 == true) {
+                                                    $data[] = 'control_12';
+                                                }
+                                                if ($this->record->etat?->control_13 == true) {
+                                                    $data[] = 'control_13';
+                                                }
+                                                if ($this->record->etat?->control_14 == true) {
+                                                    $data[] = 'control_14';
+                                                }
+
+                                                $component->state($data);
+                                            })
+                                            ->columns(3)
+                                            ->columnSpanFull(),
+
+                                        TextInput::make('control_frequence')
+                                        ->numeric()->label('Frequences (Hz)')
+                                        ->default($this->record->etat?->control_frequence)
+                                        ->columnSpanFull(),
+
+                                        Section::make('Tension de sortie(230V)')
+                                            ->columns(3)
+                                            ->inlineLabel()
+                                            ->schema([
+                                                TextInput::make('control_tension.v1')
+                                                    ->label('V1n')
+                                                    ->default($this->record->etat?->control_tension['v1']),
+
+                                                TextInput::make('control_tension.v2')
+                                                    ->label('V2n')
+                                                    ->default($this->record->etat?->control_tension['v2']),
+
+                                                TextInput::make('control_tension.v3')
+                                                    ->label('V3n')
+                                                    ->default($this->record->etat?->control_tension['v3']),
+                                            ])
+                                            ->columnSpanFull(),
+
+                                        Section::make('Tension de sortie(400V)')
+                                            ->columns(3)
+                                            ->inlineLabel()
+                                            ->schema([
+                                                TextInput::make('control_tension_2.u1')
+                                                    ->label('U12')
+                                                    ->default($this->record->etat?->control_tension_2['u1']),
+
+                                                TextInput::make('control_tension_2.u2')
+                                                    ->label('U13')
+                                                    ->default($this->record->etat?->control_tension_2['u2']),
+
+                                                TextInput::make('control_tension_2.u3')
+                                                    ->label('U23')
+                                                    ->default($this->record->etat?->control_tension_2['u3']),
+                                            ])
+                                            ->columnSpanFull(),
+                                        Section::make('Intensité par phase')
+                                            ->columns(3)
+                                            ->inlineLabel()
+                                            ->schema([
+                                                TextInput::make('control_intensite.i1')
+                                                    ->label('I1')
+                                                    ->default($this->record->etat?->control_intensite['i1']),
+
+                                                TextInput::make('control_intensite.i2')
+                                                    ->label('I2')
+                                                    ->default($this->record->etat?->control_intensite['i2']),
+
+                                                TextInput::make('control_intensite.i3')
+                                                    ->label('I3')
+                                                    ->default($this->record->etat?->control_intensite['i3']),
+                                            ])
+                                            ->columnSpanFull(),
+
                                     ]),
 
-                                TextInput::make('electrical_value')
-                                    ->label('Grandeur électrique')
-                                    ->numeric()
-                                    ->columnSpanFull()
-                                    ->default($this->record->etat?->electrical_value),
-
-                                TextInput::make('mechanical_value')
-                                    ->label('Grandeur mécanique')
-                                    ->numeric()
-                                    ->columnSpanFull()
-                                    ->default($this->record->etat?->mechanical_value),
-
-                                TextInput::make('hour_number')
-                                    ->label('Nombre d\'heures')
-                                    ->numeric()
-                                    ->columnSpanFull()
-                                    ->default($this->record->etat?->hour_number),
-
-                                TextInput::make('next_vidange')
-                                    ->label('Prochaine vidange')
-                                    ->columnSpanFull()
-                                    ->default($this->record->etat?->next_vidange),
+                    
                             ])
-                            ->columnSpan(1),
-
-                        Section::make('État après location')
-                            ->columns(2)
-                            ->schema([
-                                Select::make('technicien_id_after')
-                                    ->options($techniciens)
-                                    ->label('Technicien(e)')
-                                    ->searchable()
-                                    ->placeholder('Sélectionner un(e) technicien(e)')
-                                    ->columnSpanFull()
-                                    ->default($this->record->etat?->technicien_id_after),
-
-                                CheckboxList::make('etat_after')
-                                    ->columnSpanFull()
-                                    ->columns(2)
-                                    ->label('État')
-                                    ->options([
-                                        'is_clean_after'      => 'Propre',
-                                        'is_functional_after' => 'Démarre',
-                                        'is_maintained_after' => 'Bien entretenu',
-                                    ])->default([
-                                        $this->record->etat?->is_clean_after,
-                                        $this->record->etat?->is_functional_after,
-                                        $this->record->etat?->is_maintained_after,
-                                    ]),
-
-                                TextInput::make('electrical_value_after')
-                                    ->label('Grandeur électrique')
-                                    ->numeric()
-                                    ->columnSpanFull()
-                                    ->default($this->record->etat?->electrical_value_after),
-
-                                TextInput::make('mechanical_value_after')
-                                    ->label('Grandeur mécanique')
-                                    ->numeric()
-                                    ->columnSpanFull()
-                                    ->default($this->record->etat?->mechanical_value_after),
-
-                                TextInput::make('hour_number_after')
-                                    ->label('Nombre d\'heures')
-                                    ->numeric()
-                                    ->columnSpanFull()
-                                    ->default($this->record->etat?->hour_number_after),
-
-                                TextInput::make('next_vidange_after')
-                                    ->label('Prochaine vidange')
-                                    ->columnSpanFull()
-                                    ->default($this->record->etat?->next_vidange_after),
-                            ])
-                            ->columnSpan(1),
-                    ]),
+                    ])
             ])
+
             ->action(function (array $data) {
-           
-                $etat = array_filter($data['etat']);
-                $etat_after = array_filter($data['etat_after']);
-                    Checklist::updateOrCreate(
-                        [
-                            'generator_id' => $this->record->id,
-                        ],
-                        [
-                            'technicien_id' => $data['technicien_id'],
-                            'electrical_value' => $data['electrical_value'],
-                            'mechanical_value' => $data['mechanical_value'],
-                            'hour_number' => $data['hour_number'],
-                            'next_vidange' => $data['next_vidange'],
-                            'technicien_id_after' => $data['technicien_id_after'],
-                            'is_clean' =>in_array('is_clean', $etat) ? 'is_clean' : null,
-                            'is_functional' => in_array('is_functional', $etat) ? 'is_functional' : null,
-                            'is_maintained' => in_array('is_maintained', $etat) ? 'is_maintained' : null,
-                            'etat_after' => $data['etat_after'],
-                            'electrical_value_after' => $data['electrical_value_after'],
-                            'mechanical_value_after' => $data['mechanical_value_after'],
-                            'hour_number_after' => $data['hour_number_after'],
-                            'next_vidange_after' => $data['next_vidange_after'],
-                            'is_clean_after' => in_array('is_clean_after', $etat_after) ? 'is_clean_after' : null,
-                            'is_functional_after' => in_array('is_functional_after', $etat_after) ? 'is_functional_after' : null,
-                            'is_maintained_after' => in_array('is_maintained_after', $etat_after) ? 'is_maintained_after' : null,
-                        ]
-                    );
+
+                $data['control_1'] = in_array('control_1', $data['checklist_1']);
+                $data['control_2'] = in_array('control_2', $data['checklist_1']);
+                $data['control_3'] = in_array('control_3', $data['checklist_1']);
+                $data['control_4'] = in_array('control_4', $data['checklist_1']);
+                $data['control_5'] = in_array('control_5', $data['checklist_1']);
+                $data['control_6'] = in_array('control_6', $data['checklist_1']);
+                $data['control_7'] = in_array('control_7', $data['checklist_1']);
+                $data['control_8'] = in_array('control_8', $data['checklist_1']);
+                $data['control_9'] = in_array('control_9', $data['checklist_1']);
+                $data['control_10'] = in_array('control_10', $data['checklist_1']);
+                $data['control_11'] = in_array('control_11', $data['checklist_1']);
+                $data['control_12'] = in_array('control_12', $data['checklist_2']);
+                $data['control_13'] = in_array('control_13', $data['checklist_2']);
+                $data['control_14'] = in_array('control_14', $data['checklist_2']);
+                
+                unset($data['checklist_1']);
+                unset($data['checklist_2']);
+                unset($data['checklist_3']);
+
+                $data['devis_id'] = $this->record->devisGenerator?->devis_id;
+                Checklist::updateOrCreate(
+                    [
+                        'generator_id' => $this->record->id,
+                    ],
+                    $data
+                );
 
                 Notification::make()
                     ->success()

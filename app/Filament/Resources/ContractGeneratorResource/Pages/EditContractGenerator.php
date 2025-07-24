@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ContractGeneratorResource\Pages;
 
+use App\Enum\GeneratorStatus;
 use App\Filament\Resources\ContractGeneratorResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -13,7 +14,8 @@ class EditContractGenerator extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+            ->visible($this->record->status == GeneratorStatus::DISPONIBLE),
         ];
     }
 

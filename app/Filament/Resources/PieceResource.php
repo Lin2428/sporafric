@@ -96,11 +96,11 @@ class PieceResource extends Resource implements HasShieldPermissions
                     ->extraAttributes(['style' => 'width: 100px, height: 100px;']),
 
                 TextColumn::make('reference')
-                    ->label('Reference')
+                    ->label('Designation')
                     ->searchable(),
 
                 TextColumn::make('designation')
-                    ->label('Designation')
+                    ->label('Reference')
                     ->extraAttributes(['style' => 'font-weight: bold; '])
                     ->searchable(),
 

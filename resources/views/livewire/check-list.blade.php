@@ -104,150 +104,128 @@
 </style>
 
     
-    <div class="flex justify-between gap-2">
-    <x-filament::button
+    <div class="flex justify-end gap-2">
+    @livewire('checklist-modal',['record' => $record] )
+       <x-filament::button
     id="print-form-etat"
+    color="info"
+    icon="heroicon-o-printer"
+    >
+    Imprimer
+    </x-filament::button>
+
+    <x-filament::button
+    id="print-form-etat-vide"
     color="gray"
     icon="heroicon-o-printer"
     >
     Imprimer le formulaire vierge
     </x-filament::button>
 
-    @livewire('checklist-modal',['record' => $record] )
+
    
     </div>
        <br>
        
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="p-6 space-y-6">
 
-        {{-- État avant location --}}
-        <div class="border rounded-xl p-4">
-            <h2 class="text-lg font-bold mb-4">État avant location</h2>
+    <h2 class="text-xl font-bold">CONTROLE RETOUR LOCATION</h2>
 
-            <div class="mb-4">
-                <label class="block mb-1 font-medium">Technicien(e)</label>
-                <select disabled  class="w-full border rounded-xl border-gray-300 p-2">
-                    @foreach($techniciens as $id => $name)
-                        <option {{$id == $record->etat?->technicien_id ? 'selected' : ''}} value="{{ $id }}">{{ $name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-4">
-                <label class="block mb-1 font-medium">État</label>
-                <div class="grid grid-cols-2 gap-2">
-                    
-                  
-                        <div class="checkbox-wrapper-13">
-                        <input disabled id="default-checkbox" type="checkbox" {{$record->etat?->is_clean ? 'checked' : ''}} >
-                        <label for="">Propres</label>
-                        </div>
-                       
-                    <div class="checkbox-wrapper-13">
-                        <input disabled id="default-checkbox" type="checkbox" {{$record->etat?->is_functional ? 'checked' : ''}} >
-                        <label for="">Démarre</label>
-                        </div>
-
-                        <div class="checkbox-wrapper-13">
-                        <input disabled id="default-checkbox" type="checkbox" {{$record->etat?->is_maintained ? 'checked' : ''}} >
-                        <label for="">Bien entretenu</label>
-                        </div>
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="block" class>Grandeur électrique</label>
-                <div class="w-full border rounded-xl p-2">
-                    {{ $record->etat?->electrical_value }}
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="block">Grandeur mécanique</label>
-               <div class="w-full border rounded-xl p-2">
-                    {{ $record->etat?->mechanical_value }}
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="block">Nombre d'heures</label>
-                <div class="w-full border rounded-xl p-2">
-                    {{ $record->etat?->hour_number }}
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="block">Prochaine vidange</label>
-                <div class="w-full border rounded-xl p-2">
-                    {{ $record->etat?->next_vidange }}
-                </div>
-            </div>
+    <p><span class="font-semibold">Client/Devis:</span> {{ $record->etat?->devis?->customer?->name }} / {{$record->etat?->devis?->number}}</p>
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <label class="block font-semibold mb-1">Technicien(e)</label>
+            <input type="text" value="{{ $record->etat?->technicien?->name }}" readonly class="w-full border border-gray-2 p-2 rounded-lg ">
         </div>
 
-        {{-- État après location --}}
-        <div class="border rounded-xl p-4">
-            <h2 class="text-lg font-bold mb-4">État après location</h2>
-
-            <div class="mb-4">
-                <label >Technicien(e)</label>
-                <select class="w-full border rounded-xl border-gray-300 p-2">
-                    @foreach($techniciens as $id => $name)
-                        <option {{$id == $record->etat?->technicien_id_after ? 'selected' : ''}} value="{{ $id }}">{{ $name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mb-4">
-                <label class="block mb-1 font-medium">État</label>
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="checkbox-wrapper-13">
-                        <input disabled id="default-checkbox" type="checkbox" {{$record->etat?->is_clean_after ? 'checked' : ''}} >
-                        <label for="">Propres</label>
-                        </div>
-                    <div class="checkbox-wrapper-13">
-                        <input disabled id="default-checkbox" type="checkbox" {{$record->etat?->is_functional_after ? 'checked' : ''}} >
-                        <label for="">Démarre</label>
-                        </div>
-                    <div class="checkbox-wrapper-13">
-                        <input disabled id="default-checkbox" type="checkbox" {{$record->etat?->is_maintained_after ? 'checked' : ''}} >
-                        <label for="">Bien entretenu</label>
-                        </div>
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="block">Grandeur électrique</label>
-                <div class="w-full border rounded-xl p-2">
-                    {{ $record->etat?->electrical_value_after }}
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="block">Grandeur mécanique</label>
-                <div class="w-full border rounded-xl p-2">
-                    {{ $record->etat?->mechanical_value_after }}
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="block">Nombre d'heures</label>
-                <div class="w-full border rounded-xl p-2">
-                    {{ $record->etat?->hour_number_after }}
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label class="block">Prochaine vidange</label>
-                <div class="w-full border rounded-xl p-2">
-                    {{ $record->etat?->next_vidange_after }}
-                </div>
-            </div>
+        <div>
+            <label class="block font-semibold mb-1">Visa responsable</label>
+            <input type="text" value="{{ $record->etat?->responsable }}" readonly class="w-full border border-gray-2 p-2 rounded-lg ">
         </div>
     </div>
-        <br>
+
+    {{-- Contrôle général --}}
+    <div class="mt-6">
+        <h3 class="font-bold mb-2">Contrôle technique</h3>
+        <div class="checkbox-wrapper-13 grid grid-cols-2 gap-2">
+            @foreach([
+                'control_1' => 'Contrôle des poignées',
+                'control_2' => 'Contrôle carrosserie',
+                'control_3' => "Niveau d’huile Moteur",
+                'control_4' => 'Niveau du Liquide de Refroidissement',
+                'control_5' => 'Contrôle du filtre à huile',
+                'control_6' => 'Contrôle du filtre à air',
+                'control_7' => 'Contrôle du filtre à carburant',
+                'control_8' => 'Contrôle du circuit carburant',
+                'control_9' => 'Contrôle du circuit de refroidissement',
+                'control_10' => 'Contrôle de l’état des courroies',
+                'control_11' => 'Contrôle de charge de batterie',
+            ] as $control => $label)
+                <div>
+                    <input type="checkbox" id="{{ $control }}" disabled {{ $record->etat?->$control ? 'checked' : '' }}>
+                    <label for="{{ $control }}">{{ $label }}</label>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    {{-- Contrôle en fonctionnement --}}
+    <div class="mt-6">
+        <h3 class="font-bold mb-2">Contrôle en fonctionnement</h3>
+        <div class="checkbox-wrapper-13 grid grid-cols-2 gap-2">
+            @foreach([
+                'control_12' => 'Démarrage du GE',
+                'control_13' => 'Contrôle du circuit de charge moteur',
+                'control_14' => 'Contrôle ATU',
+            ] as $control => $label)
+                <div>
+                    <input type="checkbox" id="{{ $control }}" disabled {{ $record->etat?->$control ? 'checked' : '' }}>
+                    <label for="{{ $control }}">{{ $label }}</label>
+                </div>
+                
+            @endforeach
+             <div>
+            <span class="block font-semibold mb-1">Fréquences (Hz) : {{ $record->etat?->control_frequence }}</span>
+        </div>
+        </div>
+    </div>
+
+    {{-- Tension de sortie 230V --}}
+    <div class="mt-6">
+        <h3 class="font-bold mb-2">Tension de sortie (230V)</h3>
+        <div class="grid grid-cols-3 gap-4">
+            <input type="text" readonly value="{{ $record->etat?->control_tension['v1'] ?? '' }}" placeholder="V1n" class="w-full border border-gray-2 p-2 rounded-lg ">
+            <input type="text" readonly value="{{ $record->etat?->control_tension['v2'] ?? '' }}" placeholder="V2n" class="w-full border border-gray-2 p-2 rounded-lg ">
+            <input type="text" readonly value="{{ $record->etat?->control_tension['v3'] ?? '' }}" placeholder="V3n" class="w-full border border-gray-2 p-2 rounded-lg ">
+        </div>
+    </div>
+
+    {{-- Tension de sortie 400V --}}
+    <div class="mt-6">
+        <h3 class="font-bold mb-2">Tension de sortie (400V)</h3>
+        <div class="grid grid-cols-3 gap-4">
+            <input type="text" readonly value="{{ $record->etat?->control_tension_2['u1'] ?? '' }}" placeholder="U12" class="w-full border border-gray-2 p-2 rounded-lg ">
+            <input type="text" readonly value="{{ $record->etat?->control_tension_2['u2'] ?? '' }}" placeholder="U13" class="w-full border border-gray-2 p-2 rounded-lg ">
+            <input type="text" readonly value="{{ $record->etat?->control_tension_2['u3'] ?? '' }}" placeholder="U23" class="w-full border border-gray-2 p-2 rounded-lg ">
+        </div>
+    </div>
+
+    {{-- Intensité par phase --}}
+    <div class="mt-6">
+        <h3 class="font-bold mb-2">Intensité par phase</h3>
+        <div class="grid grid-cols-3 gap-4">
+            <input type="text" readonly value="{{ $record->etat?->control_intensite['i1'] ?? '' }}" placeholder="I1" class="w-full border border-gray-2 p-2 rounded-lg ">
+            <input type="text" readonly value="{{ $record->etat?->control_intensite['i2'] ?? '' }}" placeholder="I2" class="w-full border border-gray-2 p-2 rounded-lg ">
+            <input type="text" readonly value="{{ $record->etat?->control_intensite['i3'] ?? '' }}" placeholder="I3" class="w-full border border-gray-2 p-2 rounded-lg ">
+        </div>
+    </div>
+</div>
      
 <div id="printable" class="hidden">
     @include('impression.form-etat')
+</div>
+<div id="printable_vide" class="hidden">
+    @include('impression.form-etat-vide')
 </div>
 </div>
 

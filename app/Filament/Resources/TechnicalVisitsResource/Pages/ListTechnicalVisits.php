@@ -110,6 +110,28 @@ class ListTechnicalVisits extends ListRecords
                                 height: 20px;
                                 object-fit: contain;
                             }
+                            .section-container {
+                                    margin-bottom: 1rem;
+                                }
+
+                                .section-container label {
+                                    font-weight: bold;
+                                }
+
+                                .grid-container {
+                                    display: grid;
+                                    grid-template-columns: 1fr 1fr;
+                                    width: 100%;
+                                    gap: 1rem;
+                                }
+
+                                .column {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 0.5rem;
+                                    text-align: left;
+                                }
+                            
                         </style>
                     </head>
                     <body>
@@ -118,20 +140,23 @@ class ListTechnicalVisits extends ListRecords
                     </div>
                       <h2 style="font-size: 22px;">VISITE TECHNIQUE</h2>
 
-                       <divclass="entete">
-                        <div class="half">
-                            <div class="field"><label>Identification du GE:</label><input type="text"></div>
-                            <div class="field"><label>PUISSANCE:</label><input type="text"></div>
-                            <div class="field"><label>Horamètre:</label><input type="text"></div>
-                            <div class="field"><label>Date:</label><input type="text"></div>
-                        </div>
+                      <div><label>Identification du GE:</label></div>
 
-                        <div class="half">
-                            <div class="field"><label>MOTEUR N° Série:</label><input type="text"></div>
-                            <div class="field"><label>ALTERNATEUR N° Série:</label><input type="text"></div>
-                            <div class="field"><label>CARTE PUPITRE N° Série:</label><input type="text"></div>
-                            <div class="field"><label>Inverseur:</label><input type="text"></div>
-                        </div>
+                        <div class="grid-container">
+                            <div class="column">
+                                <div><label>PUISSANCE:</label></div>
+                                <div><label>Horamètre:</label></div>
+                                <div><label>Technicien(e):</label></div>
+                                <div><label>Client /Devis:</label></div>
+                                <div><label>Date:</label></div>
+                            </div>
+                            <div class="column">
+                                <div><label>MOTEUR N° Série:</label></div>
+                                <div><label>ALTERNATEUR N° Série:</label></div>
+                                <div><label>CARTE PUPITRE N° Série:</label></div>
+                                <div><label>Inverseur:</label></div>
+                                <div><label>Visa responsable:</label></div>
+                            </div>
                         </div>
 
                         <div class="section-title">Action préalable à la visite :</div>

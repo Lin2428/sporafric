@@ -317,8 +317,8 @@
             <table class="materiel-table">
                 <thead>
                     <tr>
-                        <th>Référence</th>
                         <th>Désignation</th>
+                        <th>Référence</th>
                         <th>Quantité</th>
                         <th>Prix Unitaire</th>
                     </tr>

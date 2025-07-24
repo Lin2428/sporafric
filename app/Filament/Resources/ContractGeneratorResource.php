@@ -731,6 +731,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                         TextEntry::make('description_panne')
                                             ->label('Description de la panne')
                                             ->color('secondary')
+                                            ->html()
                                             ->columnSpanFull(),
 
                                         \Filament\Infolists\Components\Group::make()

@@ -17,7 +17,11 @@
         }
     }
 
-    
+    .half {
+        width: 48%;
+        display: inline-block;
+        vertical-align: top;
+    }
 </style>
 @include('components.report-header')
 <hr>
@@ -25,22 +29,22 @@
     <div class="text-center mb-3">
         <h1 class="text-2xl font-bold uppercase">CONTROLE RETOUR LOCATION</h1>
     </div>
-    <div class=""><label class="font-bold">Identification du GE:</label> {{ $record->name }}</div>
+    <div class=""><label class="font-bold">Identification du GE:</label></div>
 
     <div class="grid grid-cols-2 w-full gap-4">
         <div class="">
-            <div><label class="font-bold">PUISSANCE:</label>{{ $record->power }}</div>
+            <div><label class="font-bold">PUISSANCE:</label></div>
             <div><label class="font-bold">Horamètre:</label></div>
-            <div><label class="font-bold">Technicien(e):</label> {{ $record->etat?->technicien?->name }}</div>
-            <div><label class="font-bold">Client /Devis:</label> {{ $record->etat?->devis?->customer?->name }} / {{$record->etat?->devis?->number}}</div>
-            <div><label class="font-bold">Date:</label> {{ \App\Utils\DateUtils::format($record->etat?->updated_at) }}</div>
+            <div><label class="font-bold">Technicien(e):</label></div>
+            <div><label class="font-bold">Client /Devis:</label> </div>
+            <div><label class="font-bold">Date:</label> </div>
         </div>
         <div class="text-left">
             <div><label class="font-bold">MOTEUR N° Série:</label></div>
             <div><label class="font-bold">ALTERNATEUR N° Série:</label></div>
             <div><label class="font-bold">CARTE PUPITRE N° Série:</label></div>
             <div><label class="font-bold">Inverseur:</label></div>
-            <div><label class="font-bold">Visa responsable:</label> {{ $record->etat?->responsable }}</div>
+            <div><label class="font-bold">Visa responsable:</label></div>
         </div>
     </div>
 
@@ -67,8 +71,7 @@
         'control_11' => 'Contrôle de charge de batterie',
     ] as $control => $label)
                     <div>
-                        <input type="checkbox" id="{{ $control }}" disabled
-                            {{ $record->etat?->$control ? 'checked' : '' }}>
+                        <input type="checkbox" id="{{ $control }}" disabled>
                         <label for="{{ $control }}">{{ $label }}</label>
                     </div>
                 @endforeach
@@ -85,13 +88,12 @@
         'control_14' => 'Contrôle ATU',
     ] as $control => $label)
                     <div>
-                        <input type="checkbox" id="{{ $control }}" disabled
-                            {{ $record->etat?->$control ? 'checked' : '' }}>
+                        <input type="checkbox" id="{{ $control }}" disabled>
                         <label for="{{ $control }}">{{ $label }}</label>
                     </div>
                 @endforeach
                  <div class="">
-                Fréquences (Hz) : <span class="font-bold"> {{ $record->etat?->control_frequence ?? '' }}
+                Fréquences (Hz) : <span class="font-bold"> 
         </div>
             </div>
         </div>
@@ -102,11 +104,11 @@
         <div class="mt-6">
             <h3 class="font-bold mb-2">Tension de sortie (230V)</h3>
             <div class="grid grid-cols-3 gap-4">
-                <input type="text" readonly value="V1n: {{ $record->etat?->control_tension['v1'] ?? '' }}"
+                <input type="text" readonly value="V1n:"
                     placeholder="V1n" class="w-full font-bold border border-gray-2 p-2 rounded-lg ">
-                <input type="text" readonly value="V2n: {{ $record->etat?->control_tension['v2'] ?? '' }}"
+                <input type="text" readonly value="V2n: "
                     placeholder="V2n" class="w-full font-bold border border-gray-2 p-2 rounded-lg ">
-                <input type="text" readonly value="V3n: {{ $record->etat?->control_tension['v3'] ?? '' }}"
+                <input type="text" readonly value="V3n: "
                     placeholder="V3n" class="w-full font-bold border border-gray-2 p-2 rounded-lg ">
             </div>
         </div>
@@ -115,11 +117,11 @@
         <div class="mt-6">
             <h3 class="font-bold mb-2">Tension de sortie (400V)</h3>
             <div class="grid grid-cols-3 gap-4">
-                <input type="text" readonly value="U12: {{ $record->etat?->control_tension_2['u1'] ?? '' }}"
+                <input type="text" readonly value="U12: "
                     placeholder="U12" class="w-full font-bold border border-gray-2 p-2 rounded-lg ">
-                <input type="text" readonly value="U13: {{ $record->etat?->control_tension_2['u2'] ?? '' }}"
+                <input type="text" readonly value="U13: "
                     placeholder="U13" class="w-full font-bold border border-gray-2 p-2 rounded-lg ">
-                <input type="text" readonly value="U23: {{ $record->etat?->control_tension_2['u3'] ?? '' }}"
+                <input type="text" readonly value="U23: "
                     placeholder="U23" class="w-full font-bold border border-gray-2 p-2 rounded-lg ">
             </div>
         </div>
@@ -128,11 +130,11 @@
         <div class="mt-6">
             <h3 class="font-bold mb-2">Intensité par phase</h3>
             <div class="grid grid-cols-3 gap-4">
-                <input type="text" readonly value="I1: {{ $record->etat?->control_intensite['i1'] ?? '' }}"
+                <input type="text" readonly value="I1: "
                     placeholder="I1" class="w-full font-bold border border-gray-2 p-2 rounded-lg ">
-                <input type="text" readonly value="I2: {{ $record->etat?->control_intensite['i2'] ?? '' }}"
+                <input type="text" readonly value="I2: "
                     placeholder="I2" class="w-full font-bold border border-gray-2 p-2 rounded-lg ">
-                <input type="text" readonly value="I3: {{ $record->etat?->control_intensite['i3'] ?? '' }}"
+                <input type="text" readonly value="I3: "
                     placeholder="I3" class="w-full font-bold border border-gray-2 p-2 rounded-lg ">
             </div>
         </div>
