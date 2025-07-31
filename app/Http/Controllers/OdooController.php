@@ -199,6 +199,7 @@ class OdooController extends Controller
                         'forfait' => $oder['amount_total'],
                         'is_active' => $oder['invoice_status'] === 'to invoice' ? true : false,
                         'state' => $oder['state'],
+                        'is_conso_interne' => false,
                     ],
                 );
             }
@@ -257,6 +258,59 @@ class OdooController extends Controller
                     ->update([
                         'status' => $status,
                     ]);
+            }
+        }
+    }
+
+    public static function syncronizeConsoInterne()
+    {
+        set_time_limit(5000);
+
+        $odoo = new OdooService();
+
+        $orders = $odoo->searchRead(
+            'sale.order',
+        [
+                    (['conso_interne', '=', true]),
+                    (['state', 'not in', ['draft', 'sent', 'cancel']]),
+                    (['partner_id', '=', 3969])
+                ],
+            [
+                'id',
+                'name',
+                'partner_id',
+                'customer_info',
+                'order_line',
+                'amount_total',
+                'date_order',
+                'invoice_status',
+                'amount_total',
+                'next_action_date',
+                'state'
+            ]
+        );
+
+        foreach ($orders as $oder) {
+          
+            $customerId = Customer::where('odoo_id', $oder['partner_id'][0] ?? null)->value('id');
+            if ($customerId != null) {
+                Devis::updateOrCreate(
+                    [
+                        'odoo_id' => $oder['id'],
+                    ],
+                    [
+                        'odoo_id' => $oder['id'],
+                        'customer_name' => $oder['customer_info'] ?? '',
+                        'customer_id' => $customerId,
+                        'number' => $oder['name'],
+                        'start_date' => $oder['date_order'],
+                        'end_date' => $oder['next_action_date'] == false ? null : $oder['next_action_date'],
+                        'forfait' => $oder['amount_total'],
+                        'is_active' => $oder['invoice_status'] === 'to invoice' ? true : false,
+                        'state' => $oder['state'],
+                        'is_conso_interne' => true,
+                    ],
+                );
             }
         }
     }
