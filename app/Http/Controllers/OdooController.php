@@ -289,10 +289,11 @@ class OdooController extends Controller
                 'state'
             ]
         );
+       
 
         foreach ($orders as $oder) {
-          
             $customerId = Customer::where('odoo_id', $oder['partner_id'][0] ?? null)->value('id');
+    
             if ($customerId != null) {
                 Devis::updateOrCreate(
                     [

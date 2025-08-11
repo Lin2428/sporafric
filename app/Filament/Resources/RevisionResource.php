@@ -11,6 +11,7 @@ use App\Filament\Utils\WidgetUtils;
 use App\Models\Generator;
 use App\Models\Intervention;
 use App\Models\Piece;
+use App\Models\Technicien;
 use App\Utils\NumberUtils;
 use ArielMejiaDev\FilamentPrintable\Actions\PrintBulkAction;
 use Awcodes\TableRepeater\Components\TableRepeater;
@@ -18,6 +19,7 @@ use Awcodes\TableRepeater\Header;
 use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Repeater;
@@ -159,7 +161,34 @@ class RevisionResource extends Resource
 
                 Group::make()
                     ->schema([
-                        InterventionUtil::infoInterne(),
+                        DateTimePicker::make('start_date')
+                    ->label('Date de début')
+                    ->reactive(),
+
+                DateTimePicker::make('end_date')
+                    ->label('Date de fin'),
+
+                Select::make('status')
+                    ->label('Statut')
+                    ->options(collect(InterventionStatus::cases())
+                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                        ->toArray())
+                        ->required(),
+
+                Select::make('techniciens')
+                    ->options(Technicien::all()->pluck(['id' => 'name']))
+                    ->label('Techniciens assignés')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->formatStateUsing(function ($record) {
+                        if (empty($record->interventionTechniciens)) return [];
+                     
+                        return $record->interventionTechniciens?->map(function ($technicien) {
+                            return [$technicien->id];
+                        })->toArray();
+                    })
+                    ->placeholder('Sélectionner un technicien'),
                         Section::make('Pièces jointes')
                             ->columns(2)
                             ->schema([
@@ -169,8 +198,9 @@ class RevisionResource extends Resource
 
                                 Repeater::make('fiches')
                                     ->label('')
-                                    ->relationship('fiches')
+                                    ->relationship()
                                     ->addActionLabel('Ajouter une pièce jointe')
+                                   ->dehydrated(true)
                                     ->schema([
                                         FileUpload::make('fiche')
                                             ->hiddenLabel()
@@ -268,29 +298,43 @@ class RevisionResource extends Resource
                     )
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
+                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make()
                     ->url(fn($record) => url('/admin/intervention-devis/' . $record->id)),
-                Tables\Actions\EditAction::make()
+
+                    Tables\Actions\EditAction::make()
                     ->modalHeading('Modifier le devis')
                     ->modalWidth('6xl')
-                    ->action(function ($data) {
-                        dd($data);
-                        $record = Intervention::update();
+                    ->action(function ($data,$record) {
+                        
+                        $record->update($data);
+
                         $submittedPieces = collect($data['pieces'])->pluck('piece_id')->toArray();
+                        $techniciens = collect($data['techniciens'])->toArray();
 
-                        // $this->record->pieces()
-                        //     ->whereNotIn('piece_id', $submittedPieces)
-                        //     ->delete();
+                         $record->interventionTechniciens()
+                            ->whereNotIn('technicien_id', $techniciens)
+                            ->delete();
+                        
+                        foreach ($data['techniciens'] as $technicien) {
+                        $record->interventionTechniciens()->syncWithoutDetaching(
+                            $technicien
+                        );
+                    }
 
-                        // foreach ($data['pieces'] as $piece) {
-                        //     $this->record->pieces()->syncWithoutDetaching([
-                        //         $piece['piece_id'] => [
-                        //             'qty'          => $piece['qty'],
-                        //             'price'        => $piece['price'] ?? 0,
-                        //             'generator_id' => $data['generator_id'] ?? null,
-                        //         ],
-                        //     ]);
-                        // }
+                        $record->pieces()
+                            ->whereNotIn('piece_id', $submittedPieces)
+                            ->delete();
+
+                        foreach ($data['pieces'] as $piece) {
+                            $record->pieces()->syncWithoutDetaching([
+                                $piece['piece_id'] => [
+                                    'qty'          => $piece['qty'],
+                                    'price'        => $piece['price'] ?? 0,
+                                    'generator_id' => $data['generator_id'] ?? null,
+                                ],
+                            ]);
+                        }
 
                         $houres = $data['houres'];
                         $nexTvidange = $data['prochain_visite'] -  $houres;
@@ -304,6 +348,8 @@ class RevisionResource extends Resource
                                 'vidange' => $vidange
                             ]);
                     }),
+                    
+                ]), 
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

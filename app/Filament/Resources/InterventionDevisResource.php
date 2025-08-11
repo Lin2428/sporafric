@@ -290,11 +290,6 @@ public static function form(Form $form): Form
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\Action::make('cancel')
-                    ->label("Annuler")
-                    ->color('danger')
-                    ->icon('heroicon-o-x-circle')
-                    ->requiresConfirmation(),
                 ]), 
             ])
             ->bulkActions([

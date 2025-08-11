@@ -51,7 +51,7 @@ class Intervention extends Model implements Eventable
         'user_id',
     ];
 
-    protected $with = ['interventionTechniciens', 'pieces', 'generator','newGenerator'];
+    protected $with = ['interventionTechniciens', 'pieces', 'generator','newGenerator', 'fiches'];
 
 
     protected static function booted()

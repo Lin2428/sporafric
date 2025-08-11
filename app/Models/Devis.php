@@ -21,6 +21,7 @@ class Devis extends Model
         'forfait',
         'state',
         'user_id',
+        'is_conso_interne',
     ];
 
     protected $casts = [

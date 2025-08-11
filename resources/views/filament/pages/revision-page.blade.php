@@ -5,7 +5,7 @@
                 x-on:click="tab = 'generators'" 
                 :class="tab === 'generators' ? 'border-b-2 border-primary-600 text-primary-600' : ''"
                 class="px-4 py-2">
-                Groupe Electrogène
+                Groupes Electrogènes
             </button>
 
             <button 

@@ -10,7 +10,7 @@ use Filament\Pages\Page;
 
 class RevisionPage extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
     protected static ?string $navigationGroup = 'Location';
     protected static ?string $title = 'Revisions';
     protected static ?int $navigationSort = 3;
