@@ -15,7 +15,7 @@ class InterventionPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_intervention::devis');
+        return $user->can('view_any_revision');
     }
 
     /**
@@ -23,7 +23,7 @@ class InterventionPolicy
      */
     public function view(User $user, Intervention $intervention): bool
     {
-        return $user->can('view_intervention::devis');
+        return $user->can('view_revision');
     }
 
     /**
@@ -31,7 +31,7 @@ class InterventionPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_intervention::devis');
+        return $user->can('create_revision');
     }
 
     /**
@@ -39,7 +39,7 @@ class InterventionPolicy
      */
     public function update(User $user, Intervention $intervention): bool
     {
-        return $user->can('update_intervention::devis');
+        return $user->can('update_revision');
     }
 
     /**
@@ -47,7 +47,7 @@ class InterventionPolicy
      */
     public function delete(User $user, Intervention $intervention): bool
     {
-        return $user->can('delete_intervention::devis');
+        return $user->can('delete_revision');
     }
 
     /**
@@ -55,7 +55,7 @@ class InterventionPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_intervention::devis');
+        return $user->can('delete_any_revision');
     }
 
     /**
@@ -63,7 +63,7 @@ class InterventionPolicy
      */
     public function forceDelete(User $user, Intervention $intervention): bool
     {
-        return $user->can('{{ ForceDelete }}');
+        return $user->can('force_delete_revision');
     }
 
     /**
@@ -71,7 +71,7 @@ class InterventionPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('{{ ForceDeleteAny }}');
+        return $user->can('force_delete_any_revision');
     }
 
     /**
@@ -79,7 +79,7 @@ class InterventionPolicy
      */
     public function restore(User $user, Intervention $intervention): bool
     {
-        return $user->can('{{ Restore }}');
+        return $user->can('restore_revision');
     }
 
     /**
@@ -87,7 +87,7 @@ class InterventionPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('{{ RestoreAny }}');
+        return $user->can('restore_any_revision');
     }
 
     /**
@@ -95,7 +95,7 @@ class InterventionPolicy
      */
     public function replicate(User $user, Intervention $intervention): bool
     {
-        return $user->can('{{ Replicate }}');
+        return $user->can('replicate_revision');
     }
 
     /**
@@ -103,6 +103,6 @@ class InterventionPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('{{ Reorder }}');
+        return $user->can('reorder_revision');
     }
 }

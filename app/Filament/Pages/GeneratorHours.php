@@ -6,8 +6,10 @@ use App\Filament\Utils\BadgetWidget;
 use App\Models\ContractGenerator;
 use App\Models\DevisGenerator;
 use App\Models\Generator;
+use ArielMejiaDev\FilamentPrintable\Actions\PrintAction;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables\Columns\BadgeColumn;
@@ -59,7 +61,13 @@ class GeneratorHours extends Page implements HasTable
 
         return new HtmlString($html);
     }
-
+    // protected function getHeaderActions(): array
+    // {
+    //     return [
+    //         // Actions\CreateAction::make(),
+    //         PrintAction::make(),
+    //     ];
+    // }
     public static function table(Table $table): Table
     {
         return $table
@@ -73,7 +81,7 @@ class GeneratorHours extends Page implements HasTable
                 ->searchable(),
                 // TextColumn::make('reference')
                 //     ->searchable(),
-                TextColumn::make('client') // Nom arbitraire, car on utilise getStateUsing
+                TextColumn::make('client')
                     ->label('Client')
                     ->searchable(true, function ($search) {
                         return fn($query, $search) => $query
@@ -90,6 +98,22 @@ class GeneratorHours extends Page implements HasTable
                     ->description(fn($record) => static::customerColumn($record->devisGenerator ?? $record->ContractGenerator))
                     ->extraAttributes(['class' => 'font-bold'])
                     ->limit(8),
+                
+                TextColumn::make('site')
+                    ->label('Site')
+                    ->getStateUsing(function ($record) {
+                        return optional($record->devisGenerator)?->site ?? optional($record->ContractGenerator)?->site;
+                    })
+                    ->limit(15)
+                    ->searchable(true,function ($search) {
+                        return fn($query, $search) => $query
+                            ->whereHas('devisGenerator', function ($query) use ($search) {
+                                 $query->where('site', 'like', "%$search%");
+                            })
+                            ->orWhereHas('contractGenerator', function ($query) use ($search) {
+                                 $query->where('site', 'like', "%$search%");
+                            });
+                    }, true),
 
                 TextInputColumn::make('houres')
                     ->label('Rélévé des heures')
@@ -133,11 +157,29 @@ class GeneratorHours extends Page implements HasTable
                         ->options([
                             2 => 'Vidange',
                             1 => 'Ok',
-                        ])
+                        ]),
+                    TextInput::make('search')
+                        ->label('Rechercher')
+                        ->placeholder('Rechercher par client, site, etc.')
+                        ->live(true),
                 ])->query(function (Builder $query, $data) {
                     $query->when($data['vidange'] ?? null, function (Builder $query, $vidange) {
                         $vidange = $vidange == 2 ? false : true;
                         $query->where('vidange','=',$vidange);
+                    })
+                    ->when($data['search'] ?? null, function (Builder $query, $search) {
+                        $query->whereHas('devisGenerator', function ($query) use ($search) {
+                            $query->where('site', 'like', "%$search%");
+                        })
+                        ->orWhereHas('contractGenerator', function ($query) use ($search) {
+                            $query->where('site', 'like', "%$search%");
+                        })
+                        ->orWhereHas('devisGenerator.devis.customer', function ($query) use ($search) {
+                            $query->where('name', 'like', "%$search%");
+                        })
+                        ->orWhereHas('contractGenerator.contract.customer', function ($query) use ($search) {
+                            $query->where('name', 'like', "%$search%");
+                        });
                     });
                 })
             ])

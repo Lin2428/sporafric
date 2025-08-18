@@ -52,7 +52,8 @@ class EditTechnicalVisits extends EditRecord
                     $control13 = $record->control_13 ? 'Oui' : 'Non';
                     $control14 = $record->control_14 ? 'Oui' : 'Non';
                     $control15 = $record->control_15 ? 'Oui' : 'Non';
-                    $control16 = $record->control_16 ? 'Oui' : 'Non';
+                    $control16 = $record->control_16 ? 'Oui' : '';
+                    $control17 = $record->control_16 ? '' : 'Oui';
 
                     $controlTension1 = $record->control_tension['v1'];
                     $controlTension2 = $record->control_tension['v2'];
@@ -87,6 +88,7 @@ class EditTechnicalVisits extends EditRecord
                     <head>
                         <title>Impression</title>
                         <style>
+
                         @media print {
                                 .fi-header {
                                     display: none;
@@ -144,45 +146,57 @@ class EditTechnicalVisits extends EditRecord
                                 padding: 4px;
                                 text-align: start;
                             }
-                            .signature-section {
-                                margin-top: 30px;
+                                @media print {
+                                .fi-header {
+                                    display: none;
+                                }
+
+                                @page {
+                                    margin: 30px 40px 1px 40px; /* top, right, bottom, left */
+                                }
+
+                                body {
+                                    margin: 0; /* Réinitialise les marges internes */
+                                }
+                            }
+
+                            .entete{
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                width: 100%;
                             }
                             .image {
                                 width: 210px;
                                 height: 20px;
                                 object-fit: contain;
                             }
-                                
                             .section-container {
-                                margin-bottom: 1rem;
-                            }
+                                    margin-bottom: 1rem;
+                                }
 
-                            .section-container label {
-                                font-weight: bold;
-                            }
+                                .section-container label {
+                                    font-weight: bold;
+                                }
 
-                            .grid-container {
-                                display: grid;
-                                grid-template-columns: 1fr 1fr;
-                                width: 100%;
-                                gap: 1rem;
-                            }
+                                .grid-container {
+                                    display: grid;
+                                    grid-template-columns: 1fr 1fr;
+                                    width: 100%;
+                                    gap: 1rem;
+                                }
 
-                            .column {
-                                display: flex;
-                                flex-direction: column;
-                                gap: 0.5rem;
-                                text-align: left;
-                            }
+                                .column {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 0.5rem;
+                                    text-align: left;
+                                }
+                            
                         </style>
                     </head>
                     <body>
-                    <div class="">
-                         <img src="https://sporafric.test/storage/logo_light.png" class="image">
-                    </div>
                       <h2 style="font-size: 22px;">VISITE TECHNIQUE</h2>
-
-                    
 
                         <div><label>Identification du GE:</label> $generator</div>
 
@@ -240,17 +254,28 @@ class EditTechnicalVisits extends EditRecord
                         <div class="section-title">Contrôle fin de visite:</div>
                         <table class="grid-table">
                             <tr><td>'Etat de l'arret d'urgence</td><td>$control15</td></tr>
-                            <tr><td>Mode de fonctionnement</td><td>$control16</td></tr>
+                            <tr><td>Mode de fonctionnement</td><td>
+                                  <table>
+                                <tr>
+                                    <td>Manuel</td>
+                                    <td>$control16</td>
+                                </tr>
+                                <tr>
+                                    <td>Automatique</td>
+                                    <td>$control17</td>
+                                </tr>
+                                </table>
+                            </td></tr>
                         </table>
-
                         <p><strong>Prochaine vidange à :</strong> <input type="text" value="$nextVidange" style="width: 200px;"></p>
-
                         <div class="signature-section">
                             <div class="half">
-                                <div class="field"><label>CLIENT:</label><input type="text" style="width: 80%; " value="$customer"></div>
-                                <div class="field"><label>ADRESSE:</label><input type="text" value="$adress" style="width: 80%; "></div>
+                                <div class="field">CLIENT: <input type="text" style="width: 80%; " value="$customer"></div>
+                                <div class="field">ADRESSE: <input type="text" value="$adress" style="width: 80%; "></div>
+                                <div><label>Visa Responsable:</label></div>
                             </div>
-                            <div class="half" style="text-align: right;">
+                            <div class="half" style="text-align: center;">
+                             <div><label>Visa Technicien:</label></div>
                                 <p>Signature:</p>
                                 <br><br>
                             </div>
@@ -284,7 +309,6 @@ JS);
         $data['control_13'] = in_array('control_13', $data['checklist_3']);
         $data['control_14'] = in_array('control_14', $data['checklist_3']);
         $data['control_15'] = in_array('control_15', $data['checklist_4']);
-        $data['control_16'] = in_array('control_16', $data['checklist_4']);
 
         unset($data['checklist_1']);
         unset($data['checklist_2']);

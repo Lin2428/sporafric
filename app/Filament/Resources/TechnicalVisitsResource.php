@@ -222,7 +222,6 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                         ->label('')
                         ->options([
                             'control_15' => 'Etat de l\'arret d\'urgence',
-                            'control_16' => 'Mode de fonctionnement',
                         ])
                         ->afterStateHydrated(function ($component, $record) {
                         $data = [];
@@ -234,9 +233,15 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                         }
                         $component->state($data);
                     })
-                        ->columns(2)
-                        ->columnSpanFull()
                         ->required(),
+
+                    Radio::make('control_16')
+                    ->label('Mode de fonctionnement')
+                    ->options([
+                        '1' => 'Manuel',
+                        '0' => 'Automatique',
+                    ])
+                    ->columns(1),
             ]),
         ]);
     }

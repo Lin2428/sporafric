@@ -18,6 +18,8 @@ class ListTechnicalVisits extends ListRecords
                 ->icon('heroicon-o-printer')
                 ->color('info')
                 ->action(function ($record, $data, $livewire) {
+
+                    $image = asset('storage/logo_light.png');
                         
                     $livewire->js(<<<'JS'
 
@@ -135,9 +137,6 @@ class ListTechnicalVisits extends ListRecords
                         </style>
                     </head>
                     <body>
-                      <div class="">
-                         <img src="https://sporafric.test/storage/logo_light.png" class="image">
-                    </div>
                       <h2 style="font-size: 22px;">VISITE TECHNIQUE</h2>
 
                       <div><label>Identification du GE:</label></div>
@@ -146,8 +145,6 @@ class ListTechnicalVisits extends ListRecords
                             <div class="column">
                                 <div><label>PUISSANCE:</label></div>
                                 <div><label>Horamètre:</label></div>
-                                <div><label>Technicien(e):</label></div>
-                                <div><label>Client /Devis:</label></div>
                                 <div><label>Date:</label></div>
                             </div>
                             <div class="column">
@@ -155,7 +152,6 @@ class ListTechnicalVisits extends ListRecords
                                 <div><label>ALTERNATEUR N° Série:</label></div>
                                 <div><label>CARTE PUPITRE N° Série:</label></div>
                                 <div><label>Inverseur:</label></div>
-                                <div><label>Visa responsable:</label></div>
                             </div>
                         </div>
 
@@ -199,7 +195,18 @@ class ListTechnicalVisits extends ListRecords
                         <div class="section-title">Contrôle fin de visite:</div>
                         <table class="grid-table">
                             <tr><td>'Etat de l'arret d'urgence</td><td></td></tr>
-                            <tr><td>Mode de fonctionnement</td><td></td></tr>
+                            <tr><td>Mode de fonctionnement</td><td>
+                            <table>
+                                <tr>
+                                    <td>Manuel</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Automatique</td>
+                                    <td></td>
+                                </tr>
+                                </table>
+                            </td></tr>
                         </table>
 
                         <p><strong>Prochaine vidange à :</strong> <input type="text" style="width: 200px;"></p>
@@ -208,8 +215,11 @@ class ListTechnicalVisits extends ListRecords
                             <div class="half">
                                 <div class="field"><label>CLIENT:</label><input type="text"></div>
                                 <div class="field"><label>ADRESSE:</label><input type="text" style="width: 80%;"></div>
+                                <div><label>Visa Responsable:</label></div>
                             </div>
-                            <div class="half" style="text-align: right;">
+                            <div class="half" style="text-align: center;">
+                            
+                                <div><label>Visa Technicien:</label></div>
                                 <p>Signature:</p>
                                 <br><br>
                             </div>
