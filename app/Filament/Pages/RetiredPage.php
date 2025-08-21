@@ -13,11 +13,13 @@ use App\Models\Devis;
 use App\Models\DevisGenerator;
 use App\Models\Intervention;
 use App\Utils\NumberUtils;
+use DateTime;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\RichEditor;
@@ -96,7 +98,7 @@ class RetiredPage extends Page implements HasForms, HasTable
                                         ->default(now())
                                         ->required(),
 
-                                    DatePicker::make('date_planifiee')
+                                    DateTimePicker::make('date_planifiee')
                                         ->label('Date planifiée'),
 
                                     RichEditor::make('description_panne')

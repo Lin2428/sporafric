@@ -713,7 +713,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
 
                                                 TextEntry::make('date_planifiee')
                                                     ->label('Date planifiée')
-                                                    ->date('d/m/Y')
+                                                    ->date('d/m/Y à H:i')
                                                     ->color('danger'),
 
                                                 TextEntry::make('start_date')

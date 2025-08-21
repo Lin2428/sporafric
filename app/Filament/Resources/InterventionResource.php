@@ -136,7 +136,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                     ->default(now())
                                     ->required(),
 
-                                DatePicker::make('date_planifiee')
+                                DateTimePicker::make('date_planifiee')
                                     ->label('Date planifiée'),
 
                                 TextInput::make('identifiant')

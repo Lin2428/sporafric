@@ -18,9 +18,11 @@ use App\Utils\NumberUtils;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use DateTime;
 use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Repeater;
@@ -120,7 +122,7 @@ public static function form(Form $form): Form
                                     ->default(now())
                                     ->required(),
 
-                                DatePicker::make('date_planifiee')
+                                DateTimePicker::make('date_planifiee')
                                     ->label('Date planifiée'),
 
                                 TextInput::make('identifiant')

@@ -14,4 +14,4 @@ Route::get('/impression-form-etat', function () {
 Route::get("/admin/interventions/{id}")->name("admin.interventions");
 Route::get("/admin/intervention-devis/{id}")->name("admin.intervention.devis");
 
-Route::get('/odoo', [OdooController::class, 'syncronizeConsoInterne']);
+Route::get('/odoo', [OdooController::class, 'syncronizePieces']);

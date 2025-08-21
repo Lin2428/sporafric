@@ -191,7 +191,7 @@
                 <i class="icon">@svg('heroicon-s-calendar')</i>
                 Date planifiée:
             </span>
-            <span>{{ \App\Utils\DateUtils::format($getRecord()->date_planifiee) }}</span>
+            <span>{{ \App\Utils\DateUtils::formatWithTime($getRecord()->date_planifiee) }}</span>
         </div>
       
     @if ($getRecord()->type == \App\Enum\InterventionType::REMPLACEMENT->value)
