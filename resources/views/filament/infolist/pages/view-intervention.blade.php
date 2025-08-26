@@ -367,7 +367,8 @@
                 <tbody>
                     @foreach($getRecord()->fiches as $file)
             
-                    <tr>
+                    @if ($file->fiche!= null)
+                        <tr>
                         <td class="flex items-center"><img src="{{asset('storage/pdf.png')}}" alt="" width="40px" height="40px">
                        {{$file->fiche}}</td>
 
@@ -386,6 +387,7 @@
                         </td>
 
                     </tr>
+                    @endif
                     @endforeach
                 </tbody>
             </table>
