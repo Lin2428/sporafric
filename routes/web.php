@@ -15,3 +15,7 @@ Route::get("/admin/interventions/{id}")->name("admin.interventions");
 Route::get("/admin/intervention-devis/{id}")->name("admin.intervention.devis");
 
 Route::get('/odoo', [OdooController::class, 'syncronizePieces']);
+
+Route::get('/download/{folder}/{filename}',function() {
+    return App\Utils\FunctionUtils::download(request('filename'), request('folder'));
+})->name('file.download');

@@ -41,6 +41,7 @@ class Generator extends Model
     protected $with = [
         'contractGenerator',
         'etat',
+        'files',
     ];
 
     public function user()
@@ -68,5 +69,10 @@ class Generator extends Model
     public function etat()
     {
         return $this->hasOne(Checklist::class);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(GeneratorFiles::class);
     }
 }

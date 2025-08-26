@@ -74,6 +74,12 @@ return [
             'url' => env('APP_URL') . '/storage/bon_de_commande',
             'visibility' => 'public',
         ],
+        'generator_files' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/genertor_files'),
+            'url' => env('APP_URL') . '/storage/genertor_files',
+            'visibility' => 'public',
+        ],
 
     ],
 

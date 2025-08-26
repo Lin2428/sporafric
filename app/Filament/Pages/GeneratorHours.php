@@ -39,7 +39,7 @@ class GeneratorHours extends Page implements HasTable
     protected static function getBaseQuery(): Builder|Relation
     {
         return Generator::query()
-        ->orderBy('vidange');
+        ->orderBy('name');
     }
 
           public static function getNavigationBadge(): ?string

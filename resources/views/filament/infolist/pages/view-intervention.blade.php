@@ -111,9 +111,10 @@
     }
 
 @media print {
-    .fi-header {
+    .fi-header, .files {
         display: none;
     }
+
 
     @page {
         margin: 20px 40px 10px 40px; /* top, right, bottom, left */
@@ -191,7 +192,7 @@
                 <i class="icon">@svg('heroicon-s-calendar')</i>
                 Date planifiée:
             </span>
-            <span>{{ \App\Utils\DateUtils::formatWithTime($getRecord()->date_planifiee) }}</span>
+            <span>{{$getRecord()->date_planifiee ? \App\Utils\DateUtils::formatWithTime($getRecord()->date_planifiee): "" }}</span>
         </div>
       
     @if ($getRecord()->type == \App\Enum\InterventionType::REMPLACEMENT->value)
@@ -284,8 +285,8 @@
                 <i class="icon">@svg('heroicon-s-clock')</i>
                 Délai d'intervention:
             </span>
-            <span>{{ \App\Utils\DateUtils::format($getRecord()->start_date) }} - {{
-                \App\Utils\DateUtils::format($getRecord()->end_date) }}</span>
+            <span>{{$getRecord()->start_date ? \App\Utils\DateUtils::format($getRecord()->start_date):"" }} - {{
+               $getRecord()->end_date ? \App\Utils\DateUtils::format($getRecord()->end_date):"" }}</span>
         </div>
         <div class="container-1">
             <span class="label">
@@ -345,6 +346,51 @@
             </table>
             @else
             <span>Aucune pièce livrée</span>
+            @endif
+        </div>
+<br>
+        <div class="data files">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-clipboard-document')</i>
+                Pièces jointes
+            </span>
+            
+            @if($getRecord()->fiches->isNotEmpty())
+            <table class="materiel-table">
+                <thead>
+                    <tr>
+                        <th>Fichier</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($getRecord()->fiches as $file)
+            
+                    <tr>
+                        <td class="flex items-center"><img src="{{asset('storage/pdf.png')}}" alt="" width="40px" height="40px">
+                       {{$file->fiche}}</td>
+
+                        <td>
+                            {{\App\Utils\DateUtils::format($getRecord()->created_at)}}
+                        </td>
+                        <td>
+                            <div class="flex justify-center items-center">
+                                <a href="{{ route('file.download', ['folder' => 'devis', 'filename' => $file->fiche]) }}">
+                                    <span><i class="icon">@svg('heroicon-s-arrow-down-tray')</i></span>
+                                </a>
+                                <a href="{{ url('storage/devis/' . $file->fiche) }}" target="_blank" rel="noopener noreferrer">
+                                    <span><i class="icon">@svg('heroicon-s-arrow-up-right')</i></span>
+                                </a>
+                            </div>
+                        </td>
+
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @else
+            <span>Aucune pièce jointe</span>
             @endif
         </div>
     </div>

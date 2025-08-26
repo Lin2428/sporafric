@@ -154,15 +154,15 @@ class ChecklistModal extends Component implements HasForms, HasActions
                                             ->schema([
                                                 TextInput::make('control_tension.v1')
                                                     ->label('V1n')
-                                                    ->default($this->record->etat?->control_tension['v1']),
+                                                    ->default($this->record->etat?->control_tension!=null?$this->record->etat?->control_tension['v1']:""),
 
                                                 TextInput::make('control_tension.v2')
                                                     ->label('V2n')
-                                                    ->default($this->record->etat?->control_tension['v2']),
+                                                    ->default($this->record->etat?->control_tension!=null?$this->record->etat?->control_tension['v2']:""),
 
                                                 TextInput::make('control_tension.v3')
                                                     ->label('V3n')
-                                                    ->default($this->record->etat?->control_tension['v3']),
+                                                    ->default($this->record->etat?->control_tension!=null?$this->record->etat?->control_tension['v3']:""),
                                             ])
                                             ->columnSpanFull(),
 
@@ -172,15 +172,15 @@ class ChecklistModal extends Component implements HasForms, HasActions
                                             ->schema([
                                                 TextInput::make('control_tension_2.u1')
                                                     ->label('U12')
-                                                    ->default($this->record->etat?->control_tension_2['u1']),
+                                                    ->default($this->record->etat?->control_tension_2!=null?$this->record->etat?->control_tension_2['u1']:""),
 
                                                 TextInput::make('control_tension_2.u2')
                                                     ->label('U13')
-                                                    ->default($this->record->etat?->control_tension_2['u2']),
+                                                    ->default($this->record->etat?->control_tension_2!=null?$this->record->etat?->control_tension_2['u2']:""),
 
                                                 TextInput::make('control_tension_2.u3')
                                                     ->label('U23')
-                                                    ->default($this->record->etat?->control_tension_2['u3']),
+                                                    ->default($this->record->etat?->control_tension_2!=null?$this->record->etat?->control_tension_2['u3']:""),
                                             ])
                                             ->columnSpanFull(),
                                         Section::make('Intensité par phase')
@@ -189,15 +189,15 @@ class ChecklistModal extends Component implements HasForms, HasActions
                                             ->schema([
                                                 TextInput::make('control_intensite.i1')
                                                     ->label('I1')
-                                                    ->default($this->record->etat?->control_intensite['i1']),
+                                                    ->default($this->record->etat?->control_intensite!=null?$this->record->etat?->control_intensite['i1']:""),
 
                                                 TextInput::make('control_intensite.i2')
                                                     ->label('I2')
-                                                    ->default($this->record->etat?->control_intensite['i2']),
+                                                    ->default($this->record->etat?->control_intensite!=null?$this->record->etat?->control_intensite['i2']:""),
 
                                                 TextInput::make('control_intensite.i3')
                                                     ->label('I3')
-                                                    ->default($this->record->etat?->control_intensite['i3']),
+                                                    ->default($this->record->etat?->control_intensite!=null?$this->record->etat?->control_intensite['i3']:""),
                                             ])
                                             ->columnSpanFull(),
 

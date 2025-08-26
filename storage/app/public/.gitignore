@@ -2,9 +2,11 @@
 !bon_de_commande/
 !interventions/
 !techniciens/
+!genertor_files/
 !logo_light.png
 !customer.png
 !technicien.png
 !contrat.png
 !generateur.png
+!pdf.png
 !.gitignore

@@ -762,6 +762,16 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                     ]),
                             ]),
 
+                            Tabs\Tab::make('Pièces de jointes')
+
+                            ->icon('heroicon-o-clipboard-document')
+                            ->iconPosition(IconPosition::After)
+                            ->schema([
+                                \Filament\Infolists\Components\View::make('filament.infolist.components.files-render')
+                                    ->label('')
+                                    ->viewData(['record']),
+                            ]),
+
                             Tabs\Tab::make('Historique des interventions')
                             ->icon('heroicon-o-arrow-path')
                             ->iconPosition(IconPosition::After)

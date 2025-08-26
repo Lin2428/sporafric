@@ -207,7 +207,8 @@ class RevisionResource extends Resource
                                             ->disk('devis')
                                             ->downloadable()
                                             ->openable()
-                                            ->columnSpanFull(),
+                                            ->columnSpanFull()
+                                            ->storeFileNamesIn('attachment_file_names'),
                                     ])->columnSpanFull(),
                             ]),
                     ])->columnSpan(['lg' => 1]),

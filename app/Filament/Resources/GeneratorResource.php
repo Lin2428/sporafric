@@ -8,6 +8,7 @@ use App\Enum\InterventionType;
 use App\Filament\Resources\GeneratorResource\Pages;
 use App\Filament\Utils\BadgetWidget;
 use App\Livewire\CheckList;
+use App\Livewire\GeneratorFilesForms;
 use App\Livewire\InterventionHistory;
 use App\Livewire\LocationHistory;
 use App\Models\DevisGenerator;
@@ -729,51 +730,15 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                          ])
                                     ]),
                             ]),
-                        // Tabs\Tab::make('Pièces de rechange')
+                        Tabs\Tab::make('Pièces de jointes')
 
-                        //     ->icon('heroicon-o-cog-8-tooth')
-                        //     ->iconPosition(IconPosition::After)
-                        //     ->schema([
-                        //         RepeatableEntry::make('pieces')
-                        //             ->label('Pièces de rechange')
-                        //             ->schema([
-                        //                 \Filament\Infolists\Components\Group::make()
-                        //                     ->columns(3)
-                        //                     ->schema([
-                        //                         ImageEntry::make('piece.image')
-                        //                         ->label('')
-                        //                         ->columnSpanFull()
-                        //                         ->extraAttributes(['class' => 'w-full d-flex justify-center']),
-
-                        //                         TextEntry::make('piece.reference')
-                        //                             ->label('Pièce')
-                        //                             ->extraAttributes(['class' => 'font-bold']),
-                                                    
-                        //                         TextEntry::make('piece.designation')
-                        //                             ->label('Désignation')
-                        //                             ->extraAttributes(['class' => 'font-bold']),
-                                                
-                        //                             TextEntry::make('qty')
-                        //                             ->label('Quantité')
-                        //                             ->extraAttributes(['class' => 'font-bold']),
-
-                                                
-                        //                             TextEntry::make(name: 'intervention.identifiant')
-                        //                             ->label('Intervention')
-                        //                             ->color('success')
-                        //                             ->url(fn($record) => url('admin/interventions/'.$record->intervention->id)),
-
-                        //                         TextEntry::make('price')
-                        //                             ->label('Prix unitaire')
-                        //                             ->inlineLabel()
-                        //                             ->formatStateUsing(fn($state) => NumberUtils::format($state) . ' FCFA')
-                        //                             ->extraAttributes(['class' => 'font-bold'])
-                        //                             ->columnSpan(['lg' => 2]),
-                        //                     ]),
-                        //             ])
-                        //             ->grid(2)
-                        //             ->columnSpanFull(),
-                        //     ]),
+                            ->icon('heroicon-o-clipboard-document')
+                            ->iconPosition(IconPosition::After)
+                            ->schema([
+                                \Filament\Infolists\Components\View::make('filament.infolist.components.files-render')
+                                    ->label('')
+                                    ->viewData(['record']),
+                            ]),
 
                         Tabs\Tab::make('Etat de la dernière location')
                             ->icon('heroicon-o-arrow-path')
