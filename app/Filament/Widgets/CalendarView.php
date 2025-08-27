@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Widgets;
 
 use App\Enum\InterventionStatus;
@@ -13,12 +12,10 @@ use Filament\Forms\Components\Group;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\Alignment;
 use Guava\Calendar\Widgets\CalendarWidget;
-
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
@@ -27,14 +24,14 @@ class CalendarView extends CalendarWidget
     //protected string $calendarView = 'resourceTimeGridWeek';
     protected string|\Closure|HtmlString|null $heading = 'Planning des interventions';
 
-    protected bool $dateClickEnabled = true;
-    protected bool $dateSelectEnabled = true;
-    protected bool $noEventsClickEnabled = true;
-    protected bool $eventClickEnabled = true;
+    protected bool $dateClickEnabled           = true;
+    protected bool $dateSelectEnabled          = true;
+    protected bool $noEventsClickEnabled       = true;
+    protected bool $eventClickEnabled          = true;
     protected ?string $defaultEventClickAction = 'edit';
-    protected bool $allDay = true;
-    protected bool $eventDragEnabled = true;
-    protected bool $eventResizeEnabled = true;
+    protected bool $allDay                     = true;
+    protected bool $eventDragEnabled           = true;
+    protected bool $eventResizeEnabled         = true;
 
     public $technicien;
     public $status;
@@ -51,40 +48,44 @@ class CalendarView extends CalendarWidget
     public function getOptions(): array
     {
         return [
-            'title' => 'Planing',
+            'title'        => 'Planing',
             'nowIndicator' => '',
             'slotDuration' => '00:15:00',
-            'allDay' => false,
+            'allDay'       => false,
         ];
     }
 
-    public function getEvents(array $fetchInfo = []): Collection|array
+    public function getEvents(array $fetchInfo = []): Collection | array
     {
         $start = $fetchInfo['start'] ?? now()->startOfMonth();
-        $end = $fetchInfo['end'] ?? now()->endOfMonth();
+        $end   = $fetchInfo['end'] ?? now()->endOfMonth();
 
         return Intervention::whereBetween('start_date', [$start, $end])
-         ->orWhereBetween('date_planifiee', [$start, $end])
-            ->when($this->customer_id, function ($q) {
-                return $q
-                    ->whereHas('customer', function ($q) {
-                        $q->where('id', '=', $this->customer_id);
+            ->whereBetween('date_planifiee', [$start, $end])
+            ->when($this->customer_id != null, function ($q) {
+                $q->where(function ($sub) {
+                    $sub->whereHas('customer', function ($q) {
+                        $q->where('id', $this->customer_id);
                     })
-                    ->orWhereHas('contract', function ($q) {
-                        $q->where('customer_id', '=', $this->customer_id);
-                    })
-                    ->orWhereHas('devis', function ($q) {
-                        $q->where('customer_id', '=', $this->customer_id);
-                    });
+                        ->orWhereHas('contract', function ($q) {
+                            $q->where('customer_id', $this->customer_id);
+                        })
+                        ->orWhereHas('devis', function ($q) {
+                            $q->where('customer_id', $this->customer_id);
+                        });
+                });
             })
-            ->when($this->type != null, fn($q) => $q->where('type_service', '=', $this->type))
-            ->when(
-                $this->technicien,
-                fn($q) => $q->whereHas('interventionTechniciens', function ($q) {
-                    $q->where('technicien_id', '=', $this->technicien);
-                }),
-            )
-            ->when($this->status != null, fn($q) => $q->where('status', '=', $this->status))
+            ->when($this->type !== null, function ($q) {
+                $q->where('type_service', $this->type);
+            })
+            ->when($this->technicien, function ($q) {
+                $q->whereHas('interventionTechniciens', function ($q) {
+                    $q->where('technicien_id', $this->technicien);
+                });
+            })
+            ->when($this->status != null, function ($q) {
+                $q->where('status', $this->status);
+            })
             ->get()
             ->map(fn(Intervention $intervention) => $intervention->toCalendarEvent());
     }
@@ -110,7 +111,7 @@ class CalendarView extends CalendarWidget
                     ->required()
                     ->label('Type')
                     ->default(InterventionType::from($intervention->type)->value),
-                 
+
                 Select::make('status')
                     ->options(collect(InterventionStatus::cases())->map(fn(InterventionStatus $status) => $status->label()))
                     ->required()
@@ -137,7 +138,7 @@ class CalendarView extends CalendarWidget
                     ->schema([WidgetUtils::customerSelectWidget()->default($intervention->customer_id)->columnSpanFull(), TextInput::make('generator_name')->label('Marque du GE')->default($intervention->generator_name), TextInput::make('power')->label('Puissance (kVA)')->numeric()->default($intervention->power), TextInput::make('serial_number')->label('Numéro de série')->default($intervention->power)->columnSpanFull()])
                     ->visible(fn() => $this->getRecord()->type_activite == '0'),
 
-                WidgetUtils::generatorSelectWidget(type:null, isDispo: false)
+                WidgetUtils::generatorSelectWidget(type: null, isDispo: false)
                     ->required()
                     ->default($this->getRecord()->generator_id)
                     ->visible(fn() => $this->getRecord()->generator_id != null),
@@ -145,14 +146,14 @@ class CalendarView extends CalendarWidget
                 Group::make()
                     ->columns(2)
                     ->schema([DateTimePicker::make('start_date')->required()->label('Date de début')->default($intervention->start_date), DateTimePicker::make('end_date')->required()->label('Date de fin')->default($intervention->end_date)]),
-               
+
                 RichEditor::make('description_panne')
                     ->label('Constat')
                     ->default($this->getRecord()->description_panne),
 
                 RichEditor::make('travaux')
                     ->label('Travaux effectués')
-                     ->default($this->getRecord()->travaux)
+                    ->default($this->getRecord()->travaux)
                     ->columnSpanFull(),
             ])
             ->action(function (array $data) use ($intervention) {
@@ -182,7 +183,8 @@ class CalendarView extends CalendarWidget
      * @param array $info
      * @return void
      */
-    public function onDateClick(array $info = []): void {}
+    public function onDateClick(array $info = []): void
+    {}
 
     /**
      * Handle the date select event.
@@ -190,56 +192,57 @@ class CalendarView extends CalendarWidget
      * @param array $info
      * @return void
      */
-    public function onDateSelect(array $info = []): void {}
+    public function onDateSelect(array $info = []): void
+    {}
 
     public function onEventResize(array $info = []): bool
     {
-    parent::onEventResize($info);
+        parent::onEventResize($info);
 
-    $record = $this->getEventRecord();
+        $record = $this->getEventRecord();
 
-     $eventEndDate = Carbon::make($info['event']['end'])->format('Y-m-d');
+        $eventEndDate = Carbon::make($info['event']['end'])->format('Y-m-d');
         $eventEndTime = $record->end_date
-            ? Carbon::make($record->end_date)->format('H:i')
-            : '12:00';
+        ? Carbon::make($record->end_date)->format('H:i')
+        : '12:00';
 
         $end = $eventEndDate . '-' . $eventEndTime;
 
         $this->getEventRecord()->update([
-        'end_date' => $end,
+            'end_date' => $end,
         ]);
-    $this->dispatch('reloadCalendar');
-    return true;
+        $this->dispatch('reloadCalendar');
+        return true;
     }
 
     public function onEventDrop(array $info = []): bool
     {
         // Don't forget to call the parent method to resolve the event record
         parent::onEventDrop($info);
-       $record = $this->getEventRecord();
+        $record = $this->getEventRecord();
 
         $eventStartDate = Carbon::make($info['event']['start'])->addDay()->format('Y-m-d');
         $eventStartTime = $record->start_date
-            ? Carbon::make($record->start_date)->format('H:i')
-            : '11:00';
+        ? Carbon::make($record->start_date)->format('H:i')
+        : '11:00';
 
         $eventEndDate = Carbon::make($info['event']['end'])->format('Y-m-d');
         $eventEndTime = $record->end_date
-            ? Carbon::make($record->end_date)->format('H:i')
-            : '12:00';
+        ? Carbon::make($record->end_date)->format('H:i')
+        : '12:00';
 
-            $start = $eventStartDate . '-' . $eventStartTime;
-            $end = $eventEndDate . '-' . $eventEndTime;
-            $this->getEventRecord()->update([
-                'start_date' => $start,
-                'end_date' => $end
-            ]);
+        $start = $eventStartDate . '-' . $eventStartTime;
+        $end   = $eventEndDate . '-' . $eventEndTime;
+        $this->getEventRecord()->update([
+            'start_date' => $start,
+            'end_date'   => $end,
+        ]);
 
         $this->dispatch('reloadCalendar');
         return true;
     }
 
-    public function getEventContent(): null|string|array
+    public function getEventContent(): null | string | array
     {
         // return a blade view
         return view('components.calendar-event');

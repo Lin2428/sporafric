@@ -33,7 +33,18 @@ class CanlendarPage extends Page implements HasForms
     public $customer_id;
     public $type;
 
- 
+
+
+    public function mount(): void
+    {
+        $this->technicien = session('technicien', null);
+        $this->status = session('status', null);
+        $this->customer_id = session('customer_id', null);
+        $this->type = session('type', null);
+        
+        $this->form->fill();
+    }
+
     public function getFooterWidgets(): array
     {
         return [
@@ -46,10 +57,6 @@ class CanlendarPage extends Page implements HasForms
         ];
     }
 
-    public function mount(): void
-    {
-        $this->form->fill();
-    }
     public function form(Form $form): Form
     {
         $technicians = Technicien::query()
