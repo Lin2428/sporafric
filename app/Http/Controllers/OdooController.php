@@ -323,7 +323,7 @@ class OdooController extends Controller
         $odoo = new OdooService();
 
         $data = $odoo->searchRead('product.template', [
-            ['categ_id', 'in', [80,239,107,284,302]],
+            ['categ_id', 'in', [80,239,107,284,302,59]],
         ], [
             'id',
             'name',
@@ -333,7 +333,7 @@ class OdooController extends Controller
         ]);
 
     
-
+dd($data);
         foreach ($data as $piece) {
             Piece::updateOrCreate(
                 [
