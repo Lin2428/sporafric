@@ -333,7 +333,7 @@ class OdooController extends Controller
         ]);
 
     
-dd($data);
+
         foreach ($data as $piece) {
             Piece::updateOrCreate(
                 [
