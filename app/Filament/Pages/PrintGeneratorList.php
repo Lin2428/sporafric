@@ -90,7 +90,8 @@ class PrintGeneratorList extends Page implements HasForms
                         $this->refresh();
                     })
                     ->live(true)
-                    ->options($techniciens),
+                    ->options($techniciens)
+                    ->searchable(),
             ])
             ->columns(2);
     }
