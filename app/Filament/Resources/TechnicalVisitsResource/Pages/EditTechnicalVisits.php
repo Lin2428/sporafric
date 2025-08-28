@@ -124,7 +124,7 @@ class EditTechnicalVisits extends EditRecord
                             .section-title {
                                 font-weight: bold;
                                 margin-top: 20px;
-                                margin-bottom: 10px;
+                                margin-bottom: 5px;
                             }
                             .half {
                                 width: 48%;
@@ -132,11 +132,10 @@ class EditTechnicalVisits extends EditRecord
                                 vertical-align: top;
                             }
                             .field {
-                                margin-bottom: 5px;
+                                margin-bottom: 3px;
                             }
                             .field label {
                                 display: inline-block;
-                                width: 150px;
                             }
                             .field input {
                                 width: 200px;
@@ -267,11 +266,11 @@ class EditTechnicalVisits extends EditRecord
                                 </table>
                             </td></tr>
                         </table>
-                        <p><strong>Prochaine vidange à :</strong> <input type="text" value="$nextVidange" style="width: 200px;"></p>
+                        <p><strong>Prochaine vidange à :</strong> $nextVidange h</p>
                         <div class="signature-section">
                             <div class="half">
-                                <div class="field">CLIENT: <input type="text" style="width: 80%; " value="$customer"></div>
-                                <div class="field">ADRESSE: <input type="text" value="$adress" style="width: 80%; "></div>
+                                <div class="field">CLIENT: $customer</div>
+                                <div class="field">ADRESSE: $adress</div>
                                 <div><label>Visa Responsable:</label></div>
                             </div>
                             <div class="half" style="text-align: center;">

@@ -65,7 +65,7 @@ class ListTechnicalVisits extends ListRecords
                             .section-title {
                                 font-weight: bold;
                                 margin-top: 20px;
-                                margin-bottom: 10px;
+                                margin-bottom: 5px;
                             }
                             .half {
                                 width: 48%;
@@ -73,11 +73,10 @@ class ListTechnicalVisits extends ListRecords
                                 vertical-align: top;
                             }
                             .field {
-                                margin-bottom: 5px;
+                                margin-bottom: 3px;
                             }
                             .field label {
                                 display: inline-block;
-                                width: 150px;
                             }
                             .field input {
                                 width: 200px;
@@ -209,12 +208,12 @@ class ListTechnicalVisits extends ListRecords
                             </td></tr>
                         </table>
 
-                        <p><strong>Prochaine vidange à :</strong> <input type="text" style="width: 200px;"></p>
+                        <p><strong>Prochaine vidange à :</strong> </p>
 
                         <div class="signature-section">
                             <div class="half">
-                                <div class="field"><label>CLIENT:</label><input type="text"></div>
-                                <div class="field"><label>ADRESSE:</label><input type="text" style="width: 80%;"></div>
+                                <div class="field"><label>CLIENT:</label></div>
+                                <div class="field"><label>ADRESSE:</label></div>
                                 <div><label>Visa Responsable:</label></div>
                             </div>
                             <div class="half" style="text-align: center;">
