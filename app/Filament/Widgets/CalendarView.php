@@ -60,8 +60,7 @@ class CalendarView extends CalendarWidget
         $start = $fetchInfo['start'] ?? now()->startOfMonth();
         $end   = $fetchInfo['end'] ?? now()->endOfMonth();
 
-        return Intervention::whereBetween('start_date', [$start, $end])
-            ->whereBetween('date_planifiee', [$start, $end])
+        return Intervention::whereBetween('date_planifiee', [$start, $end])
             ->when($this->customer_id != null, function ($q) {
                 $q->where(function ($sub) {
                     $sub->whereHas('customer', function ($q) {
