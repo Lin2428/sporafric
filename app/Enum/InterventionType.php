@@ -9,8 +9,8 @@ enum InterventionType: string
     case MAINTENANCE_PRE    = '2';
     case MAINTENANCE_CUR   = '3';
     case RETRAIT = '4';
-    case VIDANGE = '6';
-    case REMPLACEMENT = '7';
+    case VIDANGE = '5';
+    case REMPLACEMENT = '6';
 
     public function label(): string
     {

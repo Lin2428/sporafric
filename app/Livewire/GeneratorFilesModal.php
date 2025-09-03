@@ -51,7 +51,7 @@ class GeneratorFilesModal extends Component implements HasForms, HasActions
                     FileUpload::make('file_name')
                         ->label('Fichier')
                         ->directory('generator_files')
-                        ->acceptedFileTypes(['application/pdf'])
+                        ->acceptedFileTypes(['application/pdf','image/jpeg','image/png','image/jpg'])
                         ->storeFileNamesIn('attachment_file_names')
                         ->required(),
 
