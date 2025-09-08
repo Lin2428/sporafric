@@ -144,7 +144,7 @@ class CalendarView extends CalendarWidget
 
                 Group::make()
                     ->columns(2)
-                    ->schema([DateTimePicker::make('start_date')->required()->label('Date de début')->default($intervention->start_date), DateTimePicker::make('end_date')->required()->label('Date de fin')->default($intervention->end_date)]),
+                    ->schema([DateTimePicker::make('start_date')->label('Date de début')->default($intervention->start_date), DateTimePicker::make('end_date')->label('Date de fin')->default($intervention->end_date)]),
 
                 RichEditor::make('description_panne')
                     ->label('Constat')
