@@ -58,8 +58,8 @@ class DevisResource extends Resource implements HasShieldPermissions
                                     ->required()
                                     ->columnSpanFull(),
 
-                                
-                        TextInput::make('forfait')
+
+                                TextInput::make('forfait')
                                     ->label('Montant')
                                     ->numeric()
                                     ->columnSpanFull(),
@@ -99,8 +99,9 @@ class DevisResource extends Resource implements HasShieldPermissions
 
                 Repeater::make('generators')
                     ->formatStateUsing(function ($record) {
-                        if(empty($record->generators)) return [];
-                        
+                        if (empty($record->generators))
+                            return [];
+
                         return $record->generators?->map(function ($generator) {
                             return [
                                 'generator_id' => $generator->id,
@@ -118,7 +119,7 @@ class DevisResource extends Resource implements HasShieldPermissions
                     ->deletable(false)
                     ->deleteAction(fn(\Filament\Forms\Components\Actions\Action $action) => $action->requiresConfirmation())
                     ->schema([
-                        
+
                         WidgetUtils::generatorSelectWidget()
                             ->columnSpanFull()
                             ->required()
@@ -174,16 +175,27 @@ class DevisResource extends Resource implements HasShieldPermissions
         return $table
             ->defaultPaginationPageOption(50)
             ->columns([
-            TextColumn::make('number')
+
+                TextColumn::make('number')
                     ->label('N° contrat')
                     ->searchable()
                     ->sortable()
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50),
 
+                TextColumn::make('start_date')
+                    ->label('Date début')
+                    ->date("d/m/y")
+                    ->sortable(),
+
+                TextColumn::make('end_date')
+                    ->label('Date fin')
+                    ->date("d/m/y")
+                    ->sortable(),
+
                 TextColumn::make('state')
                     ->label('Etat')
-                    ->getStateUsing(function(Devis $record){
+                    ->getStateUsing(function (Devis $record) {
                         $state = DevisStats::from($record->state)->label();
                         return BadgetWidget::devisState($state);
                     })
@@ -195,18 +207,18 @@ class DevisResource extends Resource implements HasShieldPermissions
                     ->sortable()
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(20)
-                    ->tooltip(fn (Devis $record) => $record->customer->name)
+                    ->tooltip(fn(Devis $record) => $record->customer->name)
                     ->description(fn(Devis $record): string => $record->customer_name != null && $record->customer_name != '0' ? $record->customer_name : ''),
-                
+
                 TextColumn::make('is_active')
-                    ->label('Statut')
-                    ->getStateUsing(function(Devis $record){
+                    ->label('Statut location')
+                    ->getStateUsing(function (Devis $record) {
                         return BadgetWidget::boleanToBadget($record->is_active, 'En cours', 'Terminé');
                     })
                     ->html(),
-                    
+
                 TextColumn::make('generator')
-                    ->getStateUsing(fn(Devis $record): string => (string) $record->generators!=null ? (string)$record->generators?->count(): "0")
+                    ->getStateUsing(fn(Devis $record): string => (string) $record->generators != null ? (string) $record->generators?->count() : "0")
                     ->label('Nombre deGE')
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(50),
@@ -252,7 +264,7 @@ class DevisResource extends Resource implements HasShieldPermissions
             'index' => Pages\ListDevis::route('/'),
             'create' => Pages\CreateDevis::route('/create'),
             'edit' => Pages\EditDevis::route('/{record}/edit'),
-            'view'   => Pages\ViewDevis::route('/{record}'),
+            'view' => Pages\ViewDevis::route('/{record}'),
         ];
     }
 
@@ -335,7 +347,7 @@ class DevisResource extends Resource implements HasShieldPermissions
                     ->extraAttributes(['class' => 'w-full d-flex justify-center'])
                     ->columnSpanFull(),
 
-                  \Filament\Infolists\Components\View::make('filament.infolist.components.generator-show-odl')
+                \Filament\Infolists\Components\View::make('filament.infolist.components.generator-show-odl')
                     ->label('Groupe électrogènes')
                     ->extraAttributes(['class' => 'w-full d-flex justify-center'])
                     ->columnSpanFull(),
