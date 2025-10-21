@@ -378,11 +378,11 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                     ->getStateUsing(function (Generator $record) {
                                                         $state = null;
                                                         if($record->contractGenerator){
-                                                            $state =  $record->contractGenerator?->contract?->is_active ?? false;
+                                                            $state =  $record->contractGenerator?->contract?->is_active ?? true;
                                                             return BadgetWidget::boleanToBadget($state, 'En cours', 'Terminé');
                                                         }
                                                         if($record->devisGenerator){
-                                                            $state =  $record->devisGenerator?->devis?->is_active ?? false;
+                                                            $state =  $record->devisGenerator?->devis?->is_active ?? true;
                                                             return BadgetWidget::boleanToBadget($state, 'En cours', 'Terminé');
                                                         }
                                                         return '';
