@@ -361,7 +361,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                     ->columns(2)
                                     ->schema([
                                         \Filament\Infolists\Components\Section::make(function(Generator $record){
-                                            if($record->devisGenerator){
+                                            if($record->contractGenerator){
                                                 return 'Contrat en cours';
                                             }
 
@@ -377,12 +377,13 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                     ->label('')
                                                     ->getStateUsing(function (Generator $record) {
                                                         $state = null;
+                                                        
                                                         if($record->contractGenerator){
-                                                            $state =  $record->contractGenerator?->contract?->is_active ?? true;
+                                                            $state =  $record->contractGenerator?->contract?->is_active;
                                                             return BadgetWidget::boleanToBadget($state, 'En cours', 'Terminé');
                                                         }
                                                         if($record->devisGenerator){
-                                                            $state =  $record->devisGenerator?->devis?->is_active ?? true;
+                                                            $state =  $record->devisGenerator?->devis?->is_active;
                                                             return BadgetWidget::boleanToBadget($state, 'En cours', 'Terminé');
                                                         }
                                                         return '';

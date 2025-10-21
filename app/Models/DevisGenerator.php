@@ -23,6 +23,8 @@ class DevisGenerator extends Model
         'is_retired',
     ];
 
+    protected $with = ['devis','generator','oldGenerator'];
+
     public function devis()
     {
         return $this->belongsTo(Devis::class);

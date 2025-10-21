@@ -36,7 +36,7 @@
                                 {{ \App\Utils\NumberUtils::format($devis->devis->forfait) }}</td>
                            
                             <td class="px-3 py-4 text-sm text-right text-slate-800 border border-slate-400">
-                                {{ \App\Utils\DateUtils::format($devis->devis->end_date) }}
+                                {{ $devis->devis?->end_date ? \App\Utils\DateUtils::format($devis->devis->end_date) : null }}
                             </td>
                         </tr>
                     @endforeach

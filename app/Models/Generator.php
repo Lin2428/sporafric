@@ -51,14 +51,17 @@ class Generator extends Model
 
     public function contractGenerator()
     {
-        return $this->hasOne(ContractGenerator::class);
+        return $this->hasOne(ContractGenerator::class)
+        ->whereHas('contract', function ($query) {
+            $query->where('deleted_at', null);
+        });
     }
 
     public function devisGenerator()
     {
         return $this->hasOne(DevisGenerator::class)
-        ->where('status', true)
-        ->where('is_retired',false);
+            ->where('is_retired', false)
+            ->latest('created_at');
     }
 
     public function pieces()
