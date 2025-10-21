@@ -414,10 +414,10 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                     })
                                                      ->getStateUsing(function (Generator $record) {
                                                         if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->number;
+                                                            return $record->contractGenerator?->contract?->number ?? null;
                                                         }
                                                         if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->number;
+                                                            return $record->devisGenerator?->devis?->number ?? null;
                                                         }
                                                         return null;
                                                     })
@@ -428,10 +428,10 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                     ->label('Client')
                                                      ->getStateUsing(function (Generator $record) {
                                                         if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->customer->name;
+                                                            return $record->contractGenerator?->contract?->customer?->name ?? null;
                                                         }
                                                         if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->customer->name;
+                                                            return $record->devisGenerator?->devis?->customer?->name ?? null;
                                                         }
                                                         return null;
                                                     })
@@ -449,10 +449,10 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                     })
                                                       ->getStateUsing(function (Generator $record) {
                                                         if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->forfait;
+                                                            return $record->contractGenerator?->contract?->forfait;
                                                         }
                                                         if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->forfait;
+                                                            return $record->devisGenerator?->devis?->forfait;
                                                         }
                                                         return null;
                                                     })
@@ -465,10 +465,10 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                     ->date('d/m/Y')
                                                     ->getStateUsing(function (Generator $record) {
                                                         if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->start_date;
+                                                            return $record->contractGenerator?->contract?->start_date;
                                                         }
                                                         if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->start_date;
+                                                            return $record->devisGenerator?->devis?->start_date;
                                                         }
                                                         return null;
                                                     })
@@ -478,10 +478,10 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                     ->date('d/m/Y')
                                                     ->getStateUsing(function (Generator $record) {
                                                         if($record->contractGenerator){
-                                                            return $record->contractGenerator->contract->end_date;
+                                                            return $record->contractGenerator?->contract?->end_date;
                                                         }
                                                         if($record->devisGenerator){
-                                                            return $record->devisGenerator->devis->end_date;
+                                                            return $record->devisGenerator?->devis?->end_date;
                                                         }
                                                         return null;
                                                     })
@@ -516,7 +516,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                             ->limit(20)
                                                             ->getStateUsing(function (Generator $record) {
                                                             if($record->devisGenerator){
-                                                                return $record->devisGenerator->devis->customer->contact_c_name;
+                                                                return $record->devisGenerator?->devis?->customer?->contact_c_name;
                                                             }
                                                             return null;
                                                         })
@@ -525,7 +525,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Téléphone')
                                                              ->getStateUsing(function (Generator $record) {
                                                             if($record->devisGenerator){
-                                                                return $record->devisGenerator->devis->customer->contact_c_phone;
+                                                                return $record->devisGenerator?->devis?->customer?->contact_c_phone;
                                                             }
                                                             return null;
                                                         })
@@ -535,10 +535,10 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Email')
                                                              ->getStateUsing(function (Generator $record) {
                                                             if($record->devisGenerator){
-                                                                return $record->devisGenerator->devis->customer->contact_c_email;
+                                                                return $record->devisGenerator?->devis?->customer?->contact_c_email;
                                                             }
                                                             if($record->devisGenerator){
-                                                                return $record->devisGenerator->devis->customer->contact_c_email;
+                                                                return $record->devisGenerator?->devis?->customer?->contact_c_email;
                                                             }
                                                             return null;
                                                         })
@@ -554,7 +554,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Nom')
                                                             ->getStateUsing(function (Generator $record) {
                                                             if($record->devisGenerator){
-                                                                return $record->devisGenerator->contact_name;
+                                                                return $record->devisGenerator?->contact_name;
                                                             }
                                                             return null;
                                                         })
@@ -563,7 +563,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Téléphone')
                                                              ->getStateUsing(function (Generator $record) {
                                                             if($record->devisGenerator){
-                                                                return $record->devisGenerator->contact_phone;
+                                                                return $record->devisGenerator?->contact_phone;
                                                             }
                                                             return null;
                                                         })
@@ -573,7 +573,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Email')
                                                              ->getStateUsing(function (Generator $record) {
                                                             if($record->devisGenerator){
-                                                                return $record->devisGenerator->contact_email;
+                                                                return $record->devisGenerator?->contact_email;
                                                             }
                                                             return null;
                                                         })
@@ -589,7 +589,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Site')
                                                             ->getStateUsing(function (Generator $record) {
                                                             if($record->devisGenerator){
-                                                                return $record->devisGenerator->site;
+                                                                return $record->devisGenerator?->site;
                                                             }
                                                             return null;
                                                         })
@@ -598,7 +598,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Code')
                                                              ->getStateUsing(function (Generator $record) {
                                                             if($record->devisGenerator){
-                                                                return $record->devisGenerator->code_site;
+                                                                return $record->devisGenerator?->code_site;
                                                             }
                                                             return null;
                                                         })
