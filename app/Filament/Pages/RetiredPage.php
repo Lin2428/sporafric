@@ -56,7 +56,9 @@ class RetiredPage extends Page implements HasForms, HasTable
     }
       public static function getNavigationBadge(): ?string
     {
-        $count = Intervention::where('type',  InterventionType::RETRAIT->value)->count();
+        $count = Intervention::where('type',  InterventionType::RETRAIT->value,)
+        ->where('type_service', '=', 0)
+        ->count();
         return $count;
     }
 
