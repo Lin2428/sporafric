@@ -65,7 +65,7 @@ class InterventionMaintenanceStats extends BaseWidget
         $startOfWeek = Carbon::now()->startOfWeek(); // Lundi
         $endOfWeek = Carbon::now()->endOfWeek();     // Dimanche
 
-        return static::$model::whereBetween('start_date', [$startOfWeek, $endOfWeek])
+        return static::$model::whereBetween('date_planifiee', [$startOfWeek, $endOfWeek])
             ->selectRaw('
             COUNT(*) AS total,
             COUNT(CASE WHEN status = 1 THEN 1 END) AS en_cours,
