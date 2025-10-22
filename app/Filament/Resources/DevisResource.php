@@ -188,11 +188,6 @@ class DevisResource extends Resource implements HasShieldPermissions
                     ->date("d/m/y")
                     ->sortable(),
 
-                TextColumn::make('end_date')
-                    ->label('Date fin')
-                    ->date("d/m/y")
-                    ->sortable(),
-
                 TextColumn::make('state')
                     ->label('Etat')
                     ->getStateUsing(function (Devis $record) {
