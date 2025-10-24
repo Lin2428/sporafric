@@ -6,7 +6,7 @@
 <style>
 .container {
     min-height:310px;
-    max-height:310px;
+    max-height:360px;
     overflow-y: auto;
     padding: 10px;
 }
