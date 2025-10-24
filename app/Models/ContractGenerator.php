@@ -27,11 +27,6 @@ class ContractGenerator extends Model
         return $this->belongsTo(Contract::class);
     }
 
-    public function oldContract()
-    {
-        return $this->belongsTo(Contract::class, 'old_generator_id', '');
-    }
-
     public function generator()
     {
         return $this->belongsTo(Generator::class);

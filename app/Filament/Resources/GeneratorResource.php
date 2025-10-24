@@ -365,7 +365,10 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                     ->schema([\Filament\Infolists\Components\Section::make('Note')
                                         ->schema([
                                             \Filament\Infolists\Components\View::make('filament.infolist.components.alert-component')
-                                                ->viewData(['alerts' => $infolist->getRecord()->notRetiredDevis()]),
+                                                ->viewData([
+                                                    'alerts' => $infolist->getRecord()->notRetiredDevis(),
+                                                    'title' => 'Retrait non effectué',
+                                                ]),
                                             TextEntry::make('note')
                                                 ->label('Note')
                                                 ->hiddenLabel()

@@ -52,24 +52,20 @@ class Generator extends Model
         return $this->belongsTo(User::class);
     }
 
-
     public function contractGenerator()
     {
-        $query = $this->hasOne(ContractGenerator::class, 'generator_id')
-            ->whereHas('contract', fn($q) => $q->whereNull('deleted_at'));
+        return $this->hasOne(ContractGenerator::class,)
+            ->whereHas('contract', function ($query) {
+                $query->where('deleted_at', null);
+            });
+    }
 
-        // // Vérifie si un contract_generator existe pour ce generator_id
-        // $exists = ContractGenerator::where('generator_id', $this->id)
-        //     ->whereHas('contract', fn($q) => $q->whereNull('deleted_at'))
-        //     ->exists();
-
-        // if (! $exists) {
-        //     // Si aucun trouvé, on prend old_generator_id
-        //     $query = $this->hasOne(ContractGenerator::class, 'old_generator_id')
-        //         ->whereHas('contract', fn($q) => $q->whereNull('deleted_at'));
-        // }
-
-        return $query;
+    public function oldContractGenerator()
+    {
+        return $this->hasOne(ContractGenerator::class, 'old_generator_id')
+            ->whereHas('contract', function ($query) {
+                $query->whereNull('deleted_at');
+            });
     }
 
     public function devisGenerator()

@@ -24,13 +24,15 @@ class ListContractGenerators extends ListRecords
             Tab::make('Sous contrat')->query(
                 fn($query) =>
                 $query->where(function ($q) {
-                    $q->whereHas('contractGenerator');
+                    $q->whereHas('contractGenerator')
+                        ->orWhereHas('oldContractGenerator');
                 })
             ),
             Tab::make('Hors contrat')->query(
                 fn($query) =>
                 $query->where(function ($q) {
-                    $q->whereDoesntHave('contractGenerator');
+                    $q->whereDoesntHave('contractGenerator')
+                        ->whereDoesntHave('oldContractGenerator');
                 })
             ),
 

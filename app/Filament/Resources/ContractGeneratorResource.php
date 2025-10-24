@@ -219,7 +219,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                     ->label('Statut')
                     ->html()
                     ->getStateUsing(function (Generator $record) {
-                        $type = $record->contractGenerator ? true : false;
+                        $type = ($record->contractGenerator ?? $record->oldContractGenerator) ? true : false;
                         return BadgetWidget::generatorTypeBadget($type ? 'Sous contrat' : 'Hors contrat');
                     }),
                 //     ->colors([
@@ -420,6 +420,11 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                     ->columnSpan(1)
                                     ->schema([\Filament\Infolists\Components\Section::make('Note')
                                         ->schema([
+                                            \Filament\Infolists\Components\View::make('filament.infolist.components.alert-component')
+                                                ->viewData([
+                                                    'alerts' => $infolist->getRecord()->oldContractGenerator()->get(),
+                                                    'title' => 'GE remplacé',
+                                                ]),
                                             TextEntry::make('note')
                                                 ->label('Note')
                                                 ->hiddenLabel()
