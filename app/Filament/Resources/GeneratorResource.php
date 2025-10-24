@@ -368,11 +368,8 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                 ->viewData([
                                                     'alerts' => $infolist->getRecord()->notRetiredDevis(),
                                                     'title' => 'Retrait non effectué',
+                                                    'note' => $infolist->getRecord()->note,
                                                 ]),
-                                            TextEntry::make('note')
-                                                ->label('Note')
-                                                ->hiddenLabel()
-                                                ->html()
                                         ]),]),
 
 

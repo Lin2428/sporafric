@@ -1,12 +1,13 @@
 @props([
     'alerts' => null,
     'title' => null,
+'note' => null,
 ])
 <div class="container">
 <style>
 .container {
-    min-height:310px;
-    max-height:360px;
+    min-height:335px;
+    max-height:385px;
     overflow-y: auto;
     padding: 10px;
 }
@@ -45,7 +46,13 @@ if($alert->contract_id) {
         </div>
     </div>
 </a>
-
 @endforeach
+@endif
+@if($note)
+    <div class="mt-4 p-3 bg-yellow-50 border border-yellow-100 text-yellow-700 rounded-lg">
+        <div class="text-sm">
+           {!! $note !!}
+        </div>
+    </div>
 @endif
 </div>

@@ -424,11 +424,8 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                                                 ->viewData([
                                                     'alerts' => $infolist->getRecord()->oldContractGenerator()->get(),
                                                     'title' => 'GE remplacé',
+                                                    'note' => $infolist->getRecord()->note,
                                                 ]),
-                                            TextEntry::make('note')
-                                                ->label('Note')
-                                                ->hiddenLabel()
-                                                ->html()
                                         ]),]),
 
                                 \Filament\Infolists\Components\Group::make()
