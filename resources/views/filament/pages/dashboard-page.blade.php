@@ -50,7 +50,7 @@
                     <div class="flex items-start gap-3 p-2 mb-2 rounded-lg shadow-sm bg-{{$alert['color']}}-50 border border-{{$alert['color']}}-100 text-{{$alert['color']}}-700 alert-item">
                         <div class="bg-gray-100/50 p-1 rounded-full flex items-center justify-center">
                             {{-- Icone --}}
-                            @svg($alert['icon'], 'w-8 h-8 text-' . $alert['color'] . '-200')
+                            @svg($alert['icon'], 'w-8 h-8 text-' . $alert['color'] . '-600')
                         </div>
                         <div>
                             <div class="font-bold text-sm">{{ $alert['title'] }}</div>
@@ -67,7 +67,7 @@
             </div>
         </div>
     </div>
-   
+
     <div class="grid grid-cols-2 gap-4 mt-4">
         {{-- Widget stat 2 --}}
         @livewire(\App\Filament\Widgets\InterventionTypeChart::class)
