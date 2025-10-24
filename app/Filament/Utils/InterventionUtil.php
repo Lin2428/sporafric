@@ -12,6 +12,9 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\HtmlString;
 use App\Utils\NumberUtils;
+use App\Models\Devis;
+use App\Models\Contract;
+use Illuminate\Database\Eloquent\Builder;
 
 class InterventionUtil
 {
@@ -32,7 +35,7 @@ class InterventionUtil
                     ->options(collect(InterventionStatus::cases())
                         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
                         ->toArray())
-                        ->required(),
+                    ->required(),
 
                 Select::make('interventionTechniciens.technicien_id')
                     ->relationship('interventionTechniciens', 'name')
@@ -60,7 +63,7 @@ class InterventionUtil
 
     public static function generatorColumn(Intervention $record): HtmlString
     {
-       
+
         $reference = $record->generator?->reference ?? $record->reference;
         $powr = $record->generator?->power ?? $record->power;
         $html = "
@@ -98,32 +101,34 @@ class InterventionUtil
 
             TextColumn::make('status')
                 ->label('Statut')
-                ->getStateUsing(function($record){
+                ->getStateUsing(function ($record) {
                     $stat = InterventionStatus::from($record->status)->label();
                     return BadgetWidget::interventionStatusBadget($stat);
-                    })
+                })
                 ->html(),
 
             TextColumn::make('client') // Nom arbitraire, car on utilise getStateUsing
                 ->label('Client')
-                ->searchable(true, function($search) {
-                    return fn($query, $search) => $query
-                        ->whereHas('devis.customer', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        })
-                        ->orWhereHas('contract.customer', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        })
-                        ->orWhereHas('customer', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        })
-                        ;
+                ->searchable(true, function (Builder $query, $search) {
 
+                    return $query
+                        ->where(function ($query) use ($search) {
+                            $query
+                                ->whereHas('devis.customer', function ($query) use ($search) {
+                                    $query->where('name', 'like', "%{$search}%");
+                                })
+                                ->orWhereHas('contract.customer', function ($query) use ($search) {
+                                    $query->where('name', 'like', "%{$search}%");
+                                })
+                                ->orWhereHas('customer', function ($query) use ($search) {
+                                    $query->where('name', 'like', "%{$search}%");
+                                });
+                        });
                 })
                 ->getStateUsing(function (Intervention $record) {
                     return  optional($record->contract?->customer)->name ??
-                         optional($record->devis?->customer)->name
-                         ?? optional($record->customer)->name;
+                        optional($record->devis?->customer)->name
+                        ?? optional($record->customer)->name;
                 })
                 ->description(fn(Intervention $record) => static::customerColumn($record))
                 ->extraAttributes(['class' => 'font-bold'])
@@ -131,7 +136,7 @@ class InterventionUtil
 
             TextColumn::make('cd') // Nom arbitraire, car on utilise getStateUsing
                 ->label($nameContrat)
-                ->searchable(true, function($search) {
+                ->searchable(true, function ($search) {
                     return fn($query, $search) => $query
                         ->whereHas('devis', function ($query) use ($search) {
                             $query->where('number', 'like', "%{$search}%");
@@ -145,16 +150,16 @@ class InterventionUtil
                 })
                 ->getStateUsing(function (Intervention $record) {
                     return  optional($record->contract)->number ??
-                         optional($record->devis)->number
-                       
-                         ?? "Hors contrat";
+                        optional($record->devis)->number
+
+                        ?? "Hors contrat";
                 })
                 ->copyable()
                 ->extraAttributes(['class' => 'font-bold']),
 
             TextColumn::make('generator_name')
                 ->label('Groupe Électrogène')
-                ->searchable(false, function($search) {
+                ->searchable(false, function ($search) {
                     return fn($query, $search) => $query
                         ->whereHas('generator', function ($query) use ($search) {
                             $query->where('reference', 'like', "%{$search}%")
@@ -174,7 +179,7 @@ class InterventionUtil
 
             TextColumn::make('montant')
                 ->label('Montant')
-                ->getStateUsing(fn($record) => NumberUtils::format($record->montant). " FCFA")
+                ->getStateUsing(fn($record) => NumberUtils::format($record->montant) . " FCFA")
                 ->searchable()
                 ->sortable(),
         ];

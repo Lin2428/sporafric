@@ -10,16 +10,17 @@ class EditGenerator extends EditRecord
 {
     protected static string $resource = GeneratorResource::class;
 
-    protected static ?string $title = 'Modifier un groupe électrogène';
+    protected static ?string $title = 'Modifier le groupe électrogène';
 
     protected function getHeaderActions(): array
     {
+
         return [
-            Actions\DeleteAction::make(),
+            // Actions\DeleteAction::make(),
         ];
     }
 
-     protected function mutateFormDataBeforeSave(array $data): array
+    protected function mutateFormDataBeforeSave(array $data): array
     {
         $houres = $data['houres'];
         $data['next_vidange'] = $data['prochain_visite'] -  $houres;

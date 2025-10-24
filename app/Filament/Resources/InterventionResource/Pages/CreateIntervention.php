@@ -48,7 +48,7 @@ class CreateIntervention extends CreateRecord
 
             Generator::where('id', $data['new_generator_id'])
                 ->update([
-                    'status' => GeneratorStatus::EN_LOCATION->value
+                    'status' => GeneratorStatus::EN_PRET->value
                 ]);
 
             $oldeGeneratorId =
@@ -64,6 +64,10 @@ class CreateIntervention extends CreateRecord
                     ->update([
                         'generator_id' => $data['new_generator_id'],
                         'old_generator_id' => null,
+                    ]);
+                Generator::where('id', $data['new_generator_id'])
+                    ->update([
+                        'status' => GeneratorStatus::EN_LOCATION->value
                     ]);
             } else {
                 ContractGenerator::where('contract_id', $data['contract_id'])

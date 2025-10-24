@@ -83,8 +83,7 @@ class DevisResource extends Resource implements HasShieldPermissions
                                     ->label('Date de fin')
                                     ->required()
                                     ->default(now()->addYears(10))
-                                    ->columnSpanFull()
-                                    ->disabled(),
+                                    ->columnSpanFull(),
 
                                 Toggle::make('is_active')
                                     ->label('Statut')
@@ -174,6 +173,7 @@ class DevisResource extends Resource implements HasShieldPermissions
     {
         return $table
             ->defaultPaginationPageOption(50)
+            ->defaultSort('created_at', 'desc')
             ->columns([
 
                 TextColumn::make('number')

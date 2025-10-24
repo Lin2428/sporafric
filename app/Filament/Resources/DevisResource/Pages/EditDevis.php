@@ -9,12 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class EditDevis extends EditRecord
 {
+    protected static ?string $title = "Modifier les informations de location";
     protected static string $resource = DevisResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            // Actions\DeleteAction::make(),
         ];
     }
 

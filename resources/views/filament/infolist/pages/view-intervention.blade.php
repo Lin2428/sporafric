@@ -126,18 +126,18 @@
 }
 </style>
 <strong style="font-size: 1.3em;">
-   {{ 
-    $getRecord()->contract?->customer?->name 
+   {{
+    $getRecord()->contract?->customer?->name
     ?? (
-        $getRecord()->devis?->customer?->name || $getRecord()->devis?->customer_name 
+        $getRecord()->devis?->customer?->name || $getRecord()->devis?->customer_name
             ? trim(
-                ($getRecord()->devis?->customer?->name ?? '') 
-                . ' ' . 
+                ($getRecord()->devis?->customer?->name ?? '')
+                . ' ' .
                 ($getRecord()->devis?->customer_name ?? '')
               )
             : null
-    ) 
-    ?? $getRecord()->customer?->name 
+    )
+    ?? $getRecord()->customer?->name
      }}
 </strong><br>
 <br>
@@ -184,7 +184,7 @@
                 <i class="icon">@svg('heroicon-s-calendar')</i>
                 Date de prise d'appel:
             </span>
-            <span>{{ \App\Utils\DateUtils::format($getRecord()->date_prise_appel) }}</span>
+            <span>{{ \App\Utils\DateUtils::formatWithTime($getRecord()->date_prise_appel) }}</span>
         </div>
         {{-- Date planifiée --}}
         <div class="container-1">
@@ -194,7 +194,7 @@
             </span>
             <span>{{$getRecord()->date_planifiee ? \App\Utils\DateUtils::formatWithTime($getRecord()->date_planifiee): "" }}</span>
         </div>
-      
+
     @if ($getRecord()->type == \App\Enum\InterventionType::REMPLACEMENT->value)
         {{-- Numéro de bon de livraison --}}
         <a href="{{ url('admin/generators/' . $getRecord()->newGenerator->id) }}">
@@ -236,8 +236,8 @@
         </div>
     </div>
 
-     
-    
+
+
 
 </div>
 <br>
@@ -285,8 +285,8 @@
                 <i class="icon">@svg('heroicon-s-clock')</i>
                 Délai d'intervention:
             </span>
-            <span>{{$getRecord()->start_date ? \App\Utils\DateUtils::format($getRecord()->start_date):"" }} - {{
-               $getRecord()->end_date ? \App\Utils\DateUtils::format($getRecord()->end_date):"" }}</span>
+            <span>{{$getRecord()->start_date ? \App\Utils\DateUtils::formatWithTime($getRecord()->start_date):"" }} - {{
+               $getRecord()->end_date ? \App\Utils\DateUtils::formatWithTime($getRecord()->end_date):"" }}</span>
         </div>
         <div class="container-1">
             <span class="label">
@@ -326,13 +326,13 @@
                 </thead>
                 <tbody>
                     @foreach($getRecord()->pieces as $piece)
-            
+
                     <tr>
                         <td>{{$piece->reference}}</td>
                         <td>{{$piece->designation}}</td>
                         <!-- <td><img class="piece-img" src="{{asset('storage/'.$piece->image)}}" alt=""> -->
                         </td>
-                        
+
                         <td>
                             {{ $piece->pivot->qty}}
                         </td>
@@ -354,7 +354,7 @@
                 <i class="icon">@svg('heroicon-s-clipboard-document')</i>
                 Pièces jointes
             </span>
-            
+
             @if($getRecord()->fiches->isNotEmpty())
             <table class="materiel-table">
                 <thead>
@@ -366,7 +366,7 @@
                 </thead>
                 <tbody>
                     @foreach($getRecord()->fiches as $file)
-            
+
                     @if ($file->fiche!= null)
                         <tr>
                         <td class="flex items-center"><img src="{{asset('storage/pdf.png')}}" alt="" width="40px" height="40px">

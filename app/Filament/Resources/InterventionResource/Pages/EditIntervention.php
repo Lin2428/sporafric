@@ -84,7 +84,7 @@ class EditIntervention extends EditRecord
 
             Generator::where('id', $data['new_generator_id'])
                 ->update([
-                    'status' => GeneratorStatus::EN_LOCATION->value
+                    'status' => GeneratorStatus::EN_PRET->value
                 ]);
 
             $oldeGeneratorId =
@@ -99,6 +99,10 @@ class EditIntervention extends EditRecord
                     ->update([
                         'generator_id' => $data['new_generator_id'],
                         'old_generator_id' => null,
+                    ]);
+                Generator::where('id', $data['new_generator_id'])
+                    ->update([
+                        'status' => GeneratorStatus::EN_LOCATION->value
                     ]);
             } else {
                 ContractGenerator::where('contract_id', $data['contract_id'])

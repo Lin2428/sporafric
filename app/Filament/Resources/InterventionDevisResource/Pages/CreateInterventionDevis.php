@@ -46,7 +46,7 @@ class CreateInterventionDevis extends CreateRecord
 
             Generator::where('id', $data['new_generator_id'])
                 ->update([
-                    'status' => GeneratorStatus::EN_LOCATION->value
+                    'status' => GeneratorStatus::EN_PRET->value
                 ]);
 
             $oldeGeneratorId =
@@ -62,6 +62,10 @@ class CreateInterventionDevis extends CreateRecord
                     ->update([
                         'generator_id' => $data['new_generator_id'],
                         'old_generator_id' => null,
+                    ]);
+                Generator::where('id', $data['new_generator_id'])
+                    ->update([
+                        'status' => GeneratorStatus::EN_LOCATION->value
                     ]);
             } else {
                 DevisGenerator::where('devis_id', $data['devis_id'])

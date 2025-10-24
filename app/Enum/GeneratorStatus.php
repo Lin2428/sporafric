@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Enum;
 
 enum GeneratorStatus: string
@@ -7,6 +8,7 @@ enum GeneratorStatus: string
     case EN_REVU = '1';
     case EN_LOCATION = '2';
     case INDISPONIBLE = '3';
+    case EN_PRET = '4';
 
     public function label(): string
     {
@@ -15,6 +17,7 @@ enum GeneratorStatus: string
             self::EN_REVU => 'En révision',
             self::EN_LOCATION => 'En location',
             self::INDISPONIBLE => 'Indisponible',
+            self::EN_PRET => 'En prêt',
         };
     }
 }

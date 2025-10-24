@@ -19,6 +19,10 @@
         margin: 0px;
     }
 
+.table-item:hover {
+    background-color: #a9caf48f;
+}
+
     table.generator-table th,
     table.generator-table td {
         border: 1px solid gray; /* équivalent de slate-400 */
@@ -73,7 +77,7 @@
     <div class="text-center border border-b-0  bg-[#f1f5f9] border-gray-600 m-0 p-2">
     {{ $client->first()->contractGenerator?->contract?->customer?->name ?? $client->first()->devisGenerator?->devis?->customer?->name }}
 </div>
-   
+
 
 <table class="generator-table">
     <thead>
@@ -92,7 +96,7 @@
     <tbody>
         @if ($data->isNotEmpty())
             @foreach ($client as $index => $item)
-                <tr id="row-{{$key}}-{{ $index }}">
+                <tr id="row-{{$key}}-{{ $index }}" class="table-item">
                     <td class="text-blue">
                         {{ $item->contractGenerator?->site ?? $item->devisGenerator?->devis?->site }}
                     </td>
@@ -123,7 +127,7 @@
         if (row) {
             row.classList.add('fi-header');
             lastDeletedRow = row.cloneNode(true);
-            console.log(lastDeletedRow); 
+            console.log(lastDeletedRow);
             row.remove();
             document.getElementById('restore-btn').classList.remove('hidden');
         }
@@ -137,7 +141,7 @@
             document.getElementById('restore-btn').classList.add('hidden');
         }
     }
-    
+
 </script>
 <script src="{{ asset('js/pub.js') }}"></script>
 </div>

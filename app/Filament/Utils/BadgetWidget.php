@@ -21,8 +21,20 @@ class BadgetWidget
             'Disponible' => 'bg-green-500',
             'En révision' => 'bg-yellow-500',
             'En location' => 'bg-blue-500',
+            'En prêt' => 'bg-gray-500',
             'Indisponible ' => 'bg-red-500',
             default => 'bg-red-500',
+        };
+
+        return "<span class='{$color} text-white font-bold text-medium px-4 py-1 rounded-full'>{$status}</span>";
+    }
+
+    public static function generatorTypeBadget(string $status): string
+    {
+        $color = match ($status) {
+            'Sous contrat' => 'bg-green-500',
+            'Hors contrat' => 'bg-blue-500',
+            default => 'bg-gray-500',
         };
 
         return "<span class='{$color} text-white font-bold text-medium px-4 py-1 rounded-full'>{$status}</span>";

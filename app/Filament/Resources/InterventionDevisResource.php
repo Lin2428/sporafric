@@ -62,17 +62,17 @@ class InterventionDevisResource extends Resource implements HasShieldPermissions
     }
 
 
-public static function form(Form $form): Form
+    public static function form(Form $form): Form
     {
-         $onUpdate = function(Set $set, Get $get) {
+        $onUpdate = function (Set $set, Get $get) {
             $pieces = $get('../../pieces');
 
-           if ($pieces) {
+            if ($pieces) {
                 foreach ($pieces as $piece) {
-                $price = Piece::find($piece['piece_id'])?->pr;
+                    $price = Piece::find($piece['piece_id'])?->pr;
 
-                $set('price', $price?? 0);
-            }
+                    $set('price', $price ?? 0);
+                }
             }
         };
 
@@ -88,11 +88,11 @@ public static function form(Form $form): Form
                                     ->default(0)
                                     ->disabled()
                                     ->options(["1" => "Maintenance", "0" => "Location"])
-                                    
+
                                     ->columnSpanFull()
                                     ->reactive()
                                     ->required(),
-                                
+
                                 TextInput::make('numero')
                                     ->label('Numéro')
                                     ->default(NumberUtils::intevention_numero('INT-LOC'))
@@ -105,19 +105,19 @@ public static function form(Form $form): Form
                                     ->required()
                                     ->label("Devis"),
 
-                                 WidgetUtils::generatorSelectWidget(isDispo:false, isgetAll: true, onUpdate: function (Set $set, $state) {
-                                        $generator = Generator::find($state);
+                                WidgetUtils::generatorSelectWidget(isDispo: false, isgetAll: true, onUpdate: function (Set $set, $state) {
+                                    $generator = Generator::find($state);
 
-                                        $set('houres', $generator?->houres);
-                                        $set('next_vidange', $generator?->next_vidange);
-                                        $set('prochain_visite', $generator?->prochain_visite);
-                                    })
+                                    $set('houres', $generator?->houres);
+                                    $set('next_vidange', $generator?->next_vidange);
+                                    $set('prochain_visite', $generator?->prochain_visite);
+                                })
                                     ->columnSpanFull()
                                     ->reactive()
                                     ->required()
                                     ->visible(fn(callable $get) => $get('devis_id') != null),
 
-                                DatePicker::make('date_prise_appel')
+                                DateTimePicker::make('date_prise_appel')
                                     ->label('Date de prise d’appel')
                                     ->default(now())
                                     ->required(),
@@ -140,24 +140,24 @@ public static function form(Form $form): Form
                                     ->label('H de fonctionnement du GE')
                                     ->formatStateUsing(function (Get $get) {
                                         $generator = Generator::find($get('generator_id'));
-                                  
+
                                         return $generator?->houres;
                                     })
                                     ->reactive(),
-                                    
+
                                 TextInput::make('prochain_visite')
                                     ->numeric()
                                     ->reactive()
                                     ->label('Vidange programmée')
                                     ->formatStateUsing(function (Get $get) {
                                         $generator = Generator::find($get('generator_id'));
-                                  
+
                                         return $generator?->prochain_visite;
                                     }),
 
-                                 
+
                                 WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true, type: null, isDispo: false)
-                                 ->label("GE remplacé")
+                                    ->label("GE remplacé")
                                     ->columnSpanFull()
                                     ->reactive()
                                     ->required()
@@ -188,7 +188,7 @@ public static function form(Form $form): Form
                                     ->relationship('fiches')
                                     ->addActionLabel('Ajouter une pièce jointe')
                                     ->schema([
-                                       FileUpload::make('fiche')
+                                        FileUpload::make('fiche')
                                             ->hiddenLabel()
                                             ->disk('devis')
                                             ->downloadable()
@@ -197,26 +197,26 @@ public static function form(Form $form): Form
                                             ->storeFileNamesIn('attachment_file_names'),
                                     ])->columnSpanFull(),
                             ]),
-                        ])->columnSpan(['lg' => 1]),
+                    ])->columnSpan(['lg' => 1]),
 
 
                 // Section::make('Pièces livrées')
                 //     ->columns(2)
-                    // ->schema([
-                    TableRepeater::make('pieces')
+                // ->schema([
+                TableRepeater::make('pieces')
                     ->emptyLabel('Aucune pièce livrée')
                     ->label('Pièces livrées')
-                      ->headers([
-                            Header::make('piece_id')
+                    ->headers([
+                        Header::make('piece_id')
                             ->label('Pièce'),
-                            Header::make('qty')
+                        Header::make('qty')
                             ->label('Quantité'),
-                            Header::make('price')
+                        Header::make('price')
                             ->label('Prix'),
-                        ])
+                    ])
                     ->formatStateUsing(function ($record) {
-                        if(empty($record->pieces)) return [];
-                      
+                        if (empty($record->pieces)) return [];
+
                         return $record->pieces?->map(function ($piece) {
                             return [
                                 'piece_id' => $piece->id,
@@ -231,11 +231,11 @@ public static function form(Form $form): Form
                             ->reactive()
                             ->required(),
                         TextInput::make('qty')
-                        ->label('Quantité')
-                        ->numeric()
-                        ->minValue(1)
-                        ->default(1)
-                        ->required(),
+                            ->label('Quantité')
+                            ->numeric()
+                            ->minValue(1)
+                            ->default(1)
+                            ->required(),
                         TextInput::make('price')
                             ->label('Prix unitaire')
                             ->numeric()
@@ -244,7 +244,7 @@ public static function form(Form $form): Form
                             ->required(),
                     ])->columnSpanFull()
                     ->columns(3)
-                    // ])->columnSpanFull(),
+                // ])->columnSpanFull(),
 
             ])->columns(3);
     }
@@ -257,43 +257,43 @@ public static function form(Form $form): Form
     public static function table(Table $table): Table
     {
         return $table
-        ->query(static::getEloquentQuery()->where('type_service', 0))
-        ->defaultPaginationPageOption(50)
-        ->defaultSort('created_at', 'desc')
-        ->columns(InterventionUtil::table("Devis"))
+            ->query(static::getEloquentQuery()->where('type_service', 0))
+            ->defaultPaginationPageOption(50)
+            ->defaultSort('created_at', 'desc')
+            ->columns(InterventionUtil::table("Devis"))
             ->filters([
                 Filter::make('status')
-                ->form([
-                    CheckboxList::make('status')
-                    ->options(collect(InterventionStatus::cases())
-                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                        ->toArray()),
+                    ->form([
+                        CheckboxList::make('status')
+                            ->options(collect(InterventionStatus::cases())
+                                ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                ->toArray()),
 
-                    DatePicker::make('date_planifiee')
-                        ->label('Date planifiée'),
+                        DatePicker::make('date_planifiee')
+                            ->label('Date planifiée'),
 
-                    DatePicker::make('date_prise_appel')
-                        ->label('Date de prise d\'appel'),
+                        DatePicker::make('date_prise_appel')
+                            ->label('Date de prise d\'appel'),
 
-                    Select::make('type')
-                        ->label('Type')
-                        ->options(collect(InterventionType::cases())
-                            ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                            ->toArray()),
-                ])
-                ->query(
-                    fn (Builder $query, array $data) => $query
-                        ->when($data['status'] ?? null, fn (Builder $query, array $status) => $query->whereIn('status', $status))
-                        ->when($data['date_planifiee'] ?? null, fn (Builder $query, string $date) => $query->whereDate('date_planifiee', '=', $date))
-                        ->when($data['date_prise_appel'] ?? null, fn (Builder $query, string $date) => $query->whereDate('date_prise_appel', '=', $date))
-                        ->when($data['type'] ?? null, fn (Builder $query, string $type) => $query->where('type', '=', $type))
-                )
+                        Select::make('type')
+                            ->label('Type')
+                            ->options(collect(InterventionType::cases())
+                                ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                ->toArray()),
+                    ])
+                    ->query(
+                        fn(Builder $query, array $data) => $query
+                            ->when($data['status'] ?? null, fn(Builder $query, array $status) => $query->whereIn('status', $status))
+                            ->when($data['date_planifiee'] ?? null, fn(Builder $query, string $date) => $query->whereDate('date_planifiee', '=', $date))
+                            ->when($data['date_prise_appel'] ?? null, fn(Builder $query, string $date) => $query->whereDate('date_prise_appel', '=', $date))
+                            ->when($data['type'] ?? null, fn(Builder $query, string $type) => $query->where('type', '=', $type))
+                    )
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
-                ]), 
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -316,7 +316,7 @@ public static function form(Form $form): Form
             'index' => Pages\ListInterventionDevis::route('/'),
             'create' => Pages\CreateInterventionDevis::route('/create'),
             'edit' => Pages\EditInterventionDevis::route('/{record}/edit'),
-                'view' =>  ViewInterventionDevis::route('/{record}'),
+            'view' =>  ViewInterventionDevis::route('/{record}'),
         ];
     }
 
@@ -335,10 +335,10 @@ public static function form(Form $form): Form
 
     public static function buildInfolist(Infolist $infolist): Infolist
     {
-        
+
         return $infolist
             ->schema([
-         \Filament\Infolists\Components\View::make('components.report-header')
+                \Filament\Infolists\Components\View::make('components.report-header')
                     ->viewData([
                         'numero' => $infolist->record->numero,
                         'date' => Carbon::parse($infolist->record->date_planifiee)->format('d/m/Y'),
@@ -357,4 +357,3 @@ public static function form(Form $form): Form
             ]);
     }
 }
-

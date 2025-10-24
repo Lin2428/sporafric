@@ -32,17 +32,17 @@ class ShowGeneratorsTable extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         $model = ContractGenerator::where('contract_id', $this->contractId)
-        ->whereHas('generator', function($query){
-            return $query->where('deleted_at','=', null);
-        })
-        ->with('generator');
-
-        if(str_contains(request()->url(), 'devis')) {
-            $model = DevisGenerator::where('devis_id', $this->contractId)
-              ->whereHas('generator', function($query){
-            return $query->where('deleted_at','=', null);
-        })
+            ->whereHas('generator', function ($query) {
+                return $query->where('deleted_at', '=', null);
+            })
             ->with('generator');
+
+        if (str_contains(request()->url(), 'devis')) {
+            $model = DevisGenerator::where('devis_id', $this->contractId)
+                ->whereHas('generator', function ($query) {
+                    return $query->where('deleted_at', '=', null);
+                })
+                ->with('generator');
         }
         return $table
             ->heading('Groupes électrogènes')
@@ -51,7 +51,6 @@ class ShowGeneratorsTable extends Component implements HasForms, HasTable
                 TextColumn::make('generator.name')
                     ->label('GE')
                     ->sortable()
-                    ->copyable()
                     ->searchable(),
                 TextColumn::make('generator.power')
                     ->label('Puissance ')
@@ -70,9 +69,9 @@ class ShowGeneratorsTable extends Component implements HasForms, HasTable
             ])
             ->recordUrl(function ($record) {
                 if (str_contains(request()->url(), 'devis')) {
-                    return url('/admin/generators/'. $record->generator_id);
+                    return url('/admin/generators/' . $record->generator_id);
                 }
-                return url('/admin/contract-generators/'. $record->generator_id);
+                return url('/admin/contract-generators/' . $record->generator_id);
             })
             ->filters([
                 // ...

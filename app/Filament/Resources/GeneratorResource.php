@@ -23,6 +23,7 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -63,15 +64,14 @@ class GeneratorResource extends Resource implements HasShieldPermissions
         return $count;
     }
 
-   public static function form(Form $form): Form
+    public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Group::make()
                     ->schema([
                         Section::make('Infos générales')
-                            ->columns()
-                            ->columnSpan(2)
+                            ->columns(3)
                             ->schema([
                                 TextInput::make('name')
                                     ->label('Identification GE')
@@ -111,12 +111,16 @@ class GeneratorResource extends Resource implements HasShieldPermissions
 
                                 TextInput::make('frequency')
                                     ->label('Fréquence (Hz)')
-                                    ->numeric()
-                                    ->columnSpanFull(),
+                                    ->numeric(),
 
                                 // TextInput::make('fuel_type')
                                 //     ->label('Type de carburant'),
+
+                                RichEditor::make("note")
+                                    ->label("Notes")
+                                    ->columnSpanFull(),
                             ]),
+
                     ])->columnSpan(['lg' => 2]),
 
                 Group::make()
@@ -128,13 +132,12 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                     ->default(now()),
 
                                 Select::make('status')
-                                    ->options( collect(GeneratorStatus::cases())
+                                    ->options(collect(GeneratorStatus::cases())
                                         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
                                         ->toArray())
                                     ->searchable()
                                     ->label('Statut')
-                                    ->preload()
-,
+                                    ->preload(),
 
                                 TextInput::make('houres')
                                     ->label('Heures de fonctionnement'),
@@ -143,38 +146,38 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                     ->label('Vidange programmée (h)')
                                     ->numeric(),
 
-                                 Textarea::make('adresse')
+                                Textarea::make('adresse')
                                     ->label('Adresse')
-                                    ->rows(2)  
+                                    ->rows(2)
                                     ->columnSpanFull(),
                             ]),
                     ])
                     ->columnSpan(['lg' => 1]),
 
-                    //  Section::make('Localisation sur la carte')
-                    //         ->schema([
-                    //             // \Filament\Forms\Components\View::make('filament.forms.components.map-picker')
-                    //             //     ->label(''),
-                    //         ])->columnSpan(['lg' => 2]),
+                //  Section::make('Localisation sur la carte')
+                //         ->schema([
+                //             // \Filament\Forms\Components\View::make('filament.forms.components.map-picker')
+                //             //     ->label(''),
+                //         ])->columnSpan(['lg' => 2]),
 
-                    // Section::make('Données de la carte')
-                    //         ->columns(2)
-                    //         ->schema([
-                    //            Textarea::make('adresse')
-                    //                 ->label('Adresse')
-                    //                 ->rows(2)  
-                    //                 ->columnSpanFull(),
+                // Section::make('Données de la carte')
+                //         ->columns(2)
+                //         ->schema([
+                //            Textarea::make('adresse')
+                //                 ->label('Adresse')
+                //                 ->rows(2)
+                //                 ->columnSpanFull(),
 
-                    //             TextInput::make('lat')
-                    //                 ->label('Latitude')
-                    //                 ->reactive()
-                    //                 ->columnSpanFull(),
+                //             TextInput::make('lat')
+                //                 ->label('Latitude')
+                //                 ->reactive()
+                //                 ->columnSpanFull(),
 
-                    //             TextInput::make('lng')
-                    //                 ->label('Longitude')
-                    //                 ->reactive()
-                    //                 ->columnSpanFull(),
-                    //         ])->columnSpan(['lg' => 1]),
+                //             TextInput::make('lng')
+                //                 ->label('Longitude')
+                //                 ->reactive()
+                //                 ->columnSpanFull(),
+                //         ])->columnSpan(['lg' => 1]),
 
             ])->columns(3);
     }
@@ -187,7 +190,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
     public static function table(Table $table): Table
     {
         return $table
-        ->query(static::$model::query()->where('type', 1))
+            ->query(static::$model::query()->where('type', 1))
             ->defaultPaginationPageOption(50)
             ->defaultSort('created_at', 'desc')
             ->columns([
@@ -230,27 +233,26 @@ class GeneratorResource extends Resource implements HasShieldPermissions
             ])
             ->filters([
                 Filter::make('status')
-                ->form([
-                    CheckboxList::make('status')
-                    ->options( 
-                        collect(GeneratorStatus::cases())
-                             ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                             ->toArray()
-                        )
-                        
-                ])
-                ->query(
-                    fn (Builder $query, array $data): Builder => $query
-                        ->when($data['status'], function (Builder $query, array $status) {
-                            return $query->whereIn('status', $status);
-                        })
-                ),
+                    ->form([
+                        CheckboxList::make('status')
+                            ->options(
+                                collect(GeneratorStatus::cases())
+                                    ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                    ->toArray()
+                            )
+
+                    ])
+                    ->query(
+                        fn(Builder $query, array $data): Builder => $query
+                            ->when($data['status'], function (Builder $query, array $status) {
+                                return $query->whereIn('status', $status);
+                            })
+                    ),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
                 ]),
             ])
             ->bulkActions([
@@ -300,10 +302,11 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                         Tabs\Tab::make('Contrat / SItuation')
                             ->icon('heroicon-o-clipboard-document')
                             ->iconPosition(IconPosition::After)
+                            ->columns(4)
                             ->schema([
                                 \Filament\Infolists\Components\Group::make()
-                                    ->columnSpan(4)
-                                    ->columns(2)
+                                    ->columns(3)
+                                    ->columnSpan(2)
                                     ->schema([
                                         \Filament\Infolists\Components\Section::make('Informations du groupe électrogène')
                                             ->columns(3)
@@ -335,37 +338,54 @@ class GeneratorResource extends Resource implements HasShieldPermissions
 
                                                 TextEntry::make('power')
                                                     ->label('Puissance')
-                                                   ->extraAttributes([ 'class' => 'font-bold']),
+                                                    ->extraAttributes(['class' => 'font-bold']),
 
 
                                                 TextEntry::make('houres')
                                                     ->label('Heures de fonc.')
-                                                   ->extraAttributes([ 'class' => 'font-bold']),
+                                                    ->extraAttributes(['class' => 'font-bold']),
 
                                                 TextEntry::make('next_vidange')
                                                     ->getStateUsing(fn($record) => NumberUtils::format($record->next_vidange) . ' h')
                                                     ->label('Prochaine vidange')
-                                                   ->extraAttributes([ 'class' => 'font-bold']),
+                                                    ->extraAttributes(['class' => 'font-bold']),
 
                                                 TextEntry::make('start-up')
                                                     ->label('Mise en service')
                                                     ->date('d/m/Y')
                                                     ->inlineLabel()
                                                     ->columnSpanFull()
-                                                   ->extraAttributes([ 'class' => 'font-bold']),
+                                                    ->extraAttributes(['class' => 'font-bold']),
+
                                             ]),
+
                                     ]),
+                                \Filament\Infolists\Components\Group::make()
+                                    ->columnSpan(1)
+                                    ->schema([\Filament\Infolists\Components\Section::make('Note')
+                                        ->schema([
+                                            \Filament\Infolists\Components\View::make('filament.infolist.components.alert-component')
+                                                ->viewData(['alerts' => $infolist->getRecord()->notRetiredDevis()]),
+                                            TextEntry::make('note')
+                                                ->label('Note')
+                                                ->hiddenLabel()
+                                                ->html()
+                                        ]),]),
+
+
+
 
                                 \Filament\Infolists\Components\Group::make()
-                                    ->columnSpan(3)
+                                    ->columnSpan(4)
                                     ->columns(2)
+
                                     ->schema([
-                                        \Filament\Infolists\Components\Section::make(function(Generator $record){
-                                            if($record->contractGenerator){
+                                        \Filament\Infolists\Components\Section::make(function (Generator $record) {
+                                            if ($record->contractGenerator) {
                                                 return 'Contrat en cours';
                                             }
 
-                                            if($record->devisGenerator){
+                                            if ($record->devisGenerator) {
                                                 return 'Devis en cours';
                                             }
 
@@ -377,12 +397,12 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                     ->label('')
                                                     ->getStateUsing(function (Generator $record) {
                                                         $state = null;
-                                                        
-                                                        if($record->contractGenerator){
+
+                                                        if ($record->contractGenerator) {
                                                             $state =  $record->contractGenerator?->contract?->is_active;
                                                             return BadgetWidget::boleanToBadget($state, 'En cours', 'Terminé');
                                                         }
-                                                        if($record->devisGenerator){
+                                                        if ($record->devisGenerator) {
                                                             $state =  $record->devisGenerator?->devis?->is_active;
                                                             return BadgetWidget::boleanToBadget($state, 'En cours', 'Terminé');
                                                         }
@@ -392,10 +412,10 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                 ImageEntry::make('logo')
                                                     ->label('')
                                                     ->getStateUsing(function (Generator $record) {
-                                                        if($record->contractGenerator){
+                                                        if ($record->contractGenerator) {
                                                             return $record->contractGenerator->contract->customer->logo ?? "customer.png";
                                                         }
-                                                        if($record->devisGenerator){
+                                                        if ($record->devisGenerator) {
                                                             return $record->devisGenerator->devis->customer->logo ?? "customer.png";
                                                         }
                                                         return null;
@@ -405,54 +425,54 @@ class GeneratorResource extends Resource implements HasShieldPermissions
 
                                                 TextEntry::make('number')
                                                     ->label(function (Generator $record) {
-                                                        if($record->contractGenerator){
+                                                        if ($record->contractGenerator) {
                                                             return 'N° Contrat';
                                                         }
-                                                        if($record->devisGenerator){
+                                                        if ($record->devisGenerator) {
                                                             return 'N° Devis';
                                                         }
                                                         return null;
                                                     })
-                                                     ->getStateUsing(function (Generator $record) {
-                                                        if($record->contractGenerator){
+                                                    ->getStateUsing(function (Generator $record) {
+                                                        if ($record->contractGenerator) {
                                                             return $record->contractGenerator?->contract?->number ?? null;
                                                         }
-                                                        if($record->devisGenerator){
+                                                        if ($record->devisGenerator) {
                                                             return $record->devisGenerator?->devis?->number ?? null;
                                                         }
                                                         return null;
                                                     })
-                                                    ->url(fn(Generator $record) => $record->devisGenerator != null ? url('/admin/devis/' . $record->devisGenerator?->devis?->id ) : null)
+                                                    ->url(fn(Generator $record) => $record->devisGenerator != null ? url('/admin/devis/' . $record->devisGenerator?->devis?->id) : null)
                                                     ->extraAttributes(['class' => 'font-bold']),
 
                                                 TextEntry::make('customer-name')
                                                     ->label('Client')
-                                                     ->getStateUsing(function (Generator $record) {
-                                                        if($record->contractGenerator){
+                                                    ->getStateUsing(function (Generator $record) {
+                                                        if ($record->contractGenerator) {
                                                             return $record->contractGenerator?->contract?->customer?->name ?? null;
                                                         }
-                                                        if($record->devisGenerator){
+                                                        if ($record->devisGenerator) {
                                                             return $record->devisGenerator?->devis?->customer?->name ?? null;
                                                         }
                                                         return null;
                                                     })
-                                                    ->limit(10)
+                                                    ->limit(length: 16)
                                                     ->extraAttributes(['class' => 'font-bold']),
 
                                                 TextEntry::make('forfait')
                                                     ->label(function (Generator $record) {
-                                                        if($record->contractGenerator){
+                                                        if ($record->contractGenerator) {
                                                             return 'Forfait mensuel';
                                                         }
-                                                        if($record->devisGenerator){
+                                                        if ($record->devisGenerator) {
                                                             return 'Coût total du devis';
                                                         }
                                                     })
-                                                      ->getStateUsing(function (Generator $record) {
-                                                        if($record->contractGenerator){
+                                                    ->getStateUsing(function (Generator $record) {
+                                                        if ($record->contractGenerator) {
                                                             return $record->contractGenerator?->contract?->forfait;
                                                         }
-                                                        if($record->devisGenerator){
+                                                        if ($record->devisGenerator) {
                                                             return $record->devisGenerator?->devis?->forfait;
                                                         }
                                                         return null;
@@ -461,33 +481,34 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                     ->extraAttributes(['class' => 'font-bold'])
                                                     ->columnSpanFull(),
 
-                                               
+
                                                 TextEntry::make('start_date')
                                                     ->date('d/m/Y')
                                                     ->getStateUsing(function (Generator $record) {
-                                                        if($record->contractGenerator){
+                                                        if ($record->contractGenerator) {
                                                             return $record->contractGenerator?->contract?->start_date;
                                                         }
-                                                        if($record->devisGenerator){
+                                                        if ($record->devisGenerator) {
                                                             return $record->devisGenerator?->devis?->start_date;
                                                         }
                                                         return null;
                                                     })
                                                     ->label('A debuter le')
-                                                   ->extraAttributes([ 'class' => 'font-bold']),
+                                                    ->extraAttributes(['class' => 'font-bold']),
                                                 TextEntry::make('end_date')
                                                     ->date('d/m/Y')
                                                     ->getStateUsing(function (Generator $record) {
-                                                        if($record->contractGenerator){
+                                                        if ($record->contractGenerator) {
                                                             return $record->contractGenerator?->contract?->end_date;
                                                         }
-                                                        if($record->devisGenerator){
+                                                        if ($record->devisGenerator) {
                                                             return $record->devisGenerator?->devis?->end_date;
                                                         }
                                                         return null;
                                                     })
                                                     ->label('Se termine le')
                                                     ->color('danger'),
+
 
                                             ]),
                                     ]),
@@ -497,10 +518,10 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                     ->columns(2)
                                     ->schema([
                                         \Filament\Infolists\Components\Section::make(function (Generator $record) {
-                                            if($record->contractGenerator){
+                                            if ($record->contractGenerator) {
                                                 return 'Details';
                                             }
-                                            if($record->devisGenerator){
+                                            if ($record->devisGenerator) {
                                                 return 'Details';
                                             }
                                             return "Aucun Details";
@@ -516,35 +537,35 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                             ->label('Nom')
                                                             ->limit(20)
                                                             ->getStateUsing(function (Generator $record) {
-                                                            if($record->devisGenerator){
-                                                                return $record->devisGenerator?->devis?->customer?->contact_c_name;
-                                                            }
-                                                            return null;
-                                                        })
-                                                        ->extraAttributes([ 'class' => 'font-bold']),
+                                                                if ($record->devisGenerator) {
+                                                                    return $record->devisGenerator?->devis?->customer?->contact_c_name;
+                                                                }
+                                                                return null;
+                                                            })
+                                                            ->extraAttributes(['class' => 'font-bold']),
                                                         TextEntry::make('contact_c_phone')
                                                             ->label('Téléphone')
-                                                             ->getStateUsing(function (Generator $record) {
-                                                            if($record->devisGenerator){
-                                                                return $record->devisGenerator?->devis?->customer?->contact_c_phone;
-                                                            }
-                                                            return null;
-                                                        })
-                                                           ->extraAttributes([ 'class' => 'font-bold']),
+                                                            ->getStateUsing(function (Generator $record) {
+                                                                if ($record->devisGenerator) {
+                                                                    return $record->devisGenerator?->devis?->customer?->contact_c_phone;
+                                                                }
+                                                                return null;
+                                                            })
+                                                            ->extraAttributes(['class' => 'font-bold']),
 
-                                                           TextEntry::make('contact_c_email')
+                                                        TextEntry::make('contact_c_email')
                                                             ->label('Email')
-                                                             ->getStateUsing(function (Generator $record) {
-                                                            if($record->devisGenerator){
-                                                                return $record->devisGenerator?->devis?->customer?->contact_c_email;
-                                                            }
-                                                            if($record->devisGenerator){
-                                                                return $record->devisGenerator?->devis?->customer?->contact_c_email;
-                                                            }
-                                                            return null;
-                                                        })
-                                                           ->extraAttributes([ 'class' => 'font-bold'])
-                                                           ->columnSpanFull(),
+                                                            ->getStateUsing(function (Generator $record) {
+                                                                if ($record->devisGenerator) {
+                                                                    return $record->devisGenerator?->devis?->customer?->contact_c_email;
+                                                                }
+                                                                if ($record->devisGenerator) {
+                                                                    return $record->devisGenerator?->devis?->customer?->contact_c_email;
+                                                                }
+                                                                return null;
+                                                            })
+                                                            ->extraAttributes(['class' => 'font-bold'])
+                                                            ->columnSpanFull(),
                                                     ]),
 
                                                 \Filament\Infolists\Components\Section::make('Contact sur site')
@@ -554,64 +575,64 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                         TextEntry::make('contact_c_name')
                                                             ->label('Nom')
                                                             ->getStateUsing(function (Generator $record) {
-                                                            if($record->devisGenerator){
-                                                                return $record->devisGenerator?->contact_name;
-                                                            }
-                                                            return null;
-                                                        })
-                                                        ->extraAttributes([ 'class' => 'font-bold']),
+                                                                if ($record->devisGenerator) {
+                                                                    return $record->devisGenerator?->contact_name;
+                                                                }
+                                                                return null;
+                                                            })
+                                                            ->extraAttributes(['class' => 'font-bold']),
                                                         TextEntry::make('contact_c_phone')
                                                             ->label('Téléphone')
-                                                             ->getStateUsing(function (Generator $record) {
-                                                            if($record->devisGenerator){
-                                                                return $record->devisGenerator?->contact_phone;
-                                                            }
-                                                            return null;
-                                                        })
-                                                           ->extraAttributes([ 'class' => 'font-bold']),
+                                                            ->getStateUsing(function (Generator $record) {
+                                                                if ($record->devisGenerator) {
+                                                                    return $record->devisGenerator?->contact_phone;
+                                                                }
+                                                                return null;
+                                                            })
+                                                            ->extraAttributes(['class' => 'font-bold']),
 
-                                                           TextEntry::make('contact_c_email')
+                                                        TextEntry::make('contact_c_email')
                                                             ->label('Email')
-                                                             ->getStateUsing(function (Generator $record) {
-                                                            if($record->devisGenerator){
-                                                                return $record->devisGenerator?->contact_email;
-                                                            }
-                                                            return null;
-                                                        })
-                                                           ->extraAttributes([ 'class' => 'font-bold'])
-                                                           ->columnSpanFull(),
+                                                            ->getStateUsing(function (Generator $record) {
+                                                                if ($record->devisGenerator) {
+                                                                    return $record->devisGenerator?->contact_email;
+                                                                }
+                                                                return null;
+                                                            })
+                                                            ->extraAttributes(['class' => 'font-bold'])
+                                                            ->columnSpanFull(),
                                                     ]),
 
                                                 \Filament\Infolists\Components\Section::make('Localisation du site')
                                                     ->columns(2)
                                                     ->columnSpan(['lg' => 1])
                                                     ->schema([
-                                                       TextEntry::make('site')
+                                                        TextEntry::make('site')
                                                             ->label('Site')
                                                             ->getStateUsing(function (Generator $record) {
-                                                            if($record->devisGenerator){
-                                                                return $record->devisGenerator?->site;
-                                                            }
-                                                            return null;
-                                                        })
-                                                        ->extraAttributes([ 'class' => 'font-bold']),
+                                                                if ($record->devisGenerator) {
+                                                                    return $record->devisGenerator?->site;
+                                                                }
+                                                                return null;
+                                                            })
+                                                            ->extraAttributes(['class' => 'font-bold']),
                                                         TextEntry::make('code_site')
                                                             ->label('Code')
-                                                             ->getStateUsing(function (Generator $record) {
-                                                            if($record->devisGenerator){
-                                                                return $record->devisGenerator?->code_site;
-                                                            }
-                                                            return null;
-                                                        })
-                                                           ->extraAttributes([ 'class' => 'font-bold']),
+                                                            ->getStateUsing(function (Generator $record) {
+                                                                if ($record->devisGenerator) {
+                                                                    return $record->devisGenerator?->code_site;
+                                                                }
+                                                                return null;
+                                                            })
+                                                            ->extraAttributes(['class' => 'font-bold']),
 
-                                                           TextEntry::make('adresse')
+                                                        TextEntry::make('adresse')
                                                             ->label(label: 'Adresse')
-                                                           ->extraAttributes([ 'class' => 'font-bold'])
-                                                           ->columnSpanFull(),
+                                                            ->extraAttributes(['class' => 'font-bold'])
+                                                            ->columnSpanFull(),
                                                     ]),
 
-                                                
+
 
                                                 // TextEntry::make('vu')
                                                 //     ->label('Vue sur la carte')
@@ -645,90 +666,90 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                             ->schema([
                                 RepeatableEntry::make("devisGenerator.devis.interventions")
                                     ->label('')
-                                   ->contained(false)
+                                    ->contained(false)
                                     ->schema([
-                                        \Filament\Infolists\Components\Section::make(fn(Intervention $record) => InterventionType::from($record->type)->label(). " du " . DateUtils::format($record->date_planifiee))
-                                        ->collapsible()
-                                        ->collapsed(function (Intervention $record) {
-                                            if($record->status == InterventionStatus::EN_COURS->value || $record->status == InterventionStatus::PLANIFIEE->value){
-                                                return false;
-                                            }
-                                            return true;
-                                        })
-                                        ->extraAlpineAttributes(['class' => 'border-b border-gray-200'])
-                                        ->schema([
-                                            
-                                        \Filament\Infolists\Components\Group::make()
-                                        ->columns(2)
-                                        ->schema([
-                                            TextEntry::make('status')
-                                            ->label('')
-                                            ->getStateUsing(function($record){ 
-                                                 $stats = InterventionStatus::from($record->status)->label();
-
-                                                 return BadgetWidget::interventionStatusBadget($stats);
-                                                })
-                                            ->html(),
-
-                                            \Filament\Infolists\Components\Actions::make([
-                                                \Filament\Infolists\Components\Actions\Action::make('view')
-                                                    ->label('Détail')
-                                                    ->url(fn($record) => url('admin/intervention-devis/'.$record->id))
-                                                    ->icon('heroicon-o-eye')
-                                                    ->color('gray')
-                                                    ->size(ActionSize::Small),
-                                            ])->alignRight(),
-                                        ]),
-                                        
-                                        TextEntry::make('created_at')
-                                            ->label('Créer le')
-                                            ->inlineLabel()
-                                            ->date('d/m/y à H:i'),
-
-                                            \Filament\Infolists\Components\Group::make()
-                                            ->columns(2)
+                                        \Filament\Infolists\Components\Section::make(fn(Intervention $record) => InterventionType::from($record->type)->label() . " du " . DateUtils::format($record->date_planifiee))
+                                            ->collapsible()
+                                            ->collapsed(function (Intervention $record) {
+                                                if ($record->status == InterventionStatus::EN_COURS->value || $record->status == InterventionStatus::PLANIFIEE->value) {
+                                                    return false;
+                                                }
+                                                return true;
+                                            })
+                                            ->extraAlpineAttributes(['class' => 'border-b border-gray-200'])
                                             ->schema([
-                                                TextEntry::make('identifiant')
-                                                ->label('Numéro de Bon d\'intervention')
-                                                ->extraAttributes(['class' => 'font-bold']),
-    
-                                            TextEntry::make('type')
-                                                ->label('Type')
-                                                ->getStateUsing(fn($record) => InterventionType::from($record->type)->label())
-                                                ->extraAttributes(['class' => 'font-bold']),
-                                            ]),
 
-                                        TextEntry::make('description_panne')
-                                            ->label('Description de la panne')
-                                            ->color('secondary')
-                                            ->html()
-                                            ->columnSpanFull(),
+                                                \Filament\Infolists\Components\Group::make()
+                                                    ->columns(2)
+                                                    ->schema([
+                                                        TextEntry::make('status')
+                                                            ->label('')
+                                                            ->getStateUsing(function ($record) {
+                                                                $stats = InterventionStatus::from($record->status)->label();
 
-                                        \Filament\Infolists\Components\Group::make()
-                                            ->columns(4)
-                                            ->columnSpanFull()
-                                            ->schema([
-                                                TextEntry::make('date_prise_appel')
-                                                    ->label('Date de prise d’appel')
-                                                    ->date('d/m/Y')
-                                                   ->extraAttributes([ 'class' => 'font-bold']),
+                                                                return BadgetWidget::interventionStatusBadget($stats);
+                                                            })
+                                                            ->html(),
 
-                                                TextEntry::make('date_planifiee')
-                                                    ->label('Date planifiée')
-                                                    ->date('d/m/Y à H:i')
-                                                    ->color('danger'),
+                                                        \Filament\Infolists\Components\Actions::make([
+                                                            \Filament\Infolists\Components\Actions\Action::make('view')
+                                                                ->label('Détail')
+                                                                ->url(fn($record) => url('admin/intervention-devis/' . $record->id))
+                                                                ->icon('heroicon-o-eye')
+                                                                ->color('gray')
+                                                                ->size(ActionSize::Small),
+                                                        ])->alignRight(),
+                                                    ]),
 
-                                                TextEntry::make('start_date')
-                                                    ->label('Date début')
-                                                    ->date('d/m/Y')
-                                                   ->extraAttributes([ 'class' => 'font-bold']),
+                                                TextEntry::make('created_at')
+                                                    ->label('Créer le')
+                                                    ->inlineLabel()
+                                                    ->date('d/m/y à H:i'),
 
-                                                TextEntry::make('end_date')
-                                                    ->label('Date limite')
-                                                    ->date('d/m/Y')
-                                                    ->color('danger'),
-                                            ]),
-                                         ])
+                                                \Filament\Infolists\Components\Group::make()
+                                                    ->columns(2)
+                                                    ->schema([
+                                                        TextEntry::make('identifiant')
+                                                            ->label('Numéro de Bon d\'intervention')
+                                                            ->extraAttributes(['class' => 'font-bold']),
+
+                                                        TextEntry::make('type')
+                                                            ->label('Type')
+                                                            ->getStateUsing(fn($record) => InterventionType::from($record->type)->label())
+                                                            ->extraAttributes(['class' => 'font-bold']),
+                                                    ]),
+
+                                                TextEntry::make('description_panne')
+                                                    ->label('Description de la panne')
+                                                    ->color('secondary')
+                                                    ->html()
+                                                    ->columnSpanFull(),
+
+                                                \Filament\Infolists\Components\Group::make()
+                                                    ->columns(4)
+                                                    ->columnSpanFull()
+                                                    ->schema([
+                                                        TextEntry::make('date_prise_appel')
+                                                            ->label('Date de prise d’appel')
+                                                            ->date('d/m/Y')
+                                                            ->extraAttributes(['class' => 'font-bold']),
+
+                                                        TextEntry::make('date_planifiee')
+                                                            ->label('Date planifiée')
+                                                            ->date('d/m/Y à H:i')
+                                                            ->color('danger'),
+
+                                                        TextEntry::make('start_date')
+                                                            ->label('Date début')
+                                                            ->date('d/m/Y')
+                                                            ->extraAttributes(['class' => 'font-bold']),
+
+                                                        TextEntry::make('end_date')
+                                                            ->label('Date limite')
+                                                            ->date('d/m/Y')
+                                                            ->color('danger'),
+                                                    ]),
+                                            ])
                                     ]),
                             ]),
                         Tabs\Tab::make('Pièces de jointes')
@@ -745,26 +766,26 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                             ->icon('heroicon-o-arrow-path')
                             ->iconPosition(IconPosition::After)
                             ->schema([
-                               \Filament\Infolists\Components\View::make('filament.infolist.components.checklist-render')
+                                \Filament\Infolists\Components\View::make('filament.infolist.components.checklist-render')
                                     ->label('')
                                     ->viewData(['record'])
                             ]),
-                            Tabs\Tab::make('Historique des interventions')
+                        Tabs\Tab::make('Historique des interventions')
                             ->icon('heroicon-o-arrow-path')
                             ->iconPosition(IconPosition::After)
                             ->schema([
-                                 Livewire::make(InterventionHistory::class)
+                                Livewire::make(InterventionHistory::class)
                                     ->data([
                                         'generatorId' => $infolist->getRecord()->id,
                                         'model' => ReportLocation::class,
                                     ]),
                             ]),
 
-                            Tabs\Tab::make('Historique des locations')
+                        Tabs\Tab::make('Historique des locations')
                             ->icon('heroicon-o-inbox-stack')
                             ->iconPosition(IconPosition::After)
                             ->schema([
-                                 Livewire::make(LocationHistory::class)
+                                Livewire::make(LocationHistory::class)
                                     ->data([
                                         'generatorId' => $infolist->getRecord()->id,
                                         'model' => DevisGenerator::class,
@@ -772,7 +793,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                             ]),
                     ]),
 
-                    
+
             ]);
     }
 }

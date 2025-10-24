@@ -1,3 +1,4 @@
+@import "tailwindcss";
 
 body {
     font-size: 1em;
@@ -52,6 +53,18 @@ body {
 
 .fi-btn {
     font-size: 1rem; 
+}
+ 
+.fi-ta-text {
+    @apply py-1
+}
+ 
+.fi-ta-table > .whitespace-nowrap {
+    @apply py-1
+}
+ 
+.fi-ta-cell > div:has(.flex) {
+    @apply py-1
 }
 
 

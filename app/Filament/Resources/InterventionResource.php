@@ -22,6 +22,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
@@ -38,6 +39,7 @@ use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+
 class InterventionResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = Intervention::class;
@@ -56,15 +58,15 @@ class InterventionResource extends Resource implements HasShieldPermissions
     public static function form(Form $form): Form
     {
 
-        $onUpdate = function(Set $set, Get $get) {
+        $onUpdate = function (Set $set, Get $get) {
             $pieces = $get('../../pieces');
 
-           if ($pieces) {
+            if ($pieces) {
                 foreach ($pieces as $piece) {
-                $price = Piece::find($piece['piece_id'])?->pv;
+                    $price = Piece::find($piece['piece_id'])?->pv;
 
-                $set('price', $price?? 0);
-            }
+                    $set('price', $price ?? 0);
+                }
             }
         };
 
@@ -82,7 +84,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                     ->disabled()
                                     ->columnSpanFull(),
 
-                              TextInput::make('numero')
+                                TextInput::make('numero')
                                     ->label('Numéro')
                                     ->default(NumberUtils::intevention_numero('INT-MAINT'))
                                     ->disabled()
@@ -101,13 +103,13 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                     ->required()
                                     ->visible(fn(callable $get) => $get('type_activite') == "1"),
 
-                                WidgetUtils::generatorSelectWidget(type: null, isDispo:false, onUpdate: function (Set $set, $state) {
-                                        $generator = Generator::find($state);
+                                WidgetUtils::generatorSelectWidget(type: null, isDispo: false, onUpdate: function (Set $set, $state) {
+                                    $generator = Generator::find($state);
 
-                                        $set('houres', $generator?->houres);
-                                        $set('next_vidange', $generator?->next_vidange);
-                                        $set('prochain_visite', $generator?->prochain_visite);
-                                    })
+                                    $set('houres', $generator?->houres);
+                                    $set('next_vidange', $generator?->next_vidange);
+                                    $set('prochain_visite', $generator?->prochain_visite);
+                                })
                                     ->columnSpanFull()
                                     ->required()
                                     ->reactive()
@@ -129,9 +131,9 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                         TextInput::make('serial_number')
                                             ->label("Numéro de série")->columnSpanFull(),
                                     ])->visible(fn(callable $get) => $get('type_activite') == "0"),
-                                
 
-                                DatePicker::make('date_prise_appel')
+
+                                DateTimePicker::make('date_prise_appel')
                                     ->label('Date de prise d’appel')
                                     ->default(now())
                                     ->required(),
@@ -140,7 +142,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                     ->label('Date planifiée'),
 
                                 TextInput::make('identifiant')
-                                ->unique(ignoreRecord:true)
+                                    ->unique(ignoreRecord: true)
                                     ->label('Numéro de Bon de travaux'),
 
                                 Select::make('type')
@@ -148,43 +150,43 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                     ->options(collect(InterventionType::cases())
                                         ->mapWithKeys(fn($status) => [$status->value => $status->label()])
                                         ->toArray())
-                                        ->reactive(),
+                                    ->reactive(),
 
                                 TextInput::make('houres')
                                     ->numeric()
                                     ->label('H de fonctionnement du GE')
                                     ->formatStateUsing(function (Get $get) {
                                         $generator = Generator::find($get('generator_id'));
-                                  
+
                                         return $generator?->houres;
                                     })
                                     ->reactive()
                                     ->visible(fn(callable $get) => $get('type_activite')),
 
-                            //    TextInput::make('next_vidange')
-                            //         ->numeric()
-                            //         ->reactive()
-                            //         ->disabled()
-                            //         ->dehydrated(true)
-                            //         ->label('Temps restant avant vidange')
-                            //         ->formatStateUsing(function (Get $get) {
-                            //             $generator = Generator::find($get('generator_id'));
-                                  
-                            //             return $generator?->next_vidange;
-                            //         })->visible(fn(callable $get) => $get('type_activite')),
-                                    
-                                        TextInput::make('prochain_visite')
+                                //    TextInput::make('next_vidange')
+                                //         ->numeric()
+                                //         ->reactive()
+                                //         ->disabled()
+                                //         ->dehydrated(true)
+                                //         ->label('Temps restant avant vidange')
+                                //         ->formatStateUsing(function (Get $get) {
+                                //             $generator = Generator::find($get('generator_id'));
+
+                                //             return $generator?->next_vidange;
+                                //         })->visible(fn(callable $get) => $get('type_activite')),
+
+                                TextInput::make('prochain_visite')
                                     ->numeric()
                                     ->reactive()
                                     ->label('Vidange programmée')
                                     ->formatStateUsing(function (Get $get) {
                                         $generator = Generator::find($get('generator_id'));
-                                  
+
                                         return $generator?->prochain_visite;
                                     })->visible(fn(callable $get) => $get('type_activite')),
 
                                 WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true, type: null, isDispo: false)
-                                 ->label("GE remplacé")
+                                    ->label("GE remplacé")
                                     ->columnSpanFull()
                                     ->reactive()
                                     ->required()
@@ -203,33 +205,33 @@ class InterventionResource extends Resource implements HasShieldPermissions
                 Group::make()
                     ->schema([
                         Section::make('Infos internes')
-            ->columns(1)
-            ->schema([
-                DateTimePicker::make('start_date')
-                    ->label('Date de début')
-                    ->reactive(),
+                            ->columns(1)
+                            ->schema([
+                                DateTimePicker::make('start_date')
+                                    ->label('Date de début')
+                                    ->reactive(),
 
-                DateTimePicker::make('end_date')
-                    ->label('Date de fin'),
+                                DateTimePicker::make('end_date')
+                                    ->label('Date de fin'),
 
-                Select::make('status')
-                    ->label('Statut')
-                    ->options(collect(InterventionStatus::cases())
-                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                        ->toArray())
-                        ->required(),
+                                Select::make('status')
+                                    ->label('Statut')
+                                    ->options(collect(InterventionStatus::cases())
+                                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                        ->toArray())
+                                    ->required(),
 
-                Select::make('interventionTechniciens.technicien_id')
-                    ->relationship('interventionTechniciens', 'name')
-                    ->label('Techniciens assignés')
-                    ->multiple()
-                    ->preload()
-                    ->searchable()
-                    ->placeholder('Sélectionner un technicien'),
+                                Select::make('interventionTechniciens.technicien_id')
+                                    ->relationship('interventionTechniciens', 'name')
+                                    ->label('Techniciens assignés')
+                                    ->multiple()
+                                    ->preload()
+                                    ->searchable()
+                                    ->placeholder('Sélectionner un technicien'),
 
-                TextInput::make('numero_devis')
-                ->label('Numéro du devis')
-            ]),
+                                TextInput::make('numero_devis')
+                                    ->label('Numéro du devis')
+                            ]),
                         Section::make('Autre information')
                             ->columns(2)
                             ->schema([
@@ -242,36 +244,36 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                     ->relationship('fiches')
                                     ->addActionLabel('Ajouter une pièce jointe')
                                     ->schema([
-                                       FileUpload::make('fiche')
+                                        FileUpload::make('fiche')
                                             ->hiddenLabel()
                                             ->disk('devis')
                                             ->downloadable()
                                             ->openable()
                                             ->columnSpanFull()
                                             ->storeFileNamesIn('attachment_file_names'),
-                                            
+
                                     ])->columnSpanFull(),
                             ]),
-                        ])->columnSpan(['lg' => 1]),
+                    ])->columnSpan(['lg' => 1]),
 
 
                 // Section::make('Pièces livrées')
                 //     ->columns(2)
-                    // ->schema([
-                    TableRepeater::make('pieces')
+                // ->schema([
+                TableRepeater::make('pieces')
                     ->label('Pièces livrées')
                     ->emptyLabel('Aucune pièce livrée')
-                      ->headers([
-                            Header::make('piece_id')
+                    ->headers([
+                        Header::make('piece_id')
                             ->label('Pièce'),
-                            Header::make('qty')
+                        Header::make('qty')
                             ->label('Quantité'),
-                            Header::make('price')
+                        Header::make('price')
                             ->label('Prix'),
-                        ])
+                    ])
                     ->formatStateUsing(function ($record) {
-                        if(empty($record->pieces)) return [];
-                      
+                        if (empty($record->pieces)) return [];
+
                         return $record->pieces?->map(function ($piece) {
                             return [
                                 'piece_id' => $piece->id,
@@ -286,11 +288,11 @@ class InterventionResource extends Resource implements HasShieldPermissions
                             ->reactive()
                             ->required(),
                         TextInput::make('qty')
-                        ->label('Quantité')
-                        ->numeric()
-                        ->minValue(1)
-                        ->default(1)
-                        ->required(),
+                            ->label('Quantité')
+                            ->numeric()
+                            ->minValue(1)
+                            ->default(1)
+                            ->required(),
                         TextInput::make('price')
                             ->label('Prix unitaire')
                             ->numeric()
@@ -299,7 +301,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                             ->required(),
                     ])->columnSpanFull()
                     ->columns(3)
-                    // ])->columnSpanFull(),
+                // ])->columnSpanFull(),
 
             ])->columns(3);
     }
@@ -312,48 +314,57 @@ class InterventionResource extends Resource implements HasShieldPermissions
     public static function table(Table $table): Table
     {
         return $table
-        ->query(static::getEloquentQuery()->where('type_service', 1))
-        ->defaultSort('date_planifiee', 'desc')
-        ->columns(InterventionUtil::table())
+            ->query(static::getEloquentQuery()->where('type_service', 1))
+            ->defaultSort('date_planifiee', 'desc')
+            ->defaultPaginationPageOption(50)
+            ->columns(InterventionUtil::table())
             ->filters([
                 Filter::make('status')
-                ->form([
-                    CheckboxList::make('status')
-                    ->options(collect(InterventionStatus::cases())
-                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                        ->toArray()),
+                    ->form([
+                        CheckboxList::make('type_activite')
+                            ->label("Type d'activité")
+                            ->options([
+                                '1' => "Sous contrat",
+                                '0' => "Hors contrat"
+                            ])
+                            ->reactive(),
+                        CheckboxList::make('status')
+                            ->options(collect(InterventionStatus::cases())
+                                ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                ->toArray()),
 
-                    Checkbox::make('later')
-                        ->label('En retard')
-                        ->reactive(),
+                        Checkbox::make('later')
+                            ->label('En retard')
+                            ->reactive(),
 
-                    DatePicker::make('date_planifiee')
-                        ->label('Date planifiée'),
+                        DatePicker::make('date_planifiee')
+                            ->label('Date planifiée'),
 
-                    DatePicker::make('date_prise_appel')
-                        ->label('Date de prise d\'appel'),
+                        DatePicker::make('date_prise_appel')
+                            ->label('Date de prise d\'appel'),
 
-                    Select::make('type')
-                        ->label('Type')
-                        ->options(collect(InterventionType::cases())
-                            ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                            ->toArray()),
-                ])
-                ->query(
-                    fn (Builder $query, array $data) => $query
-                        ->when($data['status'] ?? null, fn (Builder $query, array $status) => $query->whereIn('status', $status))
-                        ->when($data['date_planifiee'] ?? null, fn (Builder $query, string $date) => $query->whereDate('date_planifiee', '=', $date))
-                        ->when($data['date_prise_appel'] ?? null, fn (Builder $query, string $date) => $query->whereDate('date_prise_appel', '=', $date))
-                        ->when($data['type'] ?? null, fn (Builder $query, string $type) => $query->where('type', '=', $type))
-                        ->when($data['later'] ?? null, fn (Builder $query) => $query->where('status', '=', InterventionStatus::PLANIFIEE->value)
-                        ->whereDate('date_planifiee', '<', now()))
-                )
+                        Select::make('type')
+                            ->label('Type')
+                            ->options(collect(InterventionType::cases())
+                                ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                ->toArray()),
+                    ])
+                    ->query(
+                        fn(Builder $query, array $data) => $query
+                            ->when($data['type_activite'] ?? null, fn(Builder $query, array $type) => $query->where('type_activite',  $type))
+                            ->when($data['status'] ?? null, fn(Builder $query, array $status) => $query->whereIn('status', $status))
+                            ->when($data['date_planifiee'] ?? null, fn(Builder $query, string $date) => $query->whereDate('date_planifiee', '=', $date))
+                            ->when($data['date_prise_appel'] ?? null, fn(Builder $query, string $date) => $query->whereDate('date_prise_appel', '=', $date))
+                            ->when($data['type'] ?? null, fn(Builder $query, string $type) => $query->where('type', '=', $type))
+                            ->when($data['later'] ?? null, fn(Builder $query) => $query->where('status', '=', InterventionStatus::PLANIFIEE->value)
+                                ->whereDate('date_planifiee', '<', now()))
+                    )
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
-                ]), 
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -397,8 +408,8 @@ class InterventionResource extends Resource implements HasShieldPermissions
     {
         return $infolist
             ->schema([
-                  \Filament\Infolists\Components\View::make('components.report-header')
-                    ->columnSpanFull()  ->viewData([
+                \Filament\Infolists\Components\View::make('components.report-header')
+                    ->columnSpanFull()->viewData([
                         'numero' => $infolist->record->numero,
                         'date' => Carbon::parse($infolist->record->date_planifiee)->format('d/m/Y'),
                     ]),

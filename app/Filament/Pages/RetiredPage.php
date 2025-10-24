@@ -50,15 +50,15 @@ class RetiredPage extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.pages.retired-page';
 
-            public static function canAccess(): bool
+    public static function canAccess(): bool
     {
         return auth()->user()->hasPermissionTo('page_RetiredPage');
     }
-      public static function getNavigationBadge(): ?string
+    public static function getNavigationBadge(): ?string
     {
         $count = Intervention::where('type',  InterventionType::RETRAIT->value,)
-        ->where('type_service', '=', 0)
-        ->count();
+            ->where('type_service', '=', 0)
+            ->count();
         return $count;
     }
 
@@ -69,6 +69,7 @@ class RetiredPage extends Page implements HasForms, HasTable
                 ->label('Nouveau retrait')
                 ->modalHeading('Nouveau retrait')
                 ->model(Intervention::class)
+                ->modalWidth('7xl')
                 ->form([
                     Grid::make()
                         ->columns(2)
@@ -76,25 +77,25 @@ class RetiredPage extends Page implements HasForms, HasTable
                             Section::make('Informations sur le retrait')
                                 ->columns(2)
                                 ->schema([
-                                TextInput::make('numero')
-                                    ->label('Numéro')
-                                    ->default(NumberUtils::intevention_numero('INT-LOC'))
-                                    ->disabled()
-                                    ->columnSpanFull(),
+                                    TextInput::make('numero')
+                                        ->label('Numéro')
+                                        ->default(NumberUtils::intevention_numero('INT-LOC'))
+                                        ->disabled()
+                                        ->columnSpanFull(),
 
-                                     TextInput::make('identifiant')
-                                    ->label('Numéro de Bon de travaux')
-                                     ->columnSpanFull(),
+                                    TextInput::make('identifiant')
+                                        ->label('Numéro de Bon de travaux')
+                                        ->columnSpanFull(),
 
-                                   WidgetUtils::contractSelectWidget('devis_id')
-                                    ->columnSpanFull()
-                                    ->reactive()
-                                    ->label("Devis"),
+                                    WidgetUtils::contractSelectWidget('devis_id')
+                                        ->columnSpanFull()
+                                        ->reactive()
+                                        ->label("Devis"),
 
-                                 WidgetUtils::generatorSelectWidget(isDispo:false)
-                                    ->columnSpanFull()
-                                    ->reactive()
-                                    ->visible(fn(callable $get) => $get('devis_id') != null),
+                                    WidgetUtils::generatorSelectWidget(isDispo: false)
+                                        ->columnSpanFull()
+                                        ->reactive()
+                                        ->visible(fn(callable $get) => $get('devis_id') != null),
                                     DatePicker::make('date_prise_appel')
                                         ->label('Date de prise d’appel')
                                         ->default(now())
@@ -108,28 +109,28 @@ class RetiredPage extends Page implements HasForms, HasTable
                                         ->columnSpanFull(),
                                 ])->columnSpan(['lg' => 1]),
                             Section::make('Infos internes')
-            ->columns(1)
-            ->schema([
-                DatePicker::make('start_date')
-                    ->label('Date de début'),
+                                ->columns(1)
+                                ->schema([
+                                    DatePicker::make('start_date')
+                                        ->label('Date de début'),
 
-                DatePicker::make('end_date')
-                    ->label('Date limite'),
+                                    DatePicker::make('end_date')
+                                        ->label('Date limite'),
 
-                Select::make('status')
-                    ->label('Statut')
-                    ->options(collect(InterventionStatus::cases())
-                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                        ->toArray())
-                    ->required(),
-                Select::make('technicien_id')
-                    ->options(fn() => \App\Models\Technicien::all()->pluck('name', 'id'))
-                    ->label('Techniciens assignés')
-                    ->multiple()
-                    ->preload()
-                    ->searchable()
-                    ->placeholder('Sélectionner un technicien'),
-            ])->columnSpan(['lg' => 1]),
+                                    Select::make('status')
+                                        ->label('Statut')
+                                        ->options(collect(InterventionStatus::cases())
+                                            ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                            ->toArray())
+                                        ->required(),
+                                    Select::make('technicien_id')
+                                        ->options(fn() => \App\Models\Technicien::all()->pluck('name', 'id'))
+                                        ->label('Techniciens assignés')
+                                        ->multiple()
+                                        ->preload()
+                                        ->searchable()
+                                        ->placeholder('Sélectionner un technicien'),
+                                ])->columnSpan(['lg' => 1]),
                         ])
                 ])->action(function (array $data) {
                     $data['numero'] = NumberUtils::intevention_numero('INT-LOC');
@@ -137,7 +138,7 @@ class RetiredPage extends Page implements HasForms, HasTable
                     $data['type_service'] = '0';
                     $data['type'] = InterventionType::RETRAIT->value;
                     //$data['identifiant'] = NumberUtils::generate();
-                
+
                     $intervention = $devis->interventions()->create($data);
 
                     $technicians = $data['technicien_id'] ?? [];
@@ -147,11 +148,11 @@ class RetiredPage extends Page implements HasForms, HasTable
                     DevisGenerator::where('devis_id', $devis->id)
                         ->where('generator_id', $data['generator_id'])
                         ->update(['is_retired' => true]);
-                    if($data['status'] == InterventionStatus::TERMINEE->value){
+                    if ($data['status'] == InterventionStatus::TERMINEE->value) {
                         $intervention->generator->status = GeneratorStatus::EN_REVU->value;
                         $intervention->generator->save();
                     }
-                    
+
                     Notification::make()
                         ->title('Retrait enregistré')
                         ->success()
@@ -162,32 +163,31 @@ class RetiredPage extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(static::$model::query()
-            ->where('type', InterventionType::RETRAIT)
-            ->where('type_service', '=', 0)
+            ->query(
+                static::$model::query()
+                    ->where('type', InterventionType::RETRAIT)
+                    ->where('type_service', '=', 0)
             )
             ->columns(InterventionUtil::table("Devis"))
-            ->recordUrl(fn($record) => url('admin/intervention-devis/'.$record->id))
+            ->recordUrl(fn($record) => url('admin/intervention-devis/' . $record->id))
             ->filters([
                 // ...
             ])
             ->actions([
                 ActionGroup::make([
                     ViewAction::make()
-                    ->url(fn($record) => url('admin/intervention-devis/'.$record->id)),
+                        ->url(fn($record) => url('admin/intervention-devis/' . $record->id)),
                     EditAction::make()
-                    ->url(fn($record) => url('admin/intervention-devis/'.$record->id.'/edit')),
+                        ->url(fn($record) => url('admin/intervention-devis/' . $record->id . '/edit')),
                     // Action::make('cancel')
                     // ->label("Annuler")
                     // ->color('danger')
                     // ->icon('heroicon-o-x-circle')
                     // ->requiresConfirmation(),
-                ]), 
+                ]),
             ])
             ->bulkActions([
                 // ...
             ]);
     }
-
-    
 }

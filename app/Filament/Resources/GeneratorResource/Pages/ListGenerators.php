@@ -21,7 +21,7 @@ class ListGenerators extends ListRecords
     protected static ?string $title = 'Groupes électrogènes';
     public bool $category;
 
-    
+
     public function getTabs(): array
     {
         return  [
@@ -40,6 +40,10 @@ class ListGenerators extends ListRecords
             Tab::make("En révision")->query(
                 fn($query) =>
                 $query->where('status', '=', GeneratorStatus::EN_REVU->value)
+            ),
+            Tab::make("En prêt")->query(
+                fn($query) =>
+                $query->where('status', '=', GeneratorStatus::EN_PRET->value)
             ),
 
             Tab::make("Indisponible")->query(
@@ -70,14 +74,14 @@ class ListGenerators extends ListRecords
                             true => 'Tout les produits',
                         ])
                         ->afterStateUpdated(function ($state) {
-                             $this->category = $state;
+                            $this->category = $state;
                         }),
                 ])
                 ->action(function ($data) {
-                          set_time_limit(120);
+                    set_time_limit(120);
 
                     try {
-                         OdooController::syncronizeGenerator($this->category);
+                        OdooController::syncronizeGenerator($this->category);
                     } catch (\Throwable $th) {
                         Notification::make()
                             ->title('Une erreur est survenue lors de la synchronisation !')

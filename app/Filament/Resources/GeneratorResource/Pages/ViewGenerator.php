@@ -1,7 +1,10 @@
 <?php
+
 namespace App\Filament\Resources\GeneratorResource\Pages;
 
 use App\Filament\Resources\GeneratorResource;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\Tabs\Tab;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
@@ -26,9 +29,15 @@ class ViewGenerator extends ViewRecord
 
             Actions\ActionGroup::make([
                 Actions\EditAction::make()
-                    ->label('Modifier le groupe electrogene')
+                    ->label('Modifier le GE')
                     ->icon('heroicon-o-pencil'),
+                Actions\Action::make('edit_devis')
+                    ->label('Modifier la location')
+                    ->icon('heroicon-o-pencil')
+                    ->url(fn() => url("/admin/devis/{$this->record->devisGenerator?->devis_id}/edit"))
+                    ->visible(fn() => $this->record->devisGenerator !== null),
             ]),
+
         ];
     }
 }

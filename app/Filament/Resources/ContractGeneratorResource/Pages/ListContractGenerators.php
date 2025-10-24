@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ContractGeneratorResource\Pages;
 use App\Filament\Resources\ContractGeneratorResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\ListRecords\Tab;
 
 class ListContractGenerators extends ListRecords
 {
@@ -14,6 +15,25 @@ class ListContractGenerators extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+    public function getTabs(): array
+    {
+        return [
+            Tab::make('Tout'),
+            Tab::make('Sous contrat')->query(
+                fn($query) =>
+                $query->where(function ($q) {
+                    $q->whereHas('contractGenerator');
+                })
+            ),
+            Tab::make('Hors contrat')->query(
+                fn($query) =>
+                $query->where(function ($q) {
+                    $q->whereDoesntHave('contractGenerator');
+                })
+            ),
+
         ];
     }
 }

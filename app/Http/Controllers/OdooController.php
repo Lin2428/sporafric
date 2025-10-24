@@ -179,10 +179,10 @@ class OdooController extends Controller
             ]);
         }
 
-        
+
 
         foreach ($orders as $oder) {
-          
+
             $customerId = Customer::where('odoo_id', $oder['partner_id'][0] ?? null)->value('id');
             if ($customerId != null) {
                 Devis::updateOrCreate(
@@ -195,7 +195,7 @@ class OdooController extends Controller
                         'customer_id' => $customerId,
                         'number' => $oder['name'],
                         'start_date' => $oder['date_order'],
-                        'end_date' => $oder['next_action_date'] == false ? null : $oder['next_action_date'],
+                        // 'end_date' => $oder['next_action_date'] == false ? null : $oder['next_action_date'],
                         'forfait' => $oder['amount_total'],
                         'is_active' => $oder['invoice_status'] === 'to invoice' ? true : false,
                         'state' => $oder['state'],
@@ -206,7 +206,7 @@ class OdooController extends Controller
         }
 
         foreach ($linesData as $generator) {
-            
+
             $generatorId = Generator::where('odoo_id', $generator['product_template_id'][0] ?? null)->value('id');
 
             $devis = Devis::where('odoo_id', $generator['order_id'][0] ?? null)->first();
@@ -226,10 +226,10 @@ class OdooController extends Controller
                 })
                 ->first();
 
-             
+
 
             if (optional($dataExiste)->old_generator_id == null) {
-                
+
                 DevisGenerator::updateOrCreate(
                     [
                         'devis_id' => $devisId,
@@ -270,11 +270,11 @@ class OdooController extends Controller
 
         $orders = $odoo->searchRead(
             'sale.order',
-        [
-                    (['conso_interne', '=', true]),
-                    (['state', 'not in', ['draft', 'sent', 'cancel']]),
-                    (['partner_id', '=', 3969])
-                ],
+            [
+                (['conso_interne', '=', true]),
+                (['state', 'not in', ['draft', 'sent', 'cancel']]),
+                (['partner_id', '=', 3969])
+            ],
             [
                 'id',
                 'name',
@@ -289,11 +289,11 @@ class OdooController extends Controller
                 'state'
             ]
         );
-       
+
 
         foreach ($orders as $oder) {
             $customerId = Customer::where('odoo_id', $oder['partner_id'][0] ?? null)->value('id');
-    
+
             if ($customerId != null) {
                 Devis::updateOrCreate(
                     [
@@ -318,12 +318,12 @@ class OdooController extends Controller
 
     public static function syncronizePieces()
     {
-        
+
         set_time_limit(5000);
         $odoo = new OdooService();
 
         $data = $odoo->searchRead('product.template', [
-            ['categ_id', 'in', [80,239,107,284,302,59]],
+            ['categ_id', 'in', [80, 239, 107, 284, 302, 59]],
         ], [
             'id',
             'name',
@@ -332,7 +332,7 @@ class OdooController extends Controller
             'default_code',
         ]);
 
-    
+
 
         foreach ($data as $piece) {
             Piece::updateOrCreate(
