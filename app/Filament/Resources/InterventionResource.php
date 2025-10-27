@@ -122,14 +122,18 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                             ->required()
                                             ->columnSpanFull(),
 
-                                        TextInput::make('generator_name')
+                                        WidgetUtils::generatorSelectWidget(type: 2, isDispo: false, onUpdate: function (Set $set, $state) {
+                                            $generator = Generator::find($state);
+
+                                            $set('houres', $generator?->houres);
+                                            $set('next_vidange', $generator?->next_vidange);
+                                            $set('prochain_visite', $generator?->prochain_visite);
+                                        })
+                                            ->columnSpanFull()
                                             ->required()
-                                            ->label("Marque du GE"),
-                                        TextInput::make('power')
-                                            ->label("Puissance (kVA)")
-                                            ->numeric(),
-                                        TextInput::make('serial_number')
-                                            ->label("Numéro de série")->columnSpanFull(),
+                                            ->reactive(),
+                                        TextInput::make('site')
+                                            ->label("Site")->columnSpanFull(),
                                     ])->visible(fn(callable $get) => $get('type_activite') == "0"),
 
 
@@ -160,8 +164,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
 
                                         return $generator?->houres;
                                     })
-                                    ->reactive()
-                                    ->visible(fn(callable $get) => $get('type_activite')),
+                                    ->reactive(),
 
                                 //    TextInput::make('next_vidange')
                                 //         ->numeric()
@@ -183,7 +186,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                         $generator = Generator::find($get('generator_id'));
 
                                         return $generator?->prochain_visite;
-                                    })->visible(fn(callable $get) => $get('type_activite')),
+                                    }),
 
                                 WidgetUtils::generatorSelectWidget(name: "new_generator_id", isgetAll: true, type: null, isDispo: false)
                                     ->label("GE remplacé")

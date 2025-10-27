@@ -170,6 +170,7 @@
             </span>
             <span>{{ $getRecord()->generator?->contractGenerator?->site ?? $getRecord()->generator?->devisGenerator?->site }}</span>
             <!-- <span>{{ $getRecord()->contract?->customer?->name ?? ($getRecord()->devis != null ? $getRecord()->devis?->customer?->name .' '. $getRecord()->devis?->customer?->customer_name:null) ?? $getRecord()->customer?->name }}</span> -->
+<span>{{ $getRecord()->site }}</span>
         </div>
  <div class="container-1">
             <span class="label">
