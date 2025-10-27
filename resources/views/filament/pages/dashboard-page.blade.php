@@ -46,7 +46,7 @@
             <hr class="mt-1">
             <div class="space-y-4 mt-3">
                 @foreach($alerts as $alert)
-                    <a href="{{ $alert['url'] }}">
+                    <a href="{{ url($alert['url']) }}" target="_blank">
                     <div class="flex items-start gap-3 p-2 mb-2 rounded-lg shadow-sm bg-{{$alert['color']}}-50 border border-{{$alert['color']}}-100 text-{{$alert['color']}}-700 alert-item">
                         <div class="bg-gray-100/50 p-1 rounded-full flex items-center justify-center">
                             {{-- Icone --}}
@@ -58,7 +58,10 @@
                                 {{ $alert['label'] }}
                             </div>
                             <div class="text-xs">
-                                📅 {{ $alert['date']->translatedFormat('l j F Y') }}
+                                 {{$alert['date']? "📅 ".$alert['date']->translatedFormat('l j F Y') : '' }}
+                            </div>
+                            <div class="text-xs">
+                                 {{$alert['hour']? "⏰ ".$alert['hour']."h" : '' }}
                             </div>
                         </div>
                     </div>

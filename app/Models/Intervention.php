@@ -48,25 +48,26 @@ class Intervention extends Model implements Eventable
         'cancelled',
         'raison',
         'travaux',
+        'site',
         'user_id',
     ];
 
-    protected $with = ['interventionTechniciens', 'pieces', 'generator','newGenerator', 'fiches'];
+    protected $with = ['interventionTechniciens', 'pieces', 'generator', 'newGenerator', 'fiches'];
 
 
     protected static function booted()
     {
         static::updated(function ($intervention) {
-            if($intervention->type == InterventionType::RETRAIT->value && $intervention->status == InterventionStatus::TERMINEE->value){
+            if ($intervention->type == InterventionType::RETRAIT->value && $intervention->status == InterventionStatus::TERMINEE->value) {
                 Generator::where('id', $intervention->generator_id)
-                ->update(['status' => GeneratorStatus::EN_REVU->value]);
+                    ->update(['status' => GeneratorStatus::EN_REVU->value]);
             }
         });
 
         static::updated(function ($intervention) {
-            if($intervention->type == InterventionType::RETRAIT->value && $intervention->status == InterventionStatus::TERMINEE->value){
+            if ($intervention->type == InterventionType::RETRAIT->value && $intervention->status == InterventionStatus::TERMINEE->value) {
                 Generator::where('id', $intervention->generator_id)
-                ->update(['status' => GeneratorStatus::EN_REVU->value]);
+                    ->update(['status' => GeneratorStatus::EN_REVU->value]);
             }
         });
     }
@@ -79,7 +80,7 @@ class Intervention extends Model implements Eventable
     {
         return $this->belongsTo(Generator::class);
     }
-    
+
     public function newGenerator()
     {
         return $this->belongsTo(Generator::class, 'new_generator_id');
@@ -121,10 +122,10 @@ class Intervention extends Model implements Eventable
             ->end($this->end_date != null ? $this->end_date : $this->date_planifiee)
             ->backgroundColor(
                 match ($this->status) {
-                (int) InterventionStatus::PLANIFIEE->value => '#3b82f6', 
-                (int) InterventionStatus::EN_COURS->value => '#f59e0b', // amber-500
-                (int) InterventionStatus::TERMINEE->value => '#36d16cff', // gray-500 
-                default => '#3b82f6', // default to blue-500
+                    (int) InterventionStatus::PLANIFIEE->value => '#3b82f6',
+                    (int) InterventionStatus::EN_COURS->value => '#f59e0b', // amber-500
+                    (int) InterventionStatus::TERMINEE->value => '#36d16cff', // gray-500
+                    default => '#3b82f6', // default to blue-500
                 }
             )
             ->extendedProps([
