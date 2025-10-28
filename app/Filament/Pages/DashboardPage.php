@@ -121,7 +121,7 @@ class DashboardPage extends Page
             if ($generator) {
                 $this->alerts[] = [
                     'title' => "Vidange en attente",
-                    'label' => "GE" . $generator->name,
+                    'label' => "GE " . $generator->name,
                     'date' => null,
                     'hour' => $generator->next_vidange,
                     'icon' => 'heroicon-o-arrow-path-rounded-square',
