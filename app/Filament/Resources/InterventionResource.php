@@ -240,6 +240,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                             ->schema([
                                 TextInput::make('montant')
                                     ->label('Montant de la main d\'oeuvre')
+                                    ->numeric()
                                     ->columnSpanFull(),
 
                                 Repeater::make('fiches')
