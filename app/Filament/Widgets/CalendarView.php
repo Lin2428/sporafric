@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Filament\Widgets;
 
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
+use App\Enum\InterventionTypeService;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Intervention;
 use Carbon\Carbon;
@@ -101,7 +103,9 @@ class CalendarView extends CalendarWidget
             ->form([
                 Select::make('type_service')
                     ->label('Location ou Maintenance ?')
-                    ->options(['1' => 'Maintenance', '0' => 'Location'])
+                    ->options(collect(InterventionTypeService::cases())
+                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                        ->toArray())
                     ->default($this->getRecord()->type_service)
                     ->disabled()
                     ->columnSpanFull(),
@@ -165,7 +169,7 @@ class CalendarView extends CalendarWidget
             ->extraModalFooterActions([
                 Action::make('view')
                     ->action(function () {
-                        if ($this->getRecord()->type_service === 1) {
+                        if ($this->getRecord()->type_service === InterventionTypeService::MAINTENANCE->value) {
                             redirect()->route('admin.interventions', ['id' => $this->getRecord()->id]);
                         } else {
                             redirect()->route('admin.intervention.devis', ['id' => $this->getRecord()->id]);
@@ -182,8 +186,7 @@ class CalendarView extends CalendarWidget
      * @param array $info
      * @return void
      */
-    public function onDateClick(array $info = []): void
-    {}
+    public function onDateClick(array $info = []): void {}
 
     /**
      * Handle the date select event.
@@ -191,8 +194,7 @@ class CalendarView extends CalendarWidget
      * @param array $info
      * @return void
      */
-    public function onDateSelect(array $info = []): void
-    {}
+    public function onDateSelect(array $info = []): void {}
 
     public function onEventResize(array $info = []): bool
     {
@@ -202,8 +204,8 @@ class CalendarView extends CalendarWidget
 
         $eventEndDate = Carbon::make($info['event']['end'])->format('Y-m-d');
         $eventEndTime = $record->end_date
-        ? Carbon::make($record->end_date)->format('H:i')
-        : '12:00';
+            ? Carbon::make($record->end_date)->format('H:i')
+            : '12:00';
 
         $end = $eventEndDate . '-' . $eventEndTime;
 
@@ -222,13 +224,13 @@ class CalendarView extends CalendarWidget
 
         $eventStartDate = Carbon::make($info['event']['start'])->addDay()->format('Y-m-d');
         $eventStartTime = $record->start_date
-        ? Carbon::make($record->start_date)->format('H:i')
-        : '11:00';
+            ? Carbon::make($record->start_date)->format('H:i')
+            : '11:00';
 
         $eventEndDate = Carbon::make($info['event']['end'])->format('Y-m-d');
         $eventEndTime = $record->end_date
-        ? Carbon::make($record->end_date)->format('H:i')
-        : '12:00';
+            ? Carbon::make($record->end_date)->format('H:i')
+            : '12:00';
 
         $start = $eventStartDate . '-' . $eventStartTime;
         $end   = $eventEndDate . '-' . $eventEndTime;

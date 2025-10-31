@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\RevisionResource\Pages;
 
 use App\Enum\GeneratorStatus;
+use App\Enum\InterventionTypeService;
 use App\Filament\Resources\RevisionResource;
 use App\Http\Controllers\OdooController;
 use App\Models\Generator;
@@ -30,8 +31,8 @@ class ListRevisions extends ListRecords
                 ->color('info')
                 ->label('Nouvelle intervention')
                 ->action(function ($data) {
-          
-                    $data['type_service'] = 2; // Assuming 1 is for Maintenance
+
+                    $data['type_service'] = InterventionTypeService::CONSO_INTERNE->value; // Assuming 1 is for Maintenance
                     $data['numero'] = NumberUtils::intevention_numero('INT-CINT');
 
                     $houres = $data['houres'];

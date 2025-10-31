@@ -5,6 +5,7 @@ namespace App\Filament\Resources\InterventionDevisResource\Pages;
 use App\Enum\GeneratorStatus;
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
+use App\Enum\InterventionTypeService;
 use App\Filament\Resources\InterventionDevisResource;
 use App\Models\DevisGenerator;
 use App\Models\Generator;
@@ -22,7 +23,7 @@ class CreateInterventionDevis extends CreateRecord
     {
         // Set the default type_service to 'Maintenance' if not provided
         if (!isset($data['type_service'])) {
-            $data['type_service'] = 0; // Assuming 1 is for Maintenance
+            $data['type_service'] = InterventionTypeService::LOCATION->value;
             $data['numero'] = NumberUtils::intevention_numero('INT-LOC');
         }
 

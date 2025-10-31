@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Enum\GeneratorStatus;
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
+use App\Enum\InterventionTypeService;
 use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
 use App\Filament\Resources\InterventionResource\Pages\EditIntervention;
 use App\Filament\Utils\InterventionUtil;
@@ -57,7 +58,7 @@ class RetiredPage extends Page implements HasForms, HasTable
     public static function getNavigationBadge(): ?string
     {
         $count = Intervention::where('type',  InterventionType::RETRAIT->value,)
-            ->where('type_service', '=', 0)
+            ->where('type_service', '=', InterventionTypeService::LOCATION->value)
             ->count();
         return $count;
     }
@@ -135,7 +136,7 @@ class RetiredPage extends Page implements HasForms, HasTable
                 ])->action(function (array $data) {
                     $data['numero'] = NumberUtils::intevention_numero('INT-LOC');
                     $devis = Devis::find($data['devis_id']);
-                    $data['type_service'] = '0';
+                    $data['type_service'] = InterventionTypeService::LOCATION->value;
                     $data['type'] = InterventionType::RETRAIT->value;
                     //$data['identifiant'] = NumberUtils::generate();
 
@@ -166,7 +167,7 @@ class RetiredPage extends Page implements HasForms, HasTable
             ->query(
                 static::$model::query()
                     ->where('type', InterventionType::RETRAIT)
-                    ->where('type_service', '=', 0)
+                    ->where('type_service', '=', InterventionTypeService::LOCATION->value)
             )
             ->columns(InterventionUtil::table("Devis"))
             ->recordUrl(fn($record) => url('admin/intervention-devis/' . $record->id))

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Carbon\Carbon;
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
+use App\Enum\InterventionTypeService;
 use App\Filament\Resources\GeneratorResource\Pages\ViewInterventionDevis;
 use App\Filament\Resources\InterventionDevisResource\Pages;
 use App\Filament\Resources\InterventionDevisResource\RelationManagers;
@@ -57,7 +58,7 @@ class InterventionDevisResource extends Resource implements HasShieldPermissions
 
     public static function getNavigationBadge(): ?string
     {
-        $count = Intervention::where('type_service',  0)->count();
+        $count = Intervention::where('type_service',  InterventionTypeService::LOCATION->value)->count();
         return $count;
     }
 
@@ -87,7 +88,9 @@ class InterventionDevisResource extends Resource implements HasShieldPermissions
                                     ->label("Location ou Maintenance ?")
                                     ->default(0)
                                     ->disabled()
-                                    ->options(["1" => "Maintenance", "0" => "Location"])
+                                    ->options(collect(InterventionTypeService::cases())
+                                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                        ->toArray())
 
                                     ->columnSpanFull()
                                     ->reactive()
@@ -257,7 +260,7 @@ class InterventionDevisResource extends Resource implements HasShieldPermissions
     public static function table(Table $table): Table
     {
         return $table
-            ->query(static::getEloquentQuery()->where('type_service', 0))
+            ->query(static::getEloquentQuery()->where('type_service', InterventionTypeService::LOCATION->value))
             ->defaultPaginationPageOption(50)
             ->defaultSort('created_at', 'desc')
             ->columns(InterventionUtil::table("Devis"))

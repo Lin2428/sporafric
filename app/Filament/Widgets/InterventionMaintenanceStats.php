@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Enum\InterventionStatus;
+use App\Enum\InterventionTypeService;
 use App\Models\Contract;
 use App\Models\Generator;
 use App\Models\Intervention;
@@ -38,13 +39,13 @@ class InterventionMaintenanceStats extends BaseWidget
             Stat::make('Int. total', $data->total)
                 ->description('cette semaine')
                 ->icon('heroicon-o-cube')
-                ->url(url('admin/interventions?tableFilters[status][date_planifiee]='.now()->week())),
+                ->url(url('admin/interventions?tableFilters[status][date_planifiee]=' . now()->week())),
 
             Stat::make('Int. en cours', $data->en_cours)
                 ->description($txEnCours != 0 ? number_format($txEnCours, 2) . ' %' : "")
                 ->icon('heroicon-o-cube')
                 ->color('success')
-                ->url(url('admin/interventions?tableFilters[status][status][0]='.InterventionStatus::EN_COURS->value)),
+                ->url(url('admin/interventions?tableFilters[status][status][0]=' . InterventionStatus::EN_COURS->value)),
 
             Stat::make('Int. en retard', $data->en_retard)
                 ->description($txRetard != 0 ? number_format($txRetard, 2) . ' %' : "")
@@ -56,7 +57,7 @@ class InterventionMaintenanceStats extends BaseWidget
                 ->description($txTermine != 0 ? number_format($txTermine, 2) . ' %' : "")
                 ->icon('heroicon-o-cube')
                 ->color('success')
-                ->url(url('admin/interventions?tableFilters[status][status][0]='.InterventionStatus::TERMINEE->value)),
+                ->url(url('admin/interventions?tableFilters[status][status][0]=' . InterventionStatus::TERMINEE->value)),
         ];
     }
 
@@ -72,7 +73,7 @@ class InterventionMaintenanceStats extends BaseWidget
             COUNT(CASE WHEN status = 2 THEN 1 END) AS trermine,
             COUNT(CASE WHEN start_date < now() AND status = 0 THEN 1 END) AS en_retard
         ')
-        
-            ->where('type_service', '1');
+
+            ->where('type_service', InterventionTypeService::MAINTENANCE->value);
     }
 }

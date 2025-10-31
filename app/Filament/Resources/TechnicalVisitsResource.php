@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enum\InterventionTypeService;
 use App\Filament\Resources\TechnicalVisitsResource\Pages;
 use App\Filament\Resources\TechnicalVisitsResource\RelationManagers;
 use App\Filament\Utils\WidgetUtils;
@@ -29,7 +30,7 @@ use Illuminate\Support\HtmlString;
 class TechnicalVisitsResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = TechnicalVisits::class;
-     
+
     protected static ?string $label           = "Visites techniques";
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
@@ -46,14 +47,16 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                 ->schema([
                     Select::make('type_service')
                         ->label('Location ou Maintenance ?')
-                        ->options(['1' => 'Maintenance', '0' => 'Location'])
+                        ->options(collect(InterventionTypeService::cases())
+                            ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                            ->toArray())
                         ->reactive(),
 
                     DateTimePicker::make('date'),
 
-                    WidgetUtils::contractSelectWidget()->visible(fn(callable $get) => $get('type_service') == '1'),
+                    WidgetUtils::contractSelectWidget()->visible(fn(callable $get) => $get('type_service') == InterventionTypeService::MAINTENANCE->value),
 
-                    WidgetUtils::contractSelectWidget('devis_id')->label('Devis')->visible(fn(callable $get) => $get('type_service') == '0'),
+                    WidgetUtils::contractSelectWidget('devis_id')->label('Devis')->visible(fn(callable $get) => $get('type_service') == InterventionTypeService::LOCATION->value),
 
                     WidgetUtils::generatorSelectWidget(type: null, isDispo: false)->visible(fn(callable $get) => $get('type_service') !== null),
                 ])
@@ -99,7 +102,7 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                     ])
                     ->afterStateHydrated(function ($component, $record) {
                         $data = [];
-                        
+
                         if ($record?->control_4 == true) {
                             $data[] = 'control_4';
                         }
@@ -152,19 +155,19 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                             'control_14' => 'Etat du GE et du local',
                         ])
                         ->afterStateHydrated(function ($component, $record) {
-                        $data = [];
-                        if ($record?->control_12 == true) {
-                            $data[] = 'control_12';
-                        }
-                        if ($record?->control_13 == true) {
-                            $data[] = 'control_13';
-                        }
-                        if ($record?->control_14 == true) {
-                            $data[] = 'control_14';
-                        }
+                            $data = [];
+                            if ($record?->control_12 == true) {
+                                $data[] = 'control_12';
+                            }
+                            if ($record?->control_13 == true) {
+                                $data[] = 'control_13';
+                            }
+                            if ($record?->control_14 == true) {
+                                $data[] = 'control_14';
+                            }
 
-                        $component->state($data);
-                    })
+                            $component->state($data);
+                        })
                         ->columns(3)
                         ->columnSpanFull(),
 
@@ -172,49 +175,51 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                     TextInput::make('control_frequence')->numeric()->label('Frequences (Hz)'),
 
                     Section::make('Tension de sortie(230V)')
-                        ->columns(3)    
+                        ->columns(3)
                         ->inlineLabel()
                         ->schema([
                             TextInput::make('control_tension.v1')
-                            ->label('V1n'),
+                                ->label('V1n'),
 
                             TextInput::make('control_tension.v2')
-                            ->label('V2n'),
+                                ->label('V2n'),
 
                             TextInput::make('control_tension.v3')
-                            ->label('V3n'),
-                            ])
+                                ->label('V3n'),
+                        ])
                         ->columnSpanFull(),
 
                     Section::make('Tension de sortie(400V)')
                         ->columns(3)
-                             ->inlineLabel()
+                        ->inlineLabel()
                         ->schema([
                             TextInput::make('control_tension_2.u1')
-                            ->label('U12'),
+                                ->label('U12'),
 
                             TextInput::make('control_tension_2.u2')
-                            ->label('U13'),
+                                ->label('U13'),
 
-                             TextInput::make('control_tension_2.u3')
-                             ->label('U23')])
+                            TextInput::make('control_tension_2.u3')
+                                ->label('U23')
+                        ])
                         ->columnSpanFull(),
                     Section::make('Intensité par phase')
                         ->columns(3)
-                             ->inlineLabel()
+                        ->inlineLabel()
                         ->schema([
                             TextInput::make('control_intensite.i1')
-                        ->label('I1'), 
+                                ->label('I1'),
 
-                        TextInput::make('control_intensite.i2')
-                        ->label('I2'), 
+                            TextInput::make('control_intensite.i2')
+                                ->label('I2'),
 
-                        TextInput::make('control_intensite.i3')
-                        ->label('I3')])
+                            TextInput::make('control_intensite.i3')
+                                ->label('I3')
+                        ])
                         ->columnSpanFull(),
                 ]),
 
-                 Section::make('Fin de visite')
+            Section::make('Fin de visite')
                 ->columns(2)
                 ->schema([
                     CheckboxList::make('checklist_4')
@@ -224,25 +229,25 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                             'control_15' => 'Etat de l\'arret d\'urgence',
                         ])
                         ->afterStateHydrated(function ($component, $record) {
-                        $data = [];
-                        if ($record?->control_15 == true) {
-                            $data[] = 'control_15';
-                        }
-                        if ($record?->control_16 == true) {
-                            $data[] = 'control_16';
-                        }
-                        $component->state($data);
-                    })
+                            $data = [];
+                            if ($record?->control_15 == true) {
+                                $data[] = 'control_15';
+                            }
+                            if ($record?->control_16 == true) {
+                                $data[] = 'control_16';
+                            }
+                            $component->state($data);
+                        })
                         ->required(),
 
                     Radio::make('control_16')
-                    ->label('Mode de fonctionnement')
-                    ->options([
-                        '1' => 'Manuel',
-                        '0' => 'Automatique',
-                    ])
-                    ->columns(1),
-            ]),
+                        ->label('Mode de fonctionnement')
+                        ->options([
+                            '1' => 'Manuel',
+                            '0' => 'Automatique',
+                        ])
+                        ->columns(1),
+                ]),
         ]);
     }
 
@@ -259,7 +264,7 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
 
     public static function generatorColumn($record): HtmlString
     {
-       
+
         $reference = $record->generator?->reference ?? $record->reference;
         $powr = $record->generator?->power ?? $record->power;
         $html = "
@@ -278,67 +283,66 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
             ->defaultSort('created_at', 'desc')
             ->defaultPaginationPageOption(50)
             ->columns([
-            TextColumn::make('date')
-                ->label('Créé le')
-                ->dateTime("d/m/Y à H:i")
-                ->sortable(),
+                TextColumn::make('date')
+                    ->label('Créé le')
+                    ->dateTime("d/m/Y à H:i")
+                    ->sortable(),
 
-            TextColumn::make('client') // Nom arbitraire, car on utilise getStateUsing
-                ->label('Client')
-                ->searchable(true, function($search) {
-                    return fn($query, $search) => $query
-                        ->whereHas('devis.customer', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        })
-                        ->orWhereHas('contract.customer', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        })
-                        ->orWhereHas('customer', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        });
+                TextColumn::make('client') // Nom arbitraire, car on utilise getStateUsing
+                    ->label('Client')
+                    ->searchable(true, function ($search) {
+                        return fn($query, $search) => $query
+                            ->whereHas('devis.customer', function ($query) use ($search) {
+                                $query->where('name', 'like', "%{$search}%");
+                            })
+                            ->orWhereHas('contract.customer', function ($query) use ($search) {
+                                $query->where('name', 'like', "%{$search}%");
+                            })
+                            ->orWhereHas('customer', function ($query) use ($search) {
+                                $query->where('name', 'like', "%{$search}%");
+                            });
+                    })
+                    ->getStateUsing(function ($record) {
+                        return  optional($record->contract?->customer)->name ??
+                            optional($record->devis?->customer)->name;
+                    })
+                    ->description(fn($record) => static::customerColumn($record))
+                    ->extraAttributes(['class' => 'font-bold'])
+                    ->limit(8),
 
-                })
-                ->getStateUsing(function ($record) {
-                    return  optional($record->contract?->customer)->name ??
-                         optional($record->devis?->customer)->name;
-                })
-                ->description(fn($record) => static::customerColumn($record))
-                ->extraAttributes(['class' => 'font-bold'])
-                ->limit(8),
+                TextColumn::make('cd') // Nom arbitraire, car on utilise getStateUsing
+                    ->label("Contrat/Devis")
+                    ->searchable(true, function ($search) {
+                        return fn($query, $search) => $query
+                            ->whereHas('devis', function ($query) use ($search) {
+                                $query->where('number', 'like', "%{$search}%");
+                            })
+                            ->orWhereHas('contract', function ($query) use ($search) {
+                                $query->where('number', 'like', "%{$search}%");
+                            })
+                            ->orWhereHas('customer', function ($query) use ($search) {
+                                $query->where('name', 'like', "%{$search}%");
+                            });
+                    })
+                    ->getStateUsing(function ($record) {
+                        return  optional($record->contract)->number ??
+                            optional($record->devis)->number;
+                    })
+                    ->extraAttributes(['class' => 'font-bold']),
 
-            TextColumn::make('cd') // Nom arbitraire, car on utilise getStateUsing
-                ->label("Contrat/Devis")
-                ->searchable(true, function($search) {
-                    return fn($query, $search) => $query
-                        ->whereHas('devis', function ($query) use ($search) {
-                            $query->where('number', 'like', "%{$search}%");
-                        })
-                        ->orWhereHas('contract', function ($query) use ($search) {
-                            $query->where('number', 'like', "%{$search}%");
-                        })
-                        ->orWhereHas('customer', function ($query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
-                        });
-                })
-                ->getStateUsing(function ($record) {
-                    return  optional($record->contract)->number ??
-                         optional($record->devis)->number;
-                })
-                ->extraAttributes(['class' => 'font-bold']),
-
-            TextColumn::make('generator_name')
-                ->label('Groupe Électrogène')
-                ->searchable(false, function($search) {
-                    return fn($query, $search) => $query
-                        ->whereHas('generator', function ($query) use ($search) {
-                            $query->where('reference', 'like', "%{$search}%")
-                                ->orWhere('serial_number', 'like', "%{$search}%");
-                        });
-                })
-                ->getStateUsing(fn($record) => $record->generator?->name ?? $record->generator_name)
-                ->description(fn($record) => static::generatorColumn($record))
-                ->extraAttributes(['class' => 'font-bold'])
-                ->limit(8),
+                TextColumn::make('generator_name')
+                    ->label('Groupe Électrogène')
+                    ->searchable(false, function ($search) {
+                        return fn($query, $search) => $query
+                            ->whereHas('generator', function ($query) use ($search) {
+                                $query->where('reference', 'like', "%{$search}%")
+                                    ->orWhere('serial_number', 'like', "%{$search}%");
+                            });
+                    })
+                    ->getStateUsing(fn($record) => $record->generator?->name ?? $record->generator_name)
+                    ->description(fn($record) => static::generatorColumn($record))
+                    ->extraAttributes(['class' => 'font-bold'])
+                    ->limit(8),
             ])
             ->filters([
                 //
@@ -350,8 +354,8 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
     public static function getRelations(): array
     {
         return [
-                //
-            ];
+            //
+        ];
     }
 
     public static function getPages(): array

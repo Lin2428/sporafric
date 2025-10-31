@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
+use App\Enum\InterventionTypeService;
 use App\Filament\Resources\RevisionResource\Pages;
 use App\Filament\Resources\RevisionResource\RelationManagers;
 use App\Filament\Utils\InterventionUtil;
@@ -73,7 +74,9 @@ class RevisionResource extends Resource
                                     ->label("Type")
                                     ->default(2)
                                     ->disabled()
-                                    ->options(["1" => "Maintenance", "0" => "Location", "2" => "Conso interne"])
+                                    ->options(collect(InterventionTypeService::cases())
+                                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                        ->toArray())
 
                                     ->columnSpanFull()
                                     ->reactive()
@@ -162,33 +165,33 @@ class RevisionResource extends Resource
                 Group::make()
                     ->schema([
                         DateTimePicker::make('start_date')
-                    ->label('Date de début')
-                    ->reactive(),
+                            ->label('Date de début')
+                            ->reactive(),
 
-                DateTimePicker::make('end_date')
-                    ->label('Date de fin'),
+                        DateTimePicker::make('end_date')
+                            ->label('Date de fin'),
 
-                Select::make('status')
-                    ->label('Statut')
-                    ->options(collect(InterventionStatus::cases())
-                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                        ->toArray())
-                        ->required(),
+                        Select::make('status')
+                            ->label('Statut')
+                            ->options(collect(InterventionStatus::cases())
+                                ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                ->toArray())
+                            ->required(),
 
-                Select::make('techniciens')
-                    ->options(Technicien::all()->pluck(['id' => 'name']))
-                    ->label('Techniciens assignés')
-                    ->multiple()
-                    ->preload()
-                    ->searchable()
-                    ->formatStateUsing(function ($record) {
-                        if (empty($record->interventionTechniciens)) return [];
-                     
-                        return $record->interventionTechniciens?->map(function ($technicien) {
-                            return [$technicien->id];
-                        })->toArray();
-                    })
-                    ->placeholder('Sélectionner un technicien'),
+                        Select::make('techniciens')
+                            ->options(Technicien::all()->pluck(['id' => 'name']))
+                            ->label('Techniciens assignés')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->formatStateUsing(function ($record) {
+                                if (empty($record->interventionTechniciens)) return [];
+
+                                return $record->interventionTechniciens?->map(function ($technicien) {
+                                    return [$technicien->id];
+                                })->toArray();
+                            })
+                            ->placeholder('Sélectionner un technicien'),
                         Section::make('Pièces jointes')
                             ->columns(2)
                             ->schema([
@@ -200,7 +203,7 @@ class RevisionResource extends Resource
                                     ->label('')
                                     ->relationship()
                                     ->addActionLabel('Ajouter une pièce jointe')
-                                   ->dehydrated(true)
+                                    ->dehydrated(true)
                                     ->schema([
                                         FileUpload::make('fiche')
                                             ->hiddenLabel()
@@ -266,7 +269,7 @@ class RevisionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(static::$model::where('type_service', '=', 2))
+            ->query(static::$model::where('type_service', '=', InterventionTypeService::CONSO_INTERNE->value))
             ->defaultPaginationPageOption(50)
             ->defaultSort('created_at', 'desc')
             ->columns(InterventionUtil::table("Devis"))
@@ -299,58 +302,58 @@ class RevisionResource extends Resource
                     )
             ])
             ->actions([
-                 Tables\Actions\ActionGroup::make([
+                Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make()
-                    ->url(fn($record) => url('/admin/intervention-devis/' . $record->id)),
+                        ->url(fn($record) => url('/admin/intervention-devis/' . $record->id)),
 
                     Tables\Actions\EditAction::make()
-                    ->modalHeading('Modifier le devis')
-                    ->modalWidth('6xl')
-                    ->action(function ($data,$record) {
-                        
-                        $record->update($data);
+                        ->modalHeading('Modifier le devis')
+                        ->modalWidth('6xl')
+                        ->action(function ($data, $record) {
 
-                        $submittedPieces = collect($data['pieces'])->pluck('piece_id')->toArray();
-                        $techniciens = collect($data['techniciens'])->toArray();
+                            $record->update($data);
 
-                         $record->interventionTechniciens()
-                            ->whereNotIn('technicien_id', $techniciens)
-                            ->delete();
-                        
-                        foreach ($data['techniciens'] as $technicien) {
-                        $record->interventionTechniciens()->syncWithoutDetaching(
-                            $technicien
-                        );
-                    }
+                            $submittedPieces = collect($data['pieces'])->pluck('piece_id')->toArray();
+                            $techniciens = collect($data['techniciens'])->toArray();
 
-                        $record->pieces()
-                            ->whereNotIn('piece_id', $submittedPieces)
-                            ->delete();
+                            $record->interventionTechniciens()
+                                ->whereNotIn('technicien_id', $techniciens)
+                                ->delete();
 
-                        foreach ($data['pieces'] as $piece) {
-                            $record->pieces()->syncWithoutDetaching([
-                                $piece['piece_id'] => [
-                                    'qty'          => $piece['qty'],
-                                    'price'        => $piece['price'] ?? 0,
-                                    'generator_id' => $data['generator_id'] ?? null,
-                                ],
-                            ]);
-                        }
+                            foreach ($data['techniciens'] as $technicien) {
+                                $record->interventionTechniciens()->syncWithoutDetaching(
+                                    $technicien
+                                );
+                            }
 
-                        $houres = $data['houres'];
-                        $nexTvidange = $data['prochain_visite'] -  $houres;
-                        $vidange =  $nexTvidange > 30;
+                            $record->pieces()
+                                ->whereNotIn('piece_id', $submittedPieces)
+                                ->delete();
 
-                        Generator::where('id', $data['generator_id'])
-                            ->update([
-                                'houres' => $data['houres'],
-                                'next_vidange' => $nexTvidange,
-                                'prochain_visite' => $data['prochain_visite'],
-                                'vidange' => $vidange
-                            ]);
-                    }),
-                    
-                ]), 
+                            foreach ($data['pieces'] as $piece) {
+                                $record->pieces()->syncWithoutDetaching([
+                                    $piece['piece_id'] => [
+                                        'qty'          => $piece['qty'],
+                                        'price'        => $piece['price'] ?? 0,
+                                        'generator_id' => $data['generator_id'] ?? null,
+                                    ],
+                                ]);
+                            }
+
+                            $houres = $data['houres'];
+                            $nexTvidange = $data['prochain_visite'] -  $houres;
+                            $vidange =  $nexTvidange > 30;
+
+                            Generator::where('id', $data['generator_id'])
+                                ->update([
+                                    'houres' => $data['houres'],
+                                    'next_vidange' => $nexTvidange,
+                                    'prochain_visite' => $data['prochain_visite'],
+                                    'vidange' => $vidange
+                                ]);
+                        }),
+
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

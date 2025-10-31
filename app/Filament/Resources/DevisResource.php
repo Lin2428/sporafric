@@ -172,6 +172,7 @@ class DevisResource extends Resource implements HasShieldPermissions
     public static function table(Table $table): Table
     {
         return $table
+            ->query(static::getEloquentQuery()->where('is_conso_interne', false))
             ->defaultPaginationPageOption(50)
             ->defaultSort('created_at', 'desc')
             ->columns([

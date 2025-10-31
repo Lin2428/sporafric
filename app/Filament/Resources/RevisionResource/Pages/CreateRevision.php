@@ -4,6 +4,7 @@ namespace App\Filament\Resources\RevisionResource\Pages;
 
 use App\Enum\GeneratorStatus;
 use App\Enum\InterventionType;
+use App\Enum\InterventionTypeService;
 use App\Filament\Resources\RevisionResource;
 use App\Models\Generator;
 use App\Utils\NumberUtils;
@@ -18,7 +19,7 @@ class CreateRevision extends CreateRecord
     {
         // Set the default type_service to 'Maintenance' if not provided
         if (!isset($data['type_service'])) {
-            $data['type_service'] = 2; // Assuming 1 is for Maintenance
+            $data['type_service'] = InterventionTypeService::CONSO_INTERNE->value;
             $data['numero'] = NumberUtils::intevention_numero('INT-CINT');
         }
 

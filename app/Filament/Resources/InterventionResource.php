@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Carbon\Carbon;
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
+use App\Enum\InterventionTypeService;
 use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
 use App\Filament\Resources\InterventionResource\Pages;
 use App\Filament\Utils\InterventionUtil;
@@ -51,7 +52,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
     protected static ?int $navigationSort = 0;
     public static function getNavigationBadge(): ?string
     {
-        $count = Intervention::where('type_service', 1)->count();
+        $count = Intervention::where('type_service', InterventionTypeService::MAINTENANCE->value)->count();
         return $count;
     }
 
@@ -79,7 +80,9 @@ class InterventionResource extends Resource implements HasShieldPermissions
                             ->schema([
                                 Select::make('type_service')
                                     ->label("Location ou Maintenance ?")
-                                    ->options(["1" => "Maintenance", "0" => "Location"])
+                                    ->options(collect(InterventionTypeService::cases())
+                                        ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                        ->toArray())
                                     ->default("1")
                                     ->disabled()
                                     ->columnSpanFull(),
@@ -318,7 +321,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
     public static function table(Table $table): Table
     {
         return $table
-            ->query(static::getEloquentQuery()->where('type_service', 1))
+            ->query(static::getEloquentQuery()->where('type_service', InterventionTypeService::MAINTENANCE->value))
             ->defaultSort('date_planifiee', 'desc')
             ->defaultPaginationPageOption(50)
             ->columns(InterventionUtil::table())

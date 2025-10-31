@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Enum\InterventionStatus;
+use App\Enum\InterventionTypeService;
 use App\Filament\Widgets\GeneratorStats;
 use App\Filament\Widgets\TextWidget;
 use App\Models\Devis;
@@ -76,7 +77,7 @@ class DashboardPage extends Page
             }
 
             $url = '/admin/interventions/' . $intervention->id;
-            if ($intervention->type_service == 0) {
+            if ($intervention->type_service == InterventionTypeService::LOCATION->value) {
                 $url = '/admin/intervention-devis/' . $intervention->id;
             }
 

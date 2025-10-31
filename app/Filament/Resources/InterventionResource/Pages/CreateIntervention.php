@@ -4,6 +4,7 @@ namespace App\Filament\Resources\InterventionResource\Pages;
 
 use App\Enum\GeneratorStatus;
 use App\Enum\InterventionType;
+use App\Enum\InterventionTypeService;
 use App\Filament\Resources\InterventionResource;
 use App\Models\ContractGenerator;
 use App\Models\Generator;
@@ -21,7 +22,7 @@ class CreateIntervention extends CreateRecord
     {
         // Set the default type_service to 'Maintenance' if not provided
         if (!isset($data['type_service'])) {
-            $data['type_service'] = 1;
+            $data['type_service'] = InterventionTypeService::MAINTENANCE->value;
             $data['numero'] = NumberUtils::intevention_numero('INT-MAINT');
         }
 
