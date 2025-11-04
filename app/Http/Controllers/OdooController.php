@@ -138,12 +138,12 @@ class OdooController extends Controller
             'sale.order',
             $all ? [
                 (['is_rental_order', '=', true]),
-                (['state', 'not in', ['draft', 'sent', 'cancel']])
+                (['state', 'not in', ['cancel']])
             ] :
                 [
                     (['id', 'not in', $devis]),
                     (['is_rental_order', '=', true]),
-                    (['state', 'not in', ['draft', 'sent', 'cancel']])
+                    (['state', 'not in', ['cancel']])
                 ],
             [
                 'id',
