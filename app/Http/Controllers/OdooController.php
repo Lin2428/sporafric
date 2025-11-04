@@ -272,7 +272,7 @@ class OdooController extends Controller
             'sale.order',
             [
                 (['conso_interne', '=', true]),
-                (['state', 'not in', ['draft', 'sent', 'cancel']]),
+                (['state', 'not in', ['cancel']]),
                 (['partner_id', '=', 3969])
             ],
             [
