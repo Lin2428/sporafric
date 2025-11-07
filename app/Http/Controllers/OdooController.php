@@ -216,49 +216,46 @@ class OdooController extends Controller
             }
 
             $devisId = $devis->id;
-            $status = $devis->is_active;
+            // $status = $devis->is_active;
 
             // Correction de la logique avec where groupé
-            $dataExiste = DevisGenerator::where('devis_id', $devisId)
-                ->where(function ($query) use ($generatorId) {
-                    $query->where('generator_id', $generatorId)
-                        ->orWhere('old_generator_id', $generatorId);
-                })
-                ->first();
+            // $dataExiste = DevisGenerator::where('devis_id', $devisId)
+            //     ->where(function ($query) use ($generatorId) {
+            //         $query->where('generator_id', $generatorId)
+            //             ->orWhere('old_generator_id', $generatorId);
+            //     })
+            //     ->first();
 
 
 
-            if (optional($dataExiste)->old_generator_id == null) {
+            //if (optional(value: $dataExiste)->old_generator_id == null) {
 
-                DevisGenerator::updateOrCreate(
-                    [
-                        'devis_id' => $devisId,
-                        'generator_id' => $generatorId,
-                    ],
-                    [
-                        'status' => $status,
-                    ]
-                );
+            DevisGenerator::updateOrCreate(
+                [
+                    'devis_id' => $devisId,
+                    'generator_id' => $generatorId,
+                ],
+            );
 
-                // Met à jour le statut de tous les générateurs actifs
-                $generators = DevisGenerator::whereNotNull('generator_id')
-                    ->where('status', true)
-                    ->get();
+            // Met à jour le statut de tous les générateurs actifs
+            // $generators = DevisGenerator::whereNotNull('generator_id')
+            //     ->where('status', true)
+            //     ->get();
 
-                foreach ($generators as $gen) {
-                    Generator::where('id', $gen->generator_id)
-                        ->update([
-                            'status' => GeneratorStatus::EN_LOCATION,
-                        ]);
-                }
-            } else {
-                // Juste une mise à jour du statut pour un ancien générateur
-                DevisGenerator::where('devis_id', $devisId)
-                    ->where('old_generator_id', $generatorId)
-                    ->update([
-                        'status' => $status,
-                    ]);
-            }
+            // foreach ($generators as $gen) {
+            //     Generator::where('id', $gen->generator_id)
+            //         ->update([
+            //             'status' => GeneratorStatus::EN_LOCATION,
+            //         ]);
+            // }
+            // } else {
+            // Juste une mise à jour du statut pour un ancien générateur
+            // DevisGenerator::where('devis_id', $devisId)
+            //     ->where('old_generator_id', $generatorId)
+            //     ->update([
+            //         'status' => $status,
+            //     ]);
+            // }
         }
     }
 

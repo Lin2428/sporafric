@@ -51,6 +51,11 @@ class ListGenerators extends ListRecords
                 $query->where('status', '=', GeneratorStatus::INDISPONIBLE->value)
             ),
 
+            Tab::make("Archivé")->query(
+                fn($query) =>
+                $query->onlyTrashed(),
+            ),
+
         ];
     }
 

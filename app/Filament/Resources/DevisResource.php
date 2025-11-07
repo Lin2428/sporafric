@@ -29,7 +29,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use App\Enum\GeneratorStatus;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Repeater;
+use Filament\Tables\Filters\Filter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Date;
 
 class DevisResource extends Resource implements HasShieldPermissions
 {
@@ -226,12 +230,32 @@ class DevisResource extends Resource implements HasShieldPermissions
                     ->limit(50),
             ])
             ->filters([
-                SelectFilter::make('is_active')
-                    ->label('Statut')
-                    ->options([
-                        '1' => 'En cours',
-                        '0' => 'Terminé',
-                    ]),
+                Filter::make('status')
+                    ->form([
+                        CheckboxList::make('is_active')
+                            ->label("Statut location")
+                            ->options([
+                                '1' => "En cours",
+                                '0' => "Terminé",
+                            ])
+                            ->reactive(),
+                        CheckboxList::make('state')
+                            ->label('Etat du devis')
+                            ->options(collect(DevisStats::cases())
+                                ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                ->toArray()),
+
+                        DatePicker::make('created_at')
+                            ->label('Date de création'),
+
+
+                    ])
+                    ->query(
+                        fn(Builder $query, array $data) => $query
+                            ->when($data['is_active'] ?? null, fn(Builder $query, array $status) => $query->where('is_active',  $status))
+                            ->when($data['state'] ?? null, fn(Builder $query, array $state) => $query->whereIn('state', $state))
+                            ->when($data['created_at'] ?? null, fn(Builder $query, string $date) => $query->whereDate('created_at', '=', $date))
+                    )
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

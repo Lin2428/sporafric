@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\DevisStats;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -12,7 +13,7 @@ class DevisGenerator extends Model
         'devis_id',
         'generator_id',
         'status',
-        'user_id', 
+        'user_id',
         'site',
         'code_site',
         'contact_name',
@@ -23,7 +24,7 @@ class DevisGenerator extends Model
         'is_retired',
     ];
 
-    protected $with = ['devis','generator','oldGenerator'];
+    protected $with = ['devis', 'generator', 'oldGenerator'];
 
     public function devis()
     {

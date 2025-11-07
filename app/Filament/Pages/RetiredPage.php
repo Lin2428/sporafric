@@ -21,8 +21,10 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -97,7 +99,7 @@ class RetiredPage extends Page implements HasForms, HasTable
                                         ->columnSpanFull()
                                         ->reactive()
                                         ->visible(fn(callable $get) => $get('devis_id') != null),
-                                    DatePicker::make('date_prise_appel')
+                                    DateTimePicker::make('date_prise_appel')
                                         ->label('Date de prise d’appel')
                                         ->default(now())
                                         ->required(),
@@ -109,29 +111,56 @@ class RetiredPage extends Page implements HasForms, HasTable
                                         ->label('Note')
                                         ->columnSpanFull(),
                                 ])->columnSpan(['lg' => 1]),
-                            Section::make('Infos internes')
-                                ->columns(1)
+                            Grid::make()
                                 ->schema([
-                                    DatePicker::make('start_date')
-                                        ->label('Date de début'),
+                                    Section::make('Infos internes')
+                                        ->columns(1)
+                                        ->schema([
+                                            DateTimePicker::make('start_date')
+                                                ->label('Date de début'),
 
-                                    DatePicker::make('end_date')
-                                        ->label('Date limite'),
+                                            DateTimePicker::make('end_date')
+                                                ->label('Date limite'),
 
-                                    Select::make('status')
-                                        ->label('Statut')
-                                        ->options(collect(InterventionStatus::cases())
-                                            ->mapWithKeys(fn($status) => [$status->value => $status->label()])
-                                            ->toArray())
-                                        ->required(),
-                                    Select::make('technicien_id')
-                                        ->options(fn() => \App\Models\Technicien::all()->pluck('name', 'id'))
-                                        ->label('Techniciens assignés')
-                                        ->multiple()
-                                        ->preload()
-                                        ->searchable()
-                                        ->placeholder('Sélectionner un technicien'),
-                                ])->columnSpan(['lg' => 1]),
+                                            Select::make('status')
+                                                ->label('Statut')
+                                                ->options(collect(InterventionStatus::cases())
+                                                    ->mapWithKeys(fn($status) => [$status->value => $status->label()])
+                                                    ->toArray())
+                                                ->required(),
+                                            Select::make('technicien_id')
+                                                ->options(fn() => \App\Models\Technicien::all()->pluck('name', 'id'))
+                                                ->label('Techniciens assignés')
+                                                ->multiple()
+                                                ->preload()
+                                                ->searchable()
+                                                ->placeholder('Sélectionner un technicien'),
+
+                                        ]),
+                                    Section::make('Pièces jointes')
+                                        ->columns(2)
+                                        ->schema([
+                                            // TextInput::make('montant')
+                                            //     ->label('Montant de la main d\'oeuvre')
+                                            //     ->columnSpanFull(),
+
+                                            Repeater::make('fiches')
+                                                ->label('')
+                                                ->relationship()
+                                                ->addActionLabel('Ajouter une pièce jointe')
+                                                ->dehydrated(true)
+                                                ->schema([
+                                                    FileUpload::make('fiche')
+                                                        ->hiddenLabel()
+                                                        ->disk('devis')
+                                                        ->downloadable()
+                                                        ->openable()
+                                                        ->columnSpanFull()
+                                                        ->storeFileNamesIn('attachment_file_names'),
+                                                ])->columnSpanFull(),
+                                        ]),
+                                ])->columnSpan(['lg' => 1])
+
                         ])
                 ])->action(function (array $data) {
                     $data['numero'] = NumberUtils::intevention_numero('INT-LOC');
@@ -143,8 +172,10 @@ class RetiredPage extends Page implements HasForms, HasTable
                     $intervention = $devis->interventions()->create($data);
 
                     $technicians = $data['technicien_id'] ?? [];
+                    $files = $data['fiches'] ?? [];
 
                     $intervention->interventionTechniciens()->sync($technicians);
+                    $intervention->fiches()->createMany($files);
 
                     DevisGenerator::where('devis_id', $devis->id)
                         ->where('generator_id', $data['generator_id'])

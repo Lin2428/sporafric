@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources\GeneratorResource\Pages;
 
 use App\Filament\Resources\ContractGeneratorResource;
@@ -26,7 +27,7 @@ class ViewContractGenerator extends ViewRecord
 
             Actions\ActionGroup::make([
                 Actions\EditAction::make()
-                    ->label('Modifier le groupe electrogene')
+                    ->label('Modifier le GE')
                     ->icon('heroicon-o-pencil')
             ]),
         ];

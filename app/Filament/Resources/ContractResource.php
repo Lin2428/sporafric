@@ -12,6 +12,7 @@ use App\Models\Generator;
 use App\Utils\DateUtils;
 use App\Utils\NumberUtils;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
@@ -32,8 +33,10 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ContractResource extends Resource implements HasShieldPermissions
 {
@@ -60,7 +63,7 @@ class ContractResource extends Resource implements HasShieldPermissions
 
                                 TextInput::make('number')
                                     ->label('Numéro de contrat')
-                                    ->default("CTR-".NumberUtils::generate(6))
+                                    ->default("CTR-" . NumberUtils::generate(6))
                                     ->required()
                                     ->unique(Contract::class, 'number', ignoreRecord: true)
                                     ->columnSpanFull(),
@@ -114,7 +117,7 @@ class ContractResource extends Resource implements HasShieldPermissions
 
                 Repeater::make('generators')
                     ->formatStateUsing(function ($record) {
-                        if(empty($record->generators)) return [];
+                        if (empty($record->generators)) return [];
                         return $record->generators?->map(function ($generator) {
                             return [
                                 'generator_id' => $generator->id,
@@ -136,9 +139,9 @@ class ContractResource extends Resource implements HasShieldPermissions
                             ->required(),
 
                         TextInput::make('forfait')
-                                    ->label('Forfait de maintenance mensuel')
-                                    ->numeric()
-                                    ->columnSpanFull(),
+                            ->label('Forfait de maintenance mensuel')
+                            ->numeric()
+                            ->columnSpanFull(),
 
                         TextInput::make('site')
                             ->label('Site'),
@@ -187,7 +190,7 @@ class ContractResource extends Resource implements HasShieldPermissions
 
                 TextColumn::make('is_active')
                     ->label('Statut')
-                    ->getStateUsing(function(Contract $record){
+                    ->getStateUsing(function (Contract $record) {
                         return BadgetWidget::boleanToBadget($record->is_active, 'En cours', 'Terminé');
                     })
                     ->html(),
@@ -196,7 +199,7 @@ class ContractResource extends Resource implements HasShieldPermissions
                     ->label('Client')
                     ->searchable()
                     ->sortable()
-                    ->tooltip(fn (Contract $record) => $record->customer->name)
+                    ->tooltip(fn(Contract $record) => $record->customer->name)
                     ->extraAttributes(['style' => 'font-weight: bold;'])
                     ->limit(10),
 
@@ -220,12 +223,23 @@ class ContractResource extends Resource implements HasShieldPermissions
                     ->limit(50),
             ])
             ->filters([
-                SelectFilter::make('is_active')
-                    ->label('Statut')
-                    ->options([
-                        '1' => 'En cours',
-                        '0' => 'Terminé',
-                    ]),
+                Filter::make('status')
+                    ->form([
+                        CheckboxList::make('is_active')
+                            ->label("Statut location")
+                            ->options([
+                                '1' => "En cours",
+                                '0' => "Terminé",
+                            ])
+                            ->reactive(),
+                        DatePicker::make('created_at')
+                            ->label('Date de création'),
+                    ])
+                    ->query(
+                        fn(Builder $query, array $data) => $query
+                            ->when($data['is_active'] ?? null, fn(Builder $query, array $status) => $query->where('is_active',  $status))
+                            ->when($data['created_at'] ?? null, fn(Builder $query, string $date) => $query->whereDate('created_at', '=', $date))
+                    )
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -337,7 +351,7 @@ class ContractResource extends Resource implements HasShieldPermissions
                     ->extraAttributes(['class' => 'w-full d-flex justify-center'])
                     ->columnSpanFull(),
 
-                    \Filament\Infolists\Components\View::make('filament.infolist.components.generator-show-odl')
+                \Filament\Infolists\Components\View::make('filament.infolist.components.generator-show-odl')
                     ->label('Groupe électrogènes')
                     ->extraAttributes(['class' => 'w-full d-flex justify-center'])
                     ->columnSpanFull(),

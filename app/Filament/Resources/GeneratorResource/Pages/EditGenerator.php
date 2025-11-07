@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\GeneratorResource\Pages;
 
+use App\Enum\GeneratorStatus;
 use App\Filament\Resources\GeneratorResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -16,7 +17,8 @@ class EditGenerator extends EditRecord
     {
 
         return [
-            // Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->visible($this->record->status == GeneratorStatus::DISPONIBLE->value),
         ];
     }
 

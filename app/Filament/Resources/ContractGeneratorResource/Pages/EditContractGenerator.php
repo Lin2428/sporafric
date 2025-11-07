@@ -15,7 +15,7 @@ class EditContractGenerator extends EditRecord
     {
         return [
             Actions\DeleteAction::make()
-            ->visible($this->record->status == GeneratorStatus::DISPONIBLE),
+                ->visible($this->record->status == GeneratorStatus::DISPONIBLE->value),
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Enum\GeneratorStatus;
+use App\Enum\GeneratorType;
 use App\Filament\Utils\BadgetWidget;
 use App\Models\Generator;
 use Filament\Actions\EditAction;
@@ -20,9 +21,9 @@ class GeneratorInRevision extends Page implements HasTable
     use InteractsWithTable;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $title = ' ';
-     protected static ?string $model = Generator::class;
+    protected static ?string $model = Generator::class;
 
-     public static function shouldRegisterNavigation(): bool
+    public static function shouldRegisterNavigation(): bool
     {
         return false;
     }
@@ -30,8 +31,10 @@ class GeneratorInRevision extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(static::$model::query()
-            ->where('status', '=', GeneratorStatus::EN_REVU->value)
+            ->query(
+                static::$model::query()
+                    ->where('status', '=', GeneratorStatus::EN_REVU->value)
+                    ->where('type', '=', GeneratorType::LOCATION->value)
             )
             ->columns([
                 ImageColumn::make('image')
@@ -71,17 +74,17 @@ class GeneratorInRevision extends Page implements HasTable
                     ->sortable(),
 
             ])
-            ->recordUrl(fn($record) => url('admin/generators/'.$record->id))
+            ->recordUrl(fn($record) => url('admin/generators/' . $record->id))
             ->filters([
                 // ...
             ])
             ->actions([
                 ActionGroup::make([
                     ViewAction::make()
-                    ->url(fn($record) => url('admin/generators/'.$record->id)),
+                        ->url(fn($record) => url('admin/generators/' . $record->id)),
                     EditAction::make()
-                    ->url(fn($record) => url('admin/generators/'.$record->id.'/edit')),
-                ]), 
+                        ->url(fn($record) => url('admin/generators/' . $record->id . '/edit')),
+                ]),
             ])
             ->bulkActions([
                 // ...
