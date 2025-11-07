@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use App\Enum\GeneratorStatus;
 
 use Illuminate\Database\Eloquent\Model;
@@ -29,10 +30,7 @@ class Devis extends Model
         'deleted_at' => 'datetime',
     ];
 
-     protected static function booted()
-    {
-        
-    }
+    protected static function booted() {}
 
     public function customer()
     {
@@ -44,14 +42,14 @@ class Devis extends Model
         return $this->belongsToMany(Generator::class, 'devis_generators')
             ->withPivot([
                 'status',
-                'user_id', 
+                'user_id',
                 'site',
                 'code_site',
                 'contact_name',
                 'contact_phone',
                 'contact_email',
-                ])
-                ->withTimestamps();
+            ])
+            ->withTimestamps();
     }
 
     public function interventions()

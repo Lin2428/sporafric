@@ -37,7 +37,7 @@ class Contract extends Model
         //    if($model->generator_id != null){
         //     // Update the generator status to EN_LOCATION
         //     Generator::where('id', $model->generator_id)
-        //     ->update(['status' =>  GeneratorStatus::EN_LOCATION->value]); 
+        //     ->update(['status' =>  GeneratorStatus::EN_LOCATION->value]);
         //    }
 
         //     ContractGenerator::create([
@@ -55,24 +55,24 @@ class Contract extends Model
 
         //     if ($model->isDirty('generator_id') ||($statusOld != $statusNew)) {
         //         $oldGenerator = $model->getOriginal('generator_id');
-          
+
         //             ContractGenerator::where('contract_id', $model->id)
         //                 ->where('generator_id', $oldGenerator)
         //                 ->update(['status' => $statusNew]);
 
         //              Generator::where('id', $oldGenerator)
         //             ->update(['status' =>  GeneratorStatus::DISPONIBLE->value]);
-                    
+
         //              Generator::where('id', $model->generator_id)
         //             ->update(['status' =>  GeneratorStatus::EN_LOCATION->value]);
         //     }
         //     if(($statusOld != $statusNew) && $statusNew == 0){
         //         Generator::where('id', $model->generator_id)
-        //             ->update(['status' =>  GeneratorStatus::EN_REVU->value]); 
+        //             ->update(['status' =>  GeneratorStatus::EN_REVU->value]);
         //     }
         // });
     }
-    
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
@@ -81,17 +81,18 @@ class Contract extends Model
     public function generators()
     {
         return $this->belongsToMany(Generator::class, 'contract_generators')
-         ->withPivot([
-                    'forfait',
-                    'site',
-                    'code_site',
-                    'contact_name',
-                    'contact_phone',
-                    'contact_email',
-                    'status',
-                    'user_id',
-                ])
-                ->withTimestamps();
+            ->withPivot([
+                'forfait',
+                'site',
+                'code_site',
+                'contact_name',
+                'code_site',
+                'contact_phone',
+                'contact_email',
+                'status',
+                'user_id',
+            ])
+            ->withTimestamps();
     }
 
     public function interventions()

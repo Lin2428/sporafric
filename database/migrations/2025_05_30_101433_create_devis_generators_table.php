@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('generator_id')->nullable();
             $table->boolean('status')->default(false);
             $table->string('site')->nullable();
-            $table->string('code_site')->unique()->nullable();
+            $table->string('code_site')->nullable();
             $table->string('contact_name')->nullable();
             $table->string('contact_phone')->nullable();
             $table->string('contact_email')->nullable();

@@ -147,7 +147,7 @@ class ContractResource extends Resource implements HasShieldPermissions
                             ->label('Site'),
 
                         TextInput::make('code_site')
-                            ->label('Code'),
+                            ->label('Code')->unique(),
 
                         Section::make('Contact sur place')
                             ->columns(2)
