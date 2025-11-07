@@ -692,7 +692,7 @@ class ContractGeneratorResource extends Resource implements HasShieldPermissions
                             ->icon('heroicon-o-wrench-screwdriver')
                             ->iconPosition(IconPosition::After)
                             ->schema([
-                                RepeatableEntry::make("contractGenerator.contract.interventions")
+                                RepeatableEntry::make("interventions")
                                     ->label('')
                                     ->contained(false)
                                     ->schema([

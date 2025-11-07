@@ -52,6 +52,11 @@ class Generator extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function interventions()
+    {
+        return $this->hasMany(Intervention::class);
+    }
+
     public function contractGenerator()
     {
         return $this->hasOne(ContractGenerator::class,)

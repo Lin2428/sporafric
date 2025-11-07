@@ -664,7 +664,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                             ->icon('heroicon-o-wrench-screwdriver')
                             ->iconPosition(IconPosition::After)
                             ->schema([
-                                RepeatableEntry::make("devisGenerator.devis.interventions")
+                                RepeatableEntry::make("interventions")
                                     ->label('')
                                     ->contained(false)
                                     ->schema([

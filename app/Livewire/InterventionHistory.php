@@ -16,18 +16,18 @@ class InterventionHistory extends Component
     {
         $this->generatorId = $generatorId;
         $this->model = $model;
-        if($model == ReportMaintenance::class){
+
+        if ($model == ReportMaintenance::class) {
             $this->data = ReportMaintenance::query()
-            ->where('generator_id', $this->generatorId)
-             ->orWhere('new_generator_id', $this->generatorId)
-            ->get();
-        }else{
+                ->where('generator_id', $this->generatorId)
+                ->orWhere('new_generator_id', $this->generatorId)
+                ->get();
+        } else {
             $this->data = ReportLocation::query()
-            ->where('generator_id', $this->generatorId)
-            ->orWhere('new_generator_id', $this->generatorId)
-            ->get();
+                ->where('generator_id', $this->generatorId)
+                ->orWhere('new_generator_id', $this->generatorId)
+                ->get();
         }
-        
     }
 
     public function render()
