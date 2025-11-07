@@ -36,10 +36,10 @@ class ListContractGenerators extends ListRecords
                 })
             ),
 
-            Tab::make("Archivé")->query(
-                fn($query) =>
-                $query->onlyTrashed(),
-            ),
+            // Tab::make("Archivé")->query(
+            //     fn($query) =>
+            //     $query->onlyTrashed(),
+            // ),
 
 
         ];

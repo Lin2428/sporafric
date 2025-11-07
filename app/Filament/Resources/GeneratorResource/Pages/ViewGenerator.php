@@ -26,6 +26,21 @@ class ViewGenerator extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('previous')
+                ->hiddenLabel()
+                ->icon('heroicon-o-chevron-left')
+                ->color('primary')
+                ->action(fn() => $this->redirect(url("/admin/generators/{$this->record->getPreviousRecordLocation()?->id}")))
+                ->visible(fn() => $this->record->getPreviousRecordLocation()?->id !== null)
+                ->tooltip('Précédent'),
+
+            Actions\Action::make('next')
+                ->hiddenLabel()
+                ->icon('heroicon-o-chevron-right')
+                ->color('primary')
+                ->action(fn() => $this->redirect(url("/admin/generators/{$this->record->getNextRecordLocation()->id}")))
+                ->visible(fn() => $this->record->getNextRecordLocation()?->id !== null)
+                ->tooltip('Suivant'),
 
             Actions\ActionGroup::make([
                 Actions\EditAction::make()

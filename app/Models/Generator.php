@@ -72,6 +72,7 @@ class Generator extends Model
     {
         return $this->hasOne(DevisGenerator::class)
             ->where('is_retired', false)
+            ->where('status', true)
             ->latest('created_at');
     }
 
@@ -96,5 +97,43 @@ class Generator extends Model
     public function files()
     {
         return $this->hasMany(GeneratorFiles::class);
+    }
+
+    public function getNextRecordLocation(): ?self
+    {
+        return self::where('id', '>', $this->id)
+            ->whereNotNull('odoo_id')
+            ->whereNull('deleted_at')
+            ->orderBy('id', 'asc')
+            ->first();
+    }
+
+
+    public function getPreviousRecordLocation(): ?self
+    {
+        return self::where('id', '<', $this->id)
+            ->whereNotNull('odoo_id')
+            ->whereNull('deleted_at')
+            ->orderBy('id', 'desc')
+            ->first();
+    }
+
+    public function getNextRecordMaintenance(): ?self
+    {
+        return self::where('id', '>', $this->id)
+            ->whereNull('odoo_id')
+            ->whereNull('deleted_at')
+            ->orderBy('id', 'asc')
+            ->first();
+    }
+
+
+    public function getPreviousRecordMaintenance(): ?self
+    {
+        return self::where('id', '<', $this->id)
+            ->whereNull('odoo_id')
+            ->whereNull('deleted_at')
+            ->orderBy('id', 'desc')
+            ->first();
     }
 }

@@ -14,8 +14,9 @@ class EditContractGenerator extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make()
-                ->visible($this->record->status == GeneratorStatus::DISPONIBLE->value),
+            // Actions\DeleteAction::make()
+            //     ->visible($this->record->status == GeneratorStatus::DISPONIBLE->value)
+            //     ->label('Archiver le GE'),
         ];
     }
 

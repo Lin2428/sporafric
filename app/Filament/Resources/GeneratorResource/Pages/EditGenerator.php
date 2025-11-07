@@ -17,8 +17,8 @@ class EditGenerator extends EditRecord
     {
 
         return [
-            Actions\DeleteAction::make()
-                ->visible($this->record->status == GeneratorStatus::DISPONIBLE->value),
+            // Actions\DeleteAction::make()
+            //     ->visible($this->record->status == GeneratorStatus::DISPONIBLE->value),
         ];
     }
 
