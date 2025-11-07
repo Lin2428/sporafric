@@ -386,7 +386,7 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                             }
 
                                             if ($record->devisGenerator) {
-                                                return 'Devis en cours';
+                                                return 'Dernière location';
                                             }
 
                                             return 'Pas de devis';
