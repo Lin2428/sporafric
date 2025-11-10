@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\DevisStats;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -86,6 +87,7 @@ class Generator extends Model
         return $this->hasMany(DevisGenerator::class)
             ->where('is_retired', false)
             ->where('devis_id', '<>', $this->devisGenerator?->devis_id)
+            ->where('status', true)
             ->get();
     }
 

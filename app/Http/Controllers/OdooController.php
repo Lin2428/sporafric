@@ -218,7 +218,7 @@ class OdooController extends Controller
 
             $devisId = $devis->id;
             // $status = $devis->is_active;
-            $status = $devis->state == DevisStats::DONE ? false : true;
+            $status = $devis->state == DevisStats::DONE->value ? true : false;
 
             // $dataExiste = DevisGenerator::where('devis_id', $devisId)
             //     ->where(function ($query) use ($generatorId) {
