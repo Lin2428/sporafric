@@ -358,11 +358,12 @@ class InterventionResource extends Resource implements HasShieldPermissions
                     ])
                     ->query(
                         fn(Builder $query, array $data) => $query
-                            ->when($data['type_activite'] ?? null, fn(Builder $query, array $type) => $query->where('type_activite',  $type))
+                            ->when($data['type_activite'] ?? null, fn(Builder $query, array $typeActivity) => $query->where('type_activite',  $typeActivity))
                             ->when($data['status'] ?? null, fn(Builder $query, array $status) => $query->whereIn('status', $status))
                             ->when($data['date_planifiee'] ?? null, fn(Builder $query, string $date) => $query->whereDate('date_planifiee', '=', $date))
-                            ->when($data['date_prise_appel'] ?? null, fn(Builder $query, string $date) => $query->whereDate('date_prise_appel', '=', $date))
+                            ->when($data['date_prise_appel'] ?? null, fn(Builder $query, string $dateCall) => $query->whereDate('date_prise_appel', '=', $dateCall))
                             ->when($data['type'] ?? null, fn(Builder $query, string $type) => $query->where('type', '=', $type))
+                            ->when($data['type'] === 0, fn(Builder $query, string $type) => $query->where('type', '=', '0'))
                             ->when($data['later'] ?? null, fn(Builder $query) => $query->where('status', '=', InterventionStatus::PLANIFIEE->value)
                                 ->whereDate('date_planifiee', '<', now()))
                     )

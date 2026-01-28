@@ -24,6 +24,7 @@ class Intervention extends Model implements Eventable
         'type_activite',
         'contract_id',
         'generator_id',
+        'houres',
         'devis_id',
         'customer_id',
         'generator_name',

@@ -20,31 +20,29 @@ class WidgetUtils
             ->allowHtml()
             ->getSearchResultsUsing(function (string $search, callable $get) use ($isDispo, $type, $isgetAll) {
                 $result = collect();
-                
-                $query = Generator::query();
-                
-                if($isgetAll == false) {
-                    
-                    if ($get('contract_id') !=null) {
-                    $query->whereHas('contractGenerator', function (Builder $query) use ($get) {
-                        $query->where('contract_id', $get('contract_id'));
-                    });
-                }
-                if ($get('devis_id') != null) {
-                    $query->WhereHas('devisGenerator', function (Builder $query) use ($get) {
-                        $query->where('devis_id', $get('devis_id'));
-                    });
 
-                }
-                }
-                if($type != null) {
-                    $query
-                    ->where('type', '=', $type);
-                }
-                    if($search === '/'){
-                    $result = $query->get();
+                $query = Generator::query();
+
+                if ($isgetAll == false) {
+
+                    if ($get('contract_id') != null) {
+                        $query->whereHas('contractGenerator', function (Builder $query) use ($get) {
+                            $query->where('contract_id', $get('contract_id'));
+                        });
                     }
-                    else {
+                    if ($get('devis_id') != null) {
+                        $query->WhereHas('devisGenerator', function (Builder $query) use ($get) {
+                            $query->where('devis_id', $get('devis_id'));
+                        });
+                    }
+                }
+                if ($type != null) {
+                    $query
+                        ->where('type', '=', $type);
+                }
+                if ($search === '/') {
+                    $result = $query->get();
+                } else {
                     $query->where(function (Builder $query) use ($search) {
                         $query
                             ->orWhere('name', 'like', "%$search%")
@@ -52,11 +50,11 @@ class WidgetUtils
                             ->when(intval($search), fn(Builder $query) => $query->orWhere('id', intval($search)));
                     });
 
-                if ($isDispo) {
-                    $query->where("status", "=", '0');
-                }
+                    if ($isDispo) {
+                        $query->where("status", "=", '0');
+                    }
 
-                $result = $query->get();
+                    $result = $query->get();
                 }
 
                 return $result
@@ -64,9 +62,9 @@ class WidgetUtils
                         $generator->id => WidgetUtils::getGeneratorSelect($generator),
                     ])->toArray();
             })
-            ->getOptionLabelUsing(function ($value)use ($type) {
+            ->getOptionLabelUsing(function ($value) use ($type) {
                 $generator = Generator::where('id', $value)
-                ->when($type != null, fn(Builder $query) => $query->where('type', '=', $type))
+                    ->when($type != null, fn(Builder $query) => $query->where('type', '=', $type))
                     ->firstOrFail();
 
                 return WidgetUtils::getGeneratorSelect($generator);
@@ -82,9 +80,9 @@ class WidgetUtils
         return $select;
     }
 
-    public static function customerSelectWidget(): Select
+    public static function customerSelectWidget(?string $name = 'customer_id'): Select
     {
-        $select = Select::make('customer_id')
+        $select = Select::make($name)
             //->relationship('customer', 'name')
             ->searchable()
             ->required()
@@ -126,7 +124,7 @@ class WidgetUtils
         return $select;
     }
 
-    public static function contractSelectWidget(string $name = "contract_id"): Select
+    public static function contractSelectWidget(string $name = "contract_id", ?string $placeholder = "Récherchez par numéro, par nom ou téléphone du client"): Select
     {
         $select = Select::make($name)
             // ->relationship(function () use ($name) {
@@ -140,28 +138,28 @@ class WidgetUtils
             ->reactive()
             ->allowHtml()
             ->label('Contrat')
-             ->placeholder("Récherchez par numéro, par nom ou téléphone du client")
-            ->getSearchResultsUsing(function (string $search) use($name) {
+            ->placeholder($placeholder)
+            ->getSearchResultsUsing(function (string $search) use ($name) {
                 $model = Contract::where("number", "like", "%$search%")
-                ->orWhereHas('customer', function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%")
-                    ->orWhere('contact_c_phone', 'like', "%$search%")
-                    ->orWhere('contact_c_email', 'like', "%$search%");
-                });
-                if(str_contains($name, 'devis')) {
+                    ->orWhereHas('customer', function ($query) use ($search) {
+                        $query->where('name', 'like', "%$search%")
+                            ->orWhere('contact_c_phone', 'like', "%$search%")
+                            ->orWhere('contact_c_email', 'like', "%$search%");
+                    });
+                if (str_contains($name, 'devis')) {
                     $model = Devis::where("number", "like", "%$search%")
-                    ->orWhere("customer_name", "like", "%$search%")
-                     ->orWhereHas('customer', function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%")
-                    ->orWhere('contact_c_phone', 'like', "%$search%")
-                    ->orWhere('contact_c_email', 'like', "%$search%");
-                });
+                        ->orWhere("customer_name", "like", "%$search%")
+                        ->orWhereHas('customer', function ($query) use ($search) {
+                            $query->where('name', 'like', "%$search%")
+                                ->orWhere('contact_c_phone', 'like', "%$search%")
+                                ->orWhere('contact_c_email', 'like', "%$search%");
+                        });
                 }
                 $users = $model->orWhereHas('customer', function ($query) use ($search) {
-                        $query->where('name', 'like', "%$search%");
-                        $query->orWhere('contact_c_phone', 'like', "%$search%");
-                        $query->orWhere('contact_c_email', 'like', "%$search%");
-                    })
+                    $query->where('name', 'like', "%$search%");
+                    $query->orWhere('contact_c_phone', 'like', "%$search%");
+                    $query->orWhere('contact_c_email', 'like', "%$search%");
+                })
                     ->limit(50)
                     ->get();
 
@@ -171,15 +169,15 @@ class WidgetUtils
                     })
                     ->toArray();
             })
-            ->getOptionLabelUsing(function ($value) use($name) {
-            
+            ->getOptionLabelUsing(function ($value) use ($name) {
+
                 $customer = null;
                 if (str_contains($name, 'devis')) {
                     $customer = Devis::where('id', $value)
                         ->firstOrFail();
-                }else{
-                        $customer = Contract::where('id', $value)
-                    ->firstOrFail();
+                } else {
+                    $customer = Contract::where('id', $value)
+                        ->firstOrFail();
                 }
 
                 return WidgetUtils::getContractSelect($customer);
@@ -290,7 +288,7 @@ class WidgetUtils
             })
             ->searchable()
             ->label('Pièces')
-             ->placeholder("Récherchez par reference ou par designation");
+            ->placeholder("Récherchez par reference ou par designation");
 
         if ($onUpdate !== null) {
             $select = $select->afterStateUpdated($onUpdate)->reactive();

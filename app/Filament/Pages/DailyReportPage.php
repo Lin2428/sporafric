@@ -1,18 +1,20 @@
 <?php
 
 namespace App\Filament\Admin\Pages;
+
 use App\Models\Contract;
 use App\Models\Devis;
 use App\Models\Generator;
 use Filament\Pages\Page;
+
 abstract class DailyReportPage extends Page
 {
-    public  $contractId;
 
+    public $customerId;
+    public $interventionTypeId;
+    public $contractId;
     public $devisId;
-
     public $generatorId;
-
     public $startDate;
     public $endDate;
     public $selectDateRange;
@@ -39,6 +41,8 @@ abstract class DailyReportPage extends Page
     protected function getViewData(): array
     {
         return [
+            'customerId' => $this->customerId,
+            'interventionType' => $this->interventionTypeId,
             'contractId' => $this->contractId,
             'contracts' => Contract::all(),
             'devisId' => $this->devisId,
