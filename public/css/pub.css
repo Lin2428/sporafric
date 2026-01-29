@@ -1,16 +1,17 @@
 @import "tailwindcss";
-    @media print {
-        tfoot {
-            display: table-footer-group;
-        }
-
-        @page {
-            size:landscape; marks:none;size: 21.0cm;margin: 0cm ;
-        }
+@media print {
+    tfoot {
+        display: table-footer-group;
     }
 
-.invisible{
-    display: none;
+    @page {
+        size: landscape;
+        marks: none;
+        size: 21cm;
+        margin: 0cm;
+    }
 }
 
-    
+.invisible {
+    display: none;
+}

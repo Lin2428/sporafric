@@ -1,6 +1,5 @@
 import './bootstrap';
 
-console.log('Hello from app.js');
 window.addEventListener('load', function () {
     const printReportButton = document.querySelector('#print-form-etat');
     if (printReportButton) {

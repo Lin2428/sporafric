@@ -8,7 +8,21 @@
     $total2 = 0;
     $revenuContrat = 0;
     $forfait = 0;
+    $rowTotal = 12;
 
+    //variable d'impression de colonne
+$printDebut = !in_array('start_at', $printableFields);
+$printFin = !in_array('end_at', $printableFields);
+$printSite = !in_array('site', $printableFields);
+$printTech = !in_array('technicien', $printableFields);
+$printGen = !in_array('generator', $printableFields);
+$printPiece = !in_array('piece', $printableFields);
+$printQtyPiece = !in_array('qty_piece', $printableFields);
+$printMPieces = !in_array('amount_pieces', $printableFields);
+$printMInt = !in_array('amount_intervention', $printableFields);
+$printMTotal = !in_array('amount_total', $printableFields);
+
+if ($data->isNotEmpty()) {
     if ($data->isNotEmpty()) {
         $total1 = $data->sum('montant') + $data->sum('montant_piece');
 
@@ -25,7 +39,8 @@
 
         $forfait = $data->unique('generator_id')->sum('forfait');
 
-        $total2 = $total1 + $revenuContrat;
+            $total2 = $total1 + $revenuContrat;
+        }
     }
 
 @endphp
@@ -104,51 +119,51 @@
                         </th>
                         <th
                             class="px-3 py-2 text-[12px] font-bold text-left text-slate-800 border border-slate-400 whitespace-nowrap">
-                            Date
+                            Date planifiée
                         </th>
                         <th
-                            class="px-3 py-2 text-[12px] font-bold text-left text-slate-800 border border-slate-400 whitespace-nowrap">
+                            class="start_at px-3 py-2 text-[12px] font-bold text-left text-red-600 border border-slate-400 whitespace-nowrap {{ $printDebut ? 'no-print-column' : '' }}">
                             Début
                         </th>
                         <th
-                            class="px-3 py-2 text-[12px] font-bold text-left text-slate-800 border border-slate-400 whitespace-nowrap">
+                            class="end_at px-3 py-2 text-[12px] font-bold text-left text-red-600 border border-slate-400 whitespace-nowrap {{ $printFin ? 'no-print-column' : '' }}">
                             Fin
                         </th>
                         <th
-                            class="px-3 py-2 text-[12px] font-bold text-left text-slate-800 border border-slate-400 max-w-[150px]">
+                            class="site px-3 py-2 text-[12px] font-bold text-left text-red-600 border border-slate-400 max-w-[150px] {{ $printSite ? 'no-print-column' : '' }}">
                             Site
                         </th>
                         <th
-                            class="px-3 py-2 text-[12px] text-left font-bold text-slate-800 border border-slate-400 max-w-[150px]">
+                            class="technicien px-3 py-2 text-[12px] text-left font-bold text-red-600 border border-slate-400 max-w-[150px] {{ $printTech ? 'no-print-column' : '' }}">
                             Techniciens
                         </th>
                         <th
-                            class="px-3 py-2 text-[12px] text-left font-bold text-slate-800 border border-slate-400 whitespace-nowrap">
+                            class="generator px-3 py-2 text-[12px] text-left font-bold text-red-600 border border-slate-400 whitespace-nowrap {{ $printGen ? 'no-print-column' : '' }}">
                             GE
                         </th>
                         <th
-                            class="px-3 py-2 text-[12px] text-left font-bold text-slate-800 border border-slate-400 whitespace-nowrap">
+                            class="px-3 py-2 text-[12px] text-left font-bold text-red-600 border border-slate-400 whitespace-nowrap {{ $printGen ? 'no-print-column' : '' }}">
                             Nb hr
                         </th>
                         <th
-                            class="px-3 py-2 text-[12px] text-left font-bold text-slate-800 border border-slate-400 max-w-[400px]">
+                            class="piece px-3 py-2 text-[12px] text-left font-bold text-red-600 border border-slate-400 max-w-[400px] {{ $printPiece ? 'no-print-column' : '' }}">
                             Pièces
                         </th>
                         <th
-                            class="px-3 py-2 text-[12px] font-bold text-left text-slate-800 border border-slate-400 whitespace-nowrap">
-                            QT
+                            class="qty_piece px-3 py-2 text-[12px] font-bold text-left text-red-600 border border-slate-400 whitespace-nowrap {{ $printQtyPiece ? 'no-print-column' : '' }}">
+                            QT Pièces
                         </th>
                         <th
-                            class="px-3 py-2 text-[12px] font-bold text-left text-slate-800 border border-slate-400 whitespace-nowrap">
+                            class="amount_pieces px-3 py-2 text-[12px] font-bold text-left text-red-600 border border-slate-400 whitespace-nowrap {{ $printMPieces ? 'no-print-column' : '' }}">
                             Prix
                             Total</th>
                         <th
-                            class="px-3 py-2 text-[12px] font-bold text-left text-slate-800 border border-slate-400 whitespace-nowrap">
-                            Montant
-                            Int.</th>
+                            class="amount_intervention px-3 py-2 text-[12px] font-bold text-left text-red-600 border border-slate-400 whitespace-nowrap {{ $printMInt ? 'no-print-column' : '' }}">
+                            M.
+                            Int</th>
                         <th
-                            class="px-3 py-2 text-[12px] font-bold text-left text-slate-800 border border-slate-400 whitespace-nowrap">
-                            MT(FCFA)
+                            class="total_mount px-3 py-2 text-[12px] font-bold text-left text-red-600 border border-slate-400 whitespace-nowrap {{ $printMTotal ? 'no-print-column' : '' }}">
+                            M. Total
                         </th>
                     </tr>
                 </thead>
@@ -181,70 +196,83 @@
                                     {{ \App\Utils\DateUtils::formatWithTime($intervention->intervention_at) }}
                                 </td>
                                 <td
-                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 whitespace-nowrap">
+                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 whitespace-nowrap {{ $printDebut ? 'no-print-column' : '' }}">
                                     {{ \App\Utils\DateUtils::formatWithTime($intervention->interevention_start_at) }}
                                 </td>
                                 <td
-                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 whitespace-nowrap">
+                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 whitespace-nowrap {{ $printFin ? 'no-print-column' : '' }}">
                                     {{ \App\Utils\DateUtils::formatWithTime($intervention->interevention_end_at) }}
                                 </td>
                                 <td
-                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 max-w-[120px]">
+                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 max-w-[120px] {{ $printSite ? 'no-print-column' : '' }}">
                                     {{ $intervention->site }}
                                 </td>
                                 <td
-                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 max-w-[150px]">
+                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 max-w-[150px] {{ $printTech ? 'no-print-column' : '' }}">
                                     {{ $intervention->techniciens }}
                                 </td>
                                 <td
-                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 whitespace-nowrap">
+                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 whitespace-nowrap {{ $printGen ? 'no-print-column' : '' }}">
                                     {{ $intervention->generator_name }}
                                 </td>
                                 <td
-                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 whitespace-nowrap">
+                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 whitespace-nowrap {{ $printGen ? 'no-print-column' : '' }}">
                                     {{ $intervention->generator_houres }}
                                 </td>
                                 <td
-                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 max-w-[400px]">
+                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 max-w-[400px] {{ $printPiece ? 'no-print-column' : '' }}">
                                     {{ $intervention->pieces }}
                                 </td>
                                 <td
-                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 whitespace-nowrap">
+                                    class="px-3 py-2 text-[12px] text-left text-slate-800 border border-slate-400 whitespace-nowrap {{ $printQtyPiece ? 'no-print-column' : '' }}">
                                     {{ $intervention->total_pieces }}</td>
                                 <td
-                                    class="px-3 py-2 text-[12px] text-right text-slate-800 border border-slate-400 whitespace-nowrap">
+                                    class="px-3 py-2 text-[12px] text-right text-slate-800 border border-slate-400 whitespace-nowrap {{ $printMPieces ? 'no-print-column' : '' }}">
                                     {{ \App\Utils\NumberUtils::format($intervention->montant_piece) }}</td>
                                 <td
-                                    class="px-3 py-2 text-[12px] text-right text-slate-800 border border-slate-400 whitespace-nowrap">
+                                    class="px-3 py-2 text-[12px] text-right text-slate-800 border border-slate-400 whitespace-nowrap {{ $printMInt ? 'no-print-column' : '' }}">
                                     {{ \App\Utils\NumberUtils::format($intervention->montant) }}</td>
                                 <td
-                                    class="px-3 py-2 text-[12px] text-right font-bold text-slate-800 border border-slate-400 whitespace-nowrap">
+                                    class="px-3 py-2 text-[12px] text-right font-bold text-slate-800 border border-slate-400 whitespace-nowrap {{ $printMTotal ? 'no-print-column' : '' }}">
                                     {{ \App\Utils\NumberUtils::format($intervention->montant + $intervention->montant_piece) }}
                                 </td>
                             </tr>
                         @endforeach
                     @endif
                 </tbody>
-                <tfoot style="display: table-row-group">
-                    <tr>
-                        <th colspan="12" class="text-left px-3 py-2 text-[12px] text-slate-800">
-                            Total
-                        </th>
-
-                        <th class="px-3 py-2 text-[12px] text-right font-bold text-slate-800 border border-slate-400">
-                            {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('total_pieces') : 0) }}
-                        </th>
-                        <th class="px-3 py-2 text-[12px] text-right font-bold text-slate-800 border border-slate-400">
-                            {{ \App\Utils\NumberUtils::format(number: $data->isNotEmpty() ? $data->sum('montant_piece') : 0) }}
-                        </th>
-                        <th class="px-3 py-2 text-[12px] text-right font-bold text-slate-800 border border-slate-400">
-                            {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('montant') : 0) }}
-                        </th>
-                        <th class="px-3 py-2 text-[12px] text-right font-bold text-slate-800 border border-slate-400">
-                            {{ \App\Utils\NumberUtils::format($total1) }}
-                        </th>
-                    </tr>
-                </tfoot>
+                @if (!$printMTotal || !$printMInt || !$printMPieces || !$printQtyPiece)
+                    <tfoot style="display: table-row-group">
+                        <tr>
+                            <th colspan="{{ $rowTotal }}" class="text-left px-3 py-2 text-[12px] text-slate-800">
+                                Total
+                            </th>
+                            @if (!$printQtyPiece)
+                                <th
+                                    class="px-3 py-2 text-[12px] text-right font-bold text-slate-800 border border-slate-400">
+                                    {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('total_pieces') : 0) }}
+                                </th>
+                            @endif
+                            @if (!$printMPieces)
+                                <th
+                                    class="px-3 py-2 text-[12px] text-right font-bold text-slate-800 border border-slate-400">
+                                    {{ \App\Utils\NumberUtils::format(number: $data->isNotEmpty() ? $data->sum('montant_piece') : 0) }}
+                                </th>
+                            @endif
+                            @if (!$printMInt)
+                                <th
+                                    class="px-3 py-2 text-[12px] text-right font-bold text-slate-800 border border-slate-400">
+                                    {{ \App\Utils\NumberUtils::format($data->isNotEmpty() ? $data->sum('montant') : 0) }}
+                                </th>
+                            @endif
+                            @if (!$printMTotal)
+                                <th
+                                    class="px-3 py-2 text-[12px] text-right font-bold text-slate-800 border border-slate-400">
+                                    {{ \App\Utils\NumberUtils::format($total1) }}
+                                </th>
+                            @endif
+                        </tr>
+                    </tfoot>
+                @endif
             </table>
         </div>
 
@@ -379,6 +407,10 @@
             display: none;
         }
 
+        .no-print-column {
+            display: none;
+        }
+
         @media print {
             tfoot {
                 display: table-footer-group;
@@ -392,7 +424,9 @@
                 display: flex;
             }
 
-            . . @page {
+
+
+            @page {
                 margin: 20px 40px 10px 40px;
                 /* top, right, bottom, left */
             }

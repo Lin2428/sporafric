@@ -146,11 +146,12 @@ class ReportMaintenancePage extends DailyReportPage implements HasForms
                         ->toArray())
                     ->reactive(),
 
-                CheckboxList::make('printable_fields')
+                CheckboxList::make('printableFields')
                     ->label('Champs imprimables')
                     ->reactive()
                     ->columns(10)
                     ->gridDirection('row')
+                    ->extraInputAttributes(['class' => 'cursor-pointer'])
                     ->options([
                         'start_at' => 'Date de début',
                         'end_at' => 'Date de fin',
@@ -158,12 +159,18 @@ class ReportMaintenancePage extends DailyReportPage implements HasForms
                         'technicien' => 'Techniciens',
                         'generator' => 'GE',
                         'piece' => 'Pièces',
-                        'qty_pice' => 'Qt pièces',
-                        'amount_pieces' => 'M. pièces',
+                        'qty_piece' => 'Qt pièces',
+                        'amount_pieces' => 'P. pièces',
                         'amount_intervention' => 'M. intervention',
-                        'total_mount' => 'M. total',
-                    ])->afterStateUpdated(function ($state) {
+                        'amount_total' => 'M. total',
+                    ])
+
+                    ->afterStateUpdated(function ($state) {
+
+                        if (count($state) > 3) {
+                        }
                         $this->printableFields = $state;
+                        $this->refresh();
                     })
                     ->columnSpanFull()
                     ->live(true),
