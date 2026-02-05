@@ -13,4 +13,9 @@ class DateUtils
     {
         return date('d/m/Y H:i', strtotime($date));
     }
+
+    public static function formatForReport($date): string
+    {
+        return date('d/m H:i', strtotime($date));
+    }
 }
