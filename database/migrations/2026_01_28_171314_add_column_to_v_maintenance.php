@@ -31,6 +31,7 @@ SELECT
     cg.code_site,
     cg.forfait,
     c.start_date AS contract_start_at,
+    c.number AS contract_number,
     cu.id AS customer_id,
     cu.name AS customer_name,
 

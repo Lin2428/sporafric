@@ -8,6 +8,7 @@ use App\Filament\Utils\WidgetUtils;
 use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Generator;
+use App\Models\ContractGenerator;
 use App\Models\ReportMaintenance;
 use Carbon\Carbon;
 use Filament\Forms\Components\CheckboxList;
@@ -27,7 +28,7 @@ class ReportMaintenancePage extends DailyReportPage implements HasForms
     protected static string $view = 'filament.pages.report-maintenance';
 
     private $data;
-    public $type;
+    public $dataRecap;
     public $customer;
     public $contract;
     public $generator;
@@ -48,6 +49,8 @@ class ReportMaintenancePage extends DailyReportPage implements HasForms
 
 
         $query = ReportMaintenance::query();
+
+
         if (!empty($this->customerId)) {
             $query->where('customer_id', $this->customerId);
             $this->customer = Customer::findOrFail($this->customerId);
@@ -71,7 +74,20 @@ class ReportMaintenancePage extends DailyReportPage implements HasForms
             $this->interventionType = $this->interventionTypeId;
         }
 
+
         $this->data = $query->get();
+        if ($this->data->isNotEmpty()) {
+            $contractId = $this->data->unique('contract_id');
+            $generatorId = $this->generatorId;
+            $this->dataRecap = ContractGenerator::with(['contract', 'generator'])
+                ->when($contractId->pluck('contract_id'), function ($query, $contractIds) {
+                    $query->whereIn('contract_id', $contractIds);
+                })
+                ->when($generatorId, function ($query, $generatorId) {
+                    $query->where('generator_id', $generatorId);
+                })
+                ->get();
+        }
     }
 
     public function form(Form $form): Form

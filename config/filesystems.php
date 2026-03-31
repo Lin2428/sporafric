@@ -80,6 +80,12 @@ return [
             'url' => env('APP_URL') . '/storage/genertor_files',
             'visibility' => 'public',
         ],
+        'contract_files' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/contract_files'),
+            'url' => env('APP_URL') . '/storage/contract_files',
+            'visibility' => 'public',
+        ],
 
     ],
 

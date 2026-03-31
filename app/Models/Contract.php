@@ -26,10 +26,11 @@ class Contract extends Model
         'deleted_at' => 'datetime',
     ];
 
-    // protected $with = [
-    //     'customer',
-    //     'generators',
-    // ];
+    protected $with = [
+        'customer',
+        'generators',
+        'files',
+    ];
 
     protected static function booted()
     {
@@ -98,5 +99,10 @@ class Contract extends Model
     public function interventions()
     {
         return $this->hasMany(Intervention::class);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(ContractFiles::class);
     }
 }

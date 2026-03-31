@@ -37,6 +37,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Joaopaulolndev\FilamentPdfViewer\Infolists\Components\PdfViewerEntry;
 
 class ContractResource extends Resource implements HasShieldPermissions
 {
@@ -343,7 +344,9 @@ class ContractResource extends Resource implements HasShieldPermissions
                                     ->color('danger'),
 
                             ])
+                            ->columnSpanFull(),
                     ]),
+
 
 
                 \Filament\Infolists\Components\View::make('filament.infolist.components.generator-show-tab')
@@ -356,7 +359,16 @@ class ContractResource extends Resource implements HasShieldPermissions
                     ->extraAttributes(['class' => 'w-full d-flex justify-center'])
                     ->columnSpanFull(),
 
-
+                \Filament\Infolists\Components\Section::make('Documents attachés')
+                    ->columns(1)
+                    ->collapsible()
+                    ->schema([
+                        \Filament\Infolists\Components\ViewEntry::make('files')
+                            ->view('components.pdf-slider')
+                            ->columnSpanFull()
+                            ->viewData(['record']),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 }
