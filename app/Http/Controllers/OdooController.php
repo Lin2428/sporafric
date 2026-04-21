@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Enum\DevisStats;
 use App\Enum\GeneratorStatus;
+use App\Enum\SynchronizationParametersType;
 use App\Models\Customer;
 use App\Models\Devis;
 use App\Models\DevisGenerator;
 use App\Models\Generator;
+use App\Models\OperatorFilter;
 use App\Models\Piece;
+use App\Models\SynchronizeParameter;
 use App\Models\Technicien;
+use App\Services\DomainBuilder;
 use App\Services\OdooService;
 
 class OdooController extends Controller
@@ -26,9 +30,10 @@ class OdooController extends Controller
     {
         set_time_limit(5000);
         $odoo = new OdooService();
+        $domain = DomainBuilder::build(SynchronizationParametersType::CUSTOMER->value);
         $data = $odoo->searchRead(
             'res.partner',
-            [],
+            $domain,
             [
                 'id',
                 'name',
@@ -61,12 +66,11 @@ class OdooController extends Controller
     {
         set_time_limit(5000);
         $odoo = new OdooService();
+        $domain = DomainBuilder::build(SynchronizationParametersType::TECHNICIEN->value);
+
         $data = $odoo->searchRead(
             'hr.employee',
-            [
-                (['department_id', '=', 6]),
-                (['job_id', 'in', [4, 26, 27, 28,]]),
-            ],
+            $domain,
             [
                 'id',
                 'name',
@@ -94,18 +98,13 @@ class OdooController extends Controller
 
         $odoo      = new OdooService();
         $generator = Generator::all()->pluck('odoo_id')->toArray();
+        $domain = DomainBuilder::build(SynchronizationParametersType::GENERATOR->value);
+        if (!$all && !empty($generator)) {
+            $domain[] = ['id', 'not in', $generator];
+        }
         $data      = $odoo->searchRead(
             'product.template',
-            $all ? [
-
-                (['categ_id', '=', 240]),
-                (['active', '=', true]),
-            ] :
-                [
-                    (['id', 'not in', $generator]),
-                    (['categ_id', '=', 240]),
-                    (['active', '=', true]),
-                ],
+            $domain,
             [
                 'id',
                 'name',
@@ -134,18 +133,13 @@ class OdooController extends Controller
 
         $odoo = new OdooService();
         $devis = Devis::all()->pluck('odoo_id')->toArray();
-
+        $domain = DomainBuilder::build(SynchronizationParametersType::DEVIS->value);
+        if (!$all && !empty($devis)) {
+            $domain[] = ['id', 'not in', $devis];
+        }
         $orders = $odoo->searchRead(
             'sale.order',
-            $all ? [
-                (['is_rental_order', '=', true]),
-                (['state', 'not in', ['cancel']])
-            ] :
-                [
-                    (['id', 'not in', $devis]),
-                    (['is_rental_order', '=', true]),
-                    (['state', 'not in', ['cancel']])
-                ],
+            $domain,
             [
                 'id',
                 'name',
@@ -276,14 +270,11 @@ class OdooController extends Controller
         set_time_limit(5000);
 
         $odoo = new OdooService();
+        $domain = DomainBuilder::build(SynchronizationParametersType::CONSO_INTERNE->value);
 
         $orders = $odoo->searchRead(
             'sale.order',
-            [
-                (['conso_interne', '=', true]),
-                (['state', 'not in', ['cancel']]),
-                (['partner_id', '=', 3969])
-            ],
+            $domain,
             [
                 'id',
                 'name',
@@ -330,16 +321,19 @@ class OdooController extends Controller
 
         set_time_limit(5000);
         $odoo = new OdooService();
+        $domain = DomainBuilder::build(SynchronizationParametersType::PIECE->value);
 
-        $data = $odoo->searchRead('product.template', [
-            ['categ_id', 'in', [80, 239, 107, 284, 302, 59, 83]],
-        ], [
-            'id',
-            'name',
-            'standard_price',
-            'list_price',
-            'default_code',
-        ]);
+        $data = $odoo->searchRead(
+            'product.template',
+            $domain,
+            [
+                'id',
+                'name',
+                'standard_price',
+                'list_price',
+                'default_code',
+            ]
+        );
 
 
 

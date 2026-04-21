@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
@@ -19,6 +20,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Hash;
 use Rawilk\FilamentPasswordInput\Password;
+use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class UserResource extends Resource implements HasShieldPermissions
 {
@@ -85,8 +87,8 @@ class UserResource extends Resource implements HasShieldPermissions
                 TextColumn::make("email")
                     ->label("Email")
                     ->searchable(),
-                    
-                    BadgeColumn::make("roles.name")
+
+                BadgeColumn::make("roles.name")
                     ->label("Roles")
                     ->searchable(),
 
@@ -110,8 +112,8 @@ class UserResource extends Resource implements HasShieldPermissions
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\DeleteAction::make()->visible(fn(User $recor) => ! $recor->isSuperAdmin()),
+                    Impersonate::make(),
+                    Tables\Actions\DeleteAction::make()->visible(fn(User $user) =>  $user->isSuperAdmin()),
                 ]),
 
             ])
