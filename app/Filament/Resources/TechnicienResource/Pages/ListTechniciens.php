@@ -5,6 +5,7 @@ namespace App\Filament\Resources\TechnicienResource\Pages;
 use App\Filament\Resources\TechnicienResource;
 use App\Http\Controllers\OdooController;
 use App\Models\Technicien;
+use App\Models\User;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
@@ -34,6 +35,14 @@ class ListTechniciens extends ListRecords
                             ->title('Une erreur est survenue lors de la synchronisation !')
                             ->danger()
                             ->send();
+
+                        Notification::make()
+                            ->title("Synchronisation des Techniciens échouée")
+                            ->body("La synchronisation des techniciens initiée par " .  auth()->user()->name . " a échouée")
+                            ->danger()
+                            ->icon('heroicon-o-arrow-path')
+                            ->sendToDatabase($this->superReceiver());
+
                         return;
                     }
 
@@ -41,10 +50,22 @@ class ListTechniciens extends ListRecords
                         ->title('Techniciens synchronisés')
                         ->success()
                         ->send();
+
+                    Notification::make()
+                        ->title("Synchronisation des Techniciens réussi")
+                        ->body("La synchronisation des techniciens initiée par " .  auth()->user()->name . " a réussi")
+                        ->success()
+                        ->icon('heroicon-o-arrow-path')
+                        ->sendToDatabase($this->superReceiver());
                 })
                 ->requiresConfirmation()
                 ->color('primary')
                 ->visible(auth()->user()->hasPermissionTo('create_technicien')),
         ];
+    }
+
+    public static function superReceiver(): mixed
+    {
+        return  User::role(['super_admin', 'Superviseur', 'Secrétaire'])->get();
     }
 }

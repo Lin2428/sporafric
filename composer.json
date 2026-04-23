@@ -5,7 +5,8 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
+        "achyutn/filament-log-viewer": "^0.7.0",
         "arielmejiadev/filament-printable": "^3.0",
         "awcodes/filament-table-repeater": "^3.1",
         "bezhansalleh/filament-shield": "^3.3",

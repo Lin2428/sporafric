@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PieceResource\Pages;
 use App\Filament\Resources\PieceResource;
 use App\Http\Controllers\OdooController;
 use App\Models\Piece;
+use App\Models\User;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
@@ -29,6 +30,13 @@ class ListPieces extends ListRecords
                             ->title('Une erreur est survenue lors de la synchronisation !')
                             ->danger()
                             ->send();
+
+                        Notification::make()
+                            ->title("Synchronisation des Pièces échouée")
+                            ->body("La synchronisation des pièces initiée par " .  auth()->user()->name . " a échouée")
+                            ->danger()
+                            ->icon('heroicon-o-arrow-path')
+                            ->sendToDatabase($this->superReceiver());
                         return;
                     }
 
@@ -37,7 +45,19 @@ class ListPieces extends ListRecords
                         ->success()
                         ->send();
 
+                    Notification::make()
+                        ->title("Synchronisation des Pièces réussi")
+                        ->body("La synchronisation des pièces initiée par " .  auth()->user()->name . " a réussi")
+                        ->success()
+                        ->icon('heroicon-o-arrow-path')
+                        ->sendToDatabase($this->superReceiver());
+
                 })->requiresConfirmation(),
         ];
+    }
+
+    public static function superReceiver(): mixed
+    {
+        return  User::role(['super_admin', 'Superviseur', 'Secrétaire'])->get();
     }
 }

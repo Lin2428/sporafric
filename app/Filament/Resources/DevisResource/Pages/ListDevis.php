@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Devis;
 use App\Models\DevisGenerator;
 use App\Models\Generator;
+use App\Models\User;
 use Filament\Actions;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\ViewField;
@@ -45,19 +46,40 @@ class ListDevis extends ListRecords
                 ->action(function () {
                      set_time_limit(120);
                      try {
-                            OdooController::syncronizeDevis($this->category);  
+                            OdooController::syncronizeDevis($this->category);
                         } catch (\Throwable $th) {
                             Notification::make()
                             ->title('Une erreur est survenue lors de la synchronisation !')
                             ->danger()
                             ->send();
 
-                            return;
-                        }             
+                         Notification::make()
+                             ->title("Synchronisation des Devis échouée")
+                             ->body("La synchronisation des devis initiée par " .  auth()->user()->name . " a échouée")
+                             ->danger()
+                             ->icon('heroicon-o-arrow-path')
+                             ->sendToDatabase($this->superReceiver());
 
-                    Notification::make()->title('Synchronisation terminée')->body('Les devis ont été synchronisés avec succès.')->success()->send();
+                            return;
+                        }
+
+                    Notification::make()->title('Synchronisation terminée')
+                        ->body('Les devis ont été synchronisés avec succès.')
+                        ->success()->send();
+
+                    Notification::make()
+                        ->title("Synchronisation des Devis réussi")
+                        ->body("La synchronisation des devis initiée par " .  auth()->user()->name . " a réussi")
+                        ->success()
+                        ->icon('heroicon-o-arrow-path')
+                        ->sendToDatabase($this->superReceiver());
                 })
                 ->visible(auth()->user()->hasPermissionTo('create_devis')),
         ];
+    }
+
+    public static function superReceiver(): mixed
+    {
+        return  User::role(['super_admin', 'Superviseur', 'Secrétaire'])->get();
     }
 }

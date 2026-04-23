@@ -21,12 +21,13 @@ class DatabaseSeeder extends Seeder
         //Piece::factory(5)->create();
         // User::factory(10)->create();
         //Generator::factory(10)->create();
-        //$this->call(CustomerSeeder::class); 
+        //$this->call(CustomerSeeder::class);
         // User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
 
         $this->call(OperatorFilterSeeder::class);
+        $this->call(SynchronizationParameterSeeder::class);
     }
 }

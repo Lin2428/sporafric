@@ -3,6 +3,8 @@
 use App\Http\Controllers\OdooController;
 use Illuminate\Support\Facades\Route;
 
+
+
 Route::redirect('/', '/admin');
 
 //Route::get('/admin')->name('admin');

@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use AchyutN\FilamentLogViewer\FilamentLogViewer;
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -30,6 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme(['public/css/filament/filament/app.css', 'resources/css/filament/admin/theme.css', 'resources/css/app.css',])
             ->path('admin')
             ->login()
+            ->databaseNotifications()
             ->brandName('SPORAFRIC')
             ->brandLogo(asset('image/logo_light.png'))
             ->colors([
@@ -69,6 +71,11 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->plugins([
+                FilamentLogViewer::make()
+                    ->authorize(fn (): bool => auth()->user()->hasRole('super_admin'))
+                    ->navigationLabel('Logs')
+                    ->navigationSort(1),
+
                 FilamentShieldPlugin::make()->gridColumns([
                     'default' => 1,
                     'sm' => 2,

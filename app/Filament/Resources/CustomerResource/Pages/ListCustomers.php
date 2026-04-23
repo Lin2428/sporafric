@@ -4,6 +4,7 @@ namespace App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource;
 use App\Http\Controllers\OdooController;
 use App\Models\Customer;
+use App\Models\User;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
@@ -32,17 +33,36 @@ class ListCustomers extends ListRecords
                             ->title('Une erreur est survenue lors de la synchronisation !')
                             ->danger()
                             ->send();
+
+                        Notification::make()
+                            ->title("Synchronisation des Clients échouée")
+                            ->body("La synchronisation des cliens initiée par " .  auth()->user()->name . " a échouée")
+                            ->danger()
+                            ->icon('heroicon-o-arrow-path')
+                            ->sendToDatabase($this->superReceiver());
                         return;
                     }
-                   
+
                     Notification::make()
                         ->title('Clients synchronisés')
                         ->success()
                         ->send();
+
+                    Notification::make()
+                        ->title("Synchronisation des clients réussi")
+                        ->body("La synchronisation des clients initiée par " .  auth()->user()->name . " a réussi")
+                        ->success()
+                        ->icon('heroicon-o-arrow-path')
+                        ->sendToDatabase($this->superReceiver());
                 })
                 ->requiresConfirmation()
                 ->color('primary')
                 ->visible(auth()->user()->hasPermissionTo('create_customer')),
         ];
+    }
+
+    public static function superReceiver(): mixed
+    {
+        return  User::role(['super_admin', 'Superviseur', 'Secrétaire'])->get();
     }
 }

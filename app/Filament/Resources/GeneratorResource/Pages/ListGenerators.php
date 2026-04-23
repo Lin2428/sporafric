@@ -6,6 +6,7 @@ use App\Enum\GeneratorStatus;
 use App\Filament\Resources\GeneratorResource;
 use App\Http\Controllers\OdooController;
 use App\Models\Generator;
+use App\Models\User;
 use Filament\Actions;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
@@ -84,14 +85,22 @@ class ListGenerators extends ListRecords
                 ])
                 ->action(function ($data) {
                     set_time_limit(120);
-
+                    $user = auth()->user();
                     try {
                         OdooController::syncronizeGenerator($this->category);
                     } catch (\Throwable $th) {
                         Notification::make()
                             ->title('Une erreur est survenue lors de la synchronisation !')
                             ->danger()
+                            ->icon('heroicon-o-arrow-path')
                             ->send();
+
+                        Notification::make()
+                            ->title("Synchronisation des GEs échouée")
+                            ->body("La synchronisation des GEs initiée par " .  auth()->user()->name . " a échouée")
+                            ->danger()
+                            ->icon('heroicon-o-arrow-path')
+                            ->sendToDatabase($this->superReceiver());
                         return;
                     }
 
@@ -99,6 +108,13 @@ class ListGenerators extends ListRecords
                         ->success()
                         ->title('Synchronisation effectuée')
                         ->send();
+
+                    Notification::make()
+                        ->title("Synchronisation des GEs réussi")
+                        ->body("La synchronisation des GEs initiée par " .  auth()->user()->name . " a réussi")
+                        ->success()
+                        ->icon('heroicon-o-arrow-path')
+                        ->sendToDatabase($this->superReceiver());
                 })
                 ->modalSubmitActionLabel('Synchroniser')
                 ->visible(auth()->user()->hasPermissionTo('create_generator')),
@@ -109,5 +125,10 @@ class ListGenerators extends ListRecords
     {
         return ViewField::make('product_table')
             ->view('filament.generators.product-table');
+    }
+
+    public static function superReceiver(): mixed
+    {
+        return  User::role(['super_admin', 'Superviseur', 'Secrétaire'])->get();
     }
 }

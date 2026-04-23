@@ -20,7 +20,7 @@ class OperatorFilterResource extends Resource
     protected static ?string $model = OperatorFilter::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-funnel';
-    protected static ?string $navigationGroup = "Paramètres";
+    protected static ?string $navigationGroup = "System";
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationLabel = "Opérateurs de Filtres";
 

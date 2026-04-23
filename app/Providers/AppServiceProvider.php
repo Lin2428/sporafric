@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\ContractGenerator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \App\Models\Contract::observe(\App\Observers\ContractObserver::class);
+        \App\Models\ContractGenerator::Observe(\App\Observers\ContractObserver::class);
+        \App\Models\Devis::observe(\App\Observers\DevisObserver::class);
+        \App\Models\Generator::observe(\App\Observers\GeneratorObserver::class);
+        \App\Models\Intervention::observe(\App\Observers\InterventionObserver::class);
     }
 }

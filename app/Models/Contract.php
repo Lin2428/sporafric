@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\GeneratorStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Contract extends Model
@@ -74,7 +75,7 @@ class Contract extends Model
         // });
     }
 
-    public function customer()
+    public function customer() : belongsTo
     {
         return $this->belongsTo(Customer::class);
     }
