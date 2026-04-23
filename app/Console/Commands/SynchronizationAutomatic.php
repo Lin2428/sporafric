@@ -36,7 +36,7 @@ class SynchronizationAutomatic extends Command
             OdooController::syncronizeGenerator(all: true);
             OdooController::syncronizeDevis(all: true);
             OdooController::syncronizeConsoInterne();
-            Log::info('Synchronization éxecutée à ' . now());
+            Log::info('Synchronization automatique réussi, éxecutée à ' . now());
 
             Notification::make()
                 ->title("Synchronisation automatique")
@@ -46,6 +46,7 @@ class SynchronizationAutomatic extends Command
                 ->sendToDatabase($this->superReceiver());
         } catch (\Throwable $th) {
             //$this->error($th->getMessage());
+            Log::info('Synchronization automatique échouée, éxecutée à ' . now());
             Notification::make()
                 ->title("Synchronisation automatique")
                 ->body("Synchronisation automatique échouée")

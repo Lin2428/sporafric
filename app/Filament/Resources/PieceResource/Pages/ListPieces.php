@@ -9,6 +9,7 @@ use App\Models\User;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Log;
 
 class ListPieces extends ListRecords
 {
@@ -37,6 +38,8 @@ class ListPieces extends ListRecords
                             ->danger()
                             ->icon('heroicon-o-arrow-path')
                             ->sendToDatabase($this->superReceiver());
+
+                        Log::warning('Synchronisation des pièces échouée, exécutée par '.  auth()->user()->name . ' à ' . now());
                         return;
                     }
 
@@ -51,6 +54,8 @@ class ListPieces extends ListRecords
                         ->success()
                         ->icon('heroicon-o-arrow-path')
                         ->sendToDatabase($this->superReceiver());
+
+                    Log::info('Synchronization des pièces réussi, éxecutée par '.  auth()->user()->name . 'à' . now());
 
                 })->requiresConfirmation(),
         ];

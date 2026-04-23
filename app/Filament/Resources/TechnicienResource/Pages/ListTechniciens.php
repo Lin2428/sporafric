@@ -9,6 +9,7 @@ use App\Models\User;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Log;
 
 class ListTechniciens extends ListRecords
 {
@@ -43,6 +44,8 @@ class ListTechniciens extends ListRecords
                             ->icon('heroicon-o-arrow-path')
                             ->sendToDatabase($this->superReceiver());
 
+                        Log::warning('Synchronisation des techniciens échouée, exécutée par '.  auth()->user()->name . ' à ' . now());
+
                         return;
                     }
 
@@ -57,6 +60,8 @@ class ListTechniciens extends ListRecords
                         ->success()
                         ->icon('heroicon-o-arrow-path')
                         ->sendToDatabase($this->superReceiver());
+
+                    Log::info('Synchronization des techniciens réussi, éxecutée par '.  auth()->user()->name . 'à' . now());
                 })
                 ->requiresConfirmation()
                 ->color('primary')

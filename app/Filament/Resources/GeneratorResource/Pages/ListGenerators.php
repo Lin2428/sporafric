@@ -14,6 +14,7 @@ use Filament\Forms\Components\ViewField;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
+use Illuminate\Support\Facades\Log;
 
 class ListGenerators extends ListRecords
 {
@@ -101,6 +102,8 @@ class ListGenerators extends ListRecords
                             ->danger()
                             ->icon('heroicon-o-arrow-path')
                             ->sendToDatabase($this->superReceiver());
+
+                        Log::warning('Synchronisation des GEs échouée, exécutée par '.  auth()->user()->name . ' à ' . now());
                         return;
                     }
 
@@ -115,6 +118,8 @@ class ListGenerators extends ListRecords
                         ->success()
                         ->icon('heroicon-o-arrow-path')
                         ->sendToDatabase($this->superReceiver());
+
+                    Log::info('Synchronization des GEs réussi, éxecutée par '.  auth()->user()->name . 'à' . now());
                 })
                 ->modalSubmitActionLabel('Synchroniser')
                 ->visible(auth()->user()->hasPermissionTo('create_generator')),

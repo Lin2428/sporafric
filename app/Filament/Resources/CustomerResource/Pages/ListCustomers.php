@@ -8,6 +8,7 @@ use App\Models\User;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Log;
 
 class ListCustomers extends ListRecords
 {
@@ -40,6 +41,8 @@ class ListCustomers extends ListRecords
                             ->danger()
                             ->icon('heroicon-o-arrow-path')
                             ->sendToDatabase($this->superReceiver());
+
+                        Log::warning('Synchronisation des clients échouée, exécutée par '.  auth()->user()->name . ' à ' . now());
                         return;
                     }
 
@@ -54,6 +57,8 @@ class ListCustomers extends ListRecords
                         ->success()
                         ->icon('heroicon-o-arrow-path')
                         ->sendToDatabase($this->superReceiver());
+
+                    Log::info('Synchronization des clients réussi, éxecutée par '.  auth()->user()->name . 'à' . now());
                 })
                 ->requiresConfirmation()
                 ->color('primary')

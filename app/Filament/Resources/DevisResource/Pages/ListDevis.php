@@ -15,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\ViewField;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Log;
 
 class ListDevis extends ListRecords
 {
@@ -59,7 +60,7 @@ class ListDevis extends ListRecords
                              ->danger()
                              ->icon('heroicon-o-arrow-path')
                              ->sendToDatabase($this->superReceiver());
-
+                         Log::warning('Synchronisation des devis échouée, exécutée par '.  auth()->user()->name . ' à ' . now());
                             return;
                         }
 
@@ -73,6 +74,8 @@ class ListDevis extends ListRecords
                         ->success()
                         ->icon('heroicon-o-arrow-path')
                         ->sendToDatabase($this->superReceiver());
+
+                    Log::info('Synchronization des devis réussi, éxecutée par '.  auth()->user()->name . 'à' . now());
                 })
                 ->visible(auth()->user()->hasPermissionTo('create_devis')),
         ];
