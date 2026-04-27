@@ -4,8 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enum\SynchronizationParametersType;
 use App\Enum\FieldType;
-use App\Filament\Resources\SynchronizeIdParameterResource\Pages;
-use App\Filament\Resources\SynchronizeIdParameterResource\RelationManagers;
+use App\Filament\Resources\SynchronizeParameterResource\Pages\ManageSynchronizeParameters;
 use App\Models\SynchronizeParameter;
 use ArielMejiaDev\FilamentPrintable\Actions\PrintBulkAction;
 use Filament\Forms;
@@ -123,7 +122,7 @@ class SynchronizeParameterResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageSynchronizeParameters::route('/'),
+            'index' => ManageSynchronizeParameters::route('/'),
         ];
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Enum\InterventionType;
-use App\Filament\Admin\Pages\DailyReportPage;
+use App\Filament\Pages\DailyReportPage;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Contract;
 use App\Models\Customer;

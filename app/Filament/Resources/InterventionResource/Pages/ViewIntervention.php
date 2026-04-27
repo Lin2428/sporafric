@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\GeneratorResource\Pages;
+namespace App\Filament\Resources\InterventionResource\Pages;
 
 use App\Enum\InterventionStatus;
 use App\Filament\Resources\InterventionResource;
@@ -15,7 +15,7 @@ class ViewIntervention extends ViewRecord
     protected static string $resource = InterventionResource::class;
     public $showForm = false;
 
-  public function getTitle(): string | Htmlable 
+  public function getTitle(): string | Htmlable
     {
 
 
@@ -52,7 +52,7 @@ class ViewIntervention extends ViewRecord
                         $record->save();
                     })
                     ->visible(fn($record)=> $record->status == InterventionStatus::EN_COURS->value ? true : false)
-              
+
             ]),
         ];
     }

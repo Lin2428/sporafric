@@ -1,7 +1,7 @@
 <?php
 namespace App\Filament\Pages;
 
-use App\Filament\Admin\Pages\DailyReportPage;
+use App\Filament\Pages\DailyReportPage;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Devis;
 use App\Models\Generator;
@@ -21,7 +21,7 @@ class ReportLocationPage extends DailyReportPage implements HasForms
     protected static ?string $navigationIcon  = 'heroicon-o-document-text';
     protected static ?string $navigationGroup = 'Rapport';
     protected static ?string $title           = 'Rapports de location';
-  
+
 
     private $data;
     public $type;
@@ -59,7 +59,7 @@ class ReportLocationPage extends DailyReportPage implements HasForms
 
         $this->data = $query->get();
 
-         
+
 
     }
 
@@ -103,19 +103,19 @@ class ReportLocationPage extends DailyReportPage implements HasForms
                     ->label('Période')
                     ->separator(' au ')
                     ->afterStateUpdated(function ($state) {
-                     
+
                         [$start, $end] = explode(' au ', $state);
 
                         $this->selectDateRange = $state;
                         $this->startDate = Carbon::createFromFormat('d/m/Y', trim($start))->format('Y-m-d');
                         $this->endDate = Carbon::createFromFormat('d/m/Y', trim($end))->addDay()->format('Y-m-d');
-                  
+
                         $this->refresh();
                     })
                     ->maxDate(Carbon::now())
                     ->live(true)
                     ->required(false),
-                    
+
                 Select::make('type')
                     ->label('Type de rapport')
                     ->options([

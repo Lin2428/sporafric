@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Enum\InterventionTypeService;
-use App\Filament\Resources\GeneratorResource\Pages\ViewIntervention;
 use App\Filament\Resources\InterventionResource\Pages;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
@@ -394,7 +393,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
             'index' => Pages\ListInterventions::route('/'),
             'create' => Pages\CreateIntervention::route('/create'),
             'edit' => Pages\EditIntervention::route('/{record}/edit'),
-            'view' => ViewIntervention::route('/{record}'),
+            'view' => Pages\ViewIntervention::route('/{record}'),
         ];
     }
 

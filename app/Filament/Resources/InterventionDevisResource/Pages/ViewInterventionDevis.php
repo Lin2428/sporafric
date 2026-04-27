@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\GeneratorResource\Pages;
+namespace App\Filament\Resources\InterventionDevisResource\Pages;
 
 use App\Enum\GeneratorStatus;
 use App\Enum\InterventionStatus;
@@ -20,7 +20,7 @@ class ViewInterventionDevis extends ViewRecord
     protected static string $resource = InterventionDevisResource::class;
     public $showForm = false;
 
-      public function getTitle(): string | Htmlable 
+      public function getTitle(): string | Htmlable
     {
 
         return " ";

@@ -6,14 +6,11 @@ use Carbon\Carbon;
 use App\Enum\InterventionStatus;
 use App\Enum\InterventionType;
 use App\Enum\InterventionTypeService;
-use App\Filament\Resources\GeneratorResource\Pages\ViewInterventionDevis;
 use App\Filament\Resources\InterventionDevisResource\Pages;
-use App\Filament\Resources\InterventionDevisResource\RelationManagers;
 use App\Filament\Utils\InterventionUtil;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Generator;
 use App\Models\Intervention;
-use App\Models\InterventionDevis;
 use App\Models\Piece;
 use App\Utils\NumberUtils;
 use Awcodes\TableRepeater\Components\TableRepeater;
@@ -319,7 +316,7 @@ class InterventionDevisResource extends Resource implements HasShieldPermissions
             'index' => Pages\ListInterventionDevis::route('/'),
             'create' => Pages\CreateInterventionDevis::route('/create'),
             'edit' => Pages\EditInterventionDevis::route('/{record}/edit'),
-            'view' =>  ViewInterventionDevis::route('/{record}'),
+            'view' =>  Pages\ViewInterventionDevis::route('/{record}'),
         ];
     }
 

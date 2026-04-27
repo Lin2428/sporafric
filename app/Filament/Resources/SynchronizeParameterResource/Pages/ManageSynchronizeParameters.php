@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\SynchronizeIdParameterResource\Pages;
+namespace App\Filament\Resources\SynchronizeParameterResource\Pages;
 
 use App\Filament\Resources\SynchronizeParameterResource;
 use Filament\Actions;
