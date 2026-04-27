@@ -44,7 +44,7 @@ class ListTechniciens extends ListRecords
                             ->icon('heroicon-o-arrow-path')
                             ->sendToDatabase($this->superReceiver());
 
-                        Log::warning('Synchronisation des techniciens échouée, exécutée par '.  auth()->user()->name . ' à ' . now());
+                        Log::warning('Synchronisation des techniciens échouée, exécutée par '.  auth()->user()->name );
 
                         return;
                     }

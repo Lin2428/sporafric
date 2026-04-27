@@ -39,7 +39,7 @@ class ListPieces extends ListRecords
                             ->icon('heroicon-o-arrow-path')
                             ->sendToDatabase($this->superReceiver());
 
-                        Log::warning('Synchronisation des pièces échouée, exécutée par '.  auth()->user()->name . ' à ' . now());
+                        Log::warning('Synchronisation des pièces échouée, exécutée par '.  auth()->user()->name );
                         return;
                     }
 

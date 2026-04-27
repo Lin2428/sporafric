@@ -60,7 +60,7 @@ class ListDevis extends ListRecords
                              ->danger()
                              ->icon('heroicon-o-arrow-path')
                              ->sendToDatabase($this->superReceiver());
-                         Log::warning('Synchronisation des devis échouée, exécutée par '.  auth()->user()->name . ' à ' . now());
+                         Log::warning('Synchronisation des devis échouée, exécutée par '.  auth()->user()->name );
                             return;
                         }
 

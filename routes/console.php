@@ -10,4 +10,4 @@ Artisan::command('inspire', function () {
 
  Schedule::command('app:synchronization-automatic')->everySixHours();
 Schedule::command('app:synchronization-automatic')->dailyAt('06:00');
-// Schedule::command('app:synchronization-automatic')->everyTwoMinutes();
+//Schedule::command('app:synchronization-automatic')->everyTwoMinutes();

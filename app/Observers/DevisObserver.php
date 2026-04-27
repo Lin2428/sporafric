@@ -21,13 +21,13 @@ class DevisObserver
      */
     public function updated(Devis $devis): void
     {
-        Notification::make()
-            ->title("Devis mis à jour")
-            ->body("Le devis $devis->number a été mis à jour  par ".
-                auth()->user()->name
-            )
-            ->icon('heroicon-o-clipboard-document-list')
-            ->sendToDatabase($this->superReceiver());
+//        Notification::make()
+//            ->title("Devis mis à jour")
+//            ->body("Le devis $devis->number a été mis à jour  par ".
+//                auth()->user()->name
+//            )
+//            ->icon('heroicon-o-clipboard-document-list')
+//            ->sendToDatabase($this->superReceiver());
     }
 
     /**
