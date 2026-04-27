@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\GeneratorResource\Pages;
+namespace App\Filament\Resources\ContractGeneratorResource\Pages;
 
 use App\Filament\Resources\ContractGeneratorResource;
 use Filament\Infolists\Components\Tabs\Tab;
