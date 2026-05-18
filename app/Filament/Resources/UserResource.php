@@ -3,9 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
+use App\Models\Technicien;
 use App\Models\User;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -39,14 +41,27 @@ class UserResource extends Resource implements HasShieldPermissions
                     ->schema([
                         Section::make("")
                             ->schema([
+                                Hidden::make('technicien_id')
+                                    ->default(fn(): ?int => self::getTechnicienFromRequest()?->id),
+
                                 TextInput::make("name")
                                     ->label("Nom")
                                     ->columnSpanFull()
+                                    ->default(fn(): ?string => self::getTechnicienFromRequest()?->name)
                                     ->required(),
 
                                 TextInput::make("email")
                                     ->label("Email")
+                                    ->unique(ignoreRecord: true)
+                                    ->default(fn(): ?string => self::getTechnicienFromRequest()?->email)
                                     ->required(),
+
+                                TextInput::make("phone")
+                                    ->label("Téléphone")
+                                    ->numeric()
+                                    ->default(fn(): ?string => self::getTechnicienFromRequest()?->phone)
+                                    ->unique(ignoreRecord: true)
+                                    ->helperText("Necessaire pour la connexion sur tablette"),
 
                                 Select::make("roles")
                                     ->relationship("roles", "name")
@@ -86,6 +101,10 @@ class UserResource extends Resource implements HasShieldPermissions
 
                 TextColumn::make("email")
                     ->label("Email")
+                    ->searchable(),
+
+                TextColumn::make("phone")
+                    ->label("Phone")
                     ->searchable(),
 
                 BadgeColumn::make("roles.name")
@@ -129,6 +148,19 @@ class UserResource extends Resource implements HasShieldPermissions
         return [
             //
         ];
+    }
+
+    private static function getTechnicienFromRequest(): ?Technicien
+    {
+        $technicienId = request()->integer('technicien_id');
+
+        if (! $technicienId) {
+            return null;
+        }
+
+        return Technicien::query()
+            ->whereDoesntHave('user')
+            ->find($technicienId);
     }
 
     public static function getPages(): array

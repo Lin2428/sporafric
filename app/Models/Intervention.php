@@ -51,6 +51,7 @@ class Intervention extends Model implements Eventable
         'raison',
         'travaux',
         'site',
+        'is_synced',
         'user_id',
     ];
 

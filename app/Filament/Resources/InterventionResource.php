@@ -255,6 +255,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                                             ->disk('devis')
                                             ->downloadable()
                                             ->openable()
+                                            ->previewable()
                                             ->columnSpanFull()
                                             ->storeFileNamesIn('attachment_file_names'),
 

@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Models\ContractGenerator;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,5 +28,12 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Devis::observe(\App\Observers\DevisObserver::class);
         \App\Models\Generator::observe(\App\Observers\GeneratorObserver::class);
         \App\Models\Intervention::observe(\App\Observers\InterventionObserver::class);
+
+        Scramble::configure()
+            ->withDocumentTransformers(function (OpenApi $openApi) {
+                $openApi->secure(
+                    SecurityScheme::http('bearer')
+                );
+            });
     }
 }

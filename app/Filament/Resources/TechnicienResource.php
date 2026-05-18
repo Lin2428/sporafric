@@ -101,9 +101,16 @@ class TechnicienResource extends Resource implements HasShieldPermissions
                 //     Tables\Actions\EditAction::make()
                 //     ->modalWidth('md'),
                 //     Tables\Actions\DeleteAction::make(),
-                // ]),
+                // ])
                 Tables\Actions\EditAction::make()
                     ->modalWidth('md'),
+                Tables\Actions\Action::make('create-user')
+                    ->label("Créer  l'utilisateur")
+                    ->color("info")
+                    ->visible(fn(Technicien $record): bool => ! $record->user()->exists())
+                    ->url(fn(Technicien $record): string => UserResource::getUrl('create', [
+                        'technicien_id' => $record->id,
+                    ])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
