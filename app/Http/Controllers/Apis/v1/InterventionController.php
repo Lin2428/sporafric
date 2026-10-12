@@ -7,8 +7,10 @@ use App\Enum\InterventionType;
 use App\Http\Controllers\Controller;
 use App\Models\Intervention;
 use App\Models\InterventionFiche;
-use http\Env;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+
 
 class InterventionController extends Controller
 {
@@ -44,7 +46,7 @@ class InterventionController extends Controller
                 'generator_houres' => $intervention->houres,
                 'consta' => $intervention->description_panne,
                 'travaux' => $intervention->travaux,
-                'nex_vidange' => $intervention->generator->next_vidange,
+                'nex_vidange' => $intervention->generator?->next_vidange,
                 'site' => $intervention->site ?? $intervention->contract?->generators?->first()?->pivot?->site ?? $intervention->devis?->generators?->first()?->pivot?->site,
                 'phone' => $intervention->contract?->generators?->first()?->pivot?->contact_phone ?? $intervention->devis?->generators?->first()?->pivot?->contact_phone ?? $intervention->customer?->contact_c_phone,
                 'images' => $intervention->fiches->map(function (InterventionFiche $fiche) {
@@ -53,7 +55,7 @@ class InterventionController extends Controller
                         $data = [
                             'id' => $fiche->id,
                             'intervention_id' => $fiche->intervention_id,
-                            'url' => Env("APP_URL")."/storage/devis/".$fiche->fiche,
+                            'url' => rtrim(config('app.url'), '/')."/storage/devis/".$fiche->fiche,
                         ];
                     }
                     return $data;
@@ -69,5 +71,62 @@ class InterventionController extends Controller
             "data" => $data,
             ]);
 
+    }
+
+    public function complete(Request $request, int $id): JsonResponse
+    {
+        $user = auth()->user();
+
+        $validated = $request->validate([
+            'rapport' => ['nullable', 'string'],
+            'statut' => ['required', 'in:en_attente,en_cours,termine,annule'],
+            'heure_debut' => ['nullable', 'date_format:H:i'],
+            'heure_fin' => ['nullable', 'date_format:H:i'],
+        ]);
+
+        $intervention = Intervention::query()
+            ->whereKey($id)
+            ->whereHas('interventionTechniciens', fn ($q) => $q->where('technicien_id', $user->technicien_id))
+            ->first();
+
+        if (!$intervention) {
+            return response()->json([
+                'success' => false,
+                'message' => "Cette intervention ne vous est pas assignée.",
+            ], 403);
+        }
+
+        $day = $intervention->date_planifiee ? Carbon::parse($intervention->date_planifiee)->format('Y-m-d') : now()->format('Y-m-d');
+
+        $update = [
+            'travaux' => $validated['rapport'] ?? $intervention->travaux,
+            'cancelled' => $validated['statut'] === 'annule',
+        ];
+
+        $update['status'] = match ($validated['statut']) {
+            'en_attente' => InterventionStatus::PLANIFIEE->value,
+            'en_cours' => InterventionStatus::EN_COURS->value,
+            'termine', 'annule' => InterventionStatus::TERMINEE->value,
+        };
+
+        if (!empty($validated['heure_debut'])) {
+            $update['start_date'] = Carbon::parse("{$day} {$validated['heure_debut']}");
+        }
+
+        if (!empty($validated['heure_fin'])) {
+            $update['end_date'] = Carbon::parse("{$day} {$validated['heure_fin']}");
+        }
+
+        $intervention->update($update);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Intervention mise à jour avec succès',
+            'data' => [
+                'id' => $intervention->id,
+                'status' => $intervention->status,
+                'is_synced' => $intervention->is_synced,
+            ],
+        ]);
     }
 }

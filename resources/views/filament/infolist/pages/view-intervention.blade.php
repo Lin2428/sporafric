@@ -396,6 +396,28 @@
             <span>Aucune pièce jointe</span>
             @endif
         </div>
+<br>
+        @php($photos = $getRecord()->photos()->latest()->get())
+        <div class="data files">
+            <span class="label">
+                <i class="icon">@svg('heroicon-s-camera')</i>
+                Photos ({{ $photos->count() }})
+            </span>
+
+            @if($photos->isNotEmpty())
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px;">
+                @foreach($photos as $photo)
+                    <a href="{{ asset('storage/' . $photo->path) }}" target="_blank" rel="noopener noreferrer"
+                       title="{{ $photo->filename }} — {{ $photo->created_at?->format('d/m/Y H:i') }}">
+                        <img src="{{ asset('storage/' . $photo->path) }}" alt="{{ $photo->filename }}"
+                             style="width: 140px; height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb;">
+                    </a>
+                @endforeach
+            </div>
+            @else
+            <span>Aucune photo</span>
+            @endif
+        </div>
     </div>
 
 </div>

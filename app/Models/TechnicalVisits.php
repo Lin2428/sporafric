@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TechnicalVisits extends Model
@@ -13,6 +14,7 @@ class TechnicalVisits extends Model
         'contract_id',
         'devis_id',
         'generator_id',
+        'notes',
         'control_1',
         'control_2',
         'control_3',
@@ -40,6 +42,7 @@ class TechnicalVisits extends Model
     ];
 
     protected $casts = [
+    'date' => 'datetime',
     'control_tension' => 'array',
     'control_tension_2' => 'array',
     'control_intensite' => 'array',
@@ -63,5 +66,10 @@ class TechnicalVisits extends Model
     public function contract()
     {
         return $this->belongsTo(Contract::class);
+    }
+
+    public function photos(): HasMany
+    {
+        return $this->hasMany(Photo::class, 'technical_visit_id');
     }
 }

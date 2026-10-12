@@ -169,7 +169,8 @@ class CalendarView extends CalendarWidget
             ->extraModalFooterActions([
                 Action::make('view')
                     ->action(function () {
-                        if ($this->getRecord()->type_service === InterventionTypeService::MAINTENANCE->value) {
+                       
+                        if ($this->getRecord()->type_service == InterventionTypeService::MAINTENANCE->value) {
                             redirect()->route('admin.interventions', ['id' => $this->getRecord()->id]);
                         } else {
                             redirect()->route('admin.intervention.devis', ['id' => $this->getRecord()->id]);

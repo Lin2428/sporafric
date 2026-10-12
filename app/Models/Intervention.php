@@ -117,6 +117,12 @@ class Intervention extends Model implements Eventable
         return $this->hasMany(InterventionFiche::class);
     }
 
+    /** Photos prises depuis l'app mobile (table `photos`). */
+    public function photos()
+    {
+        return $this->hasMany(Photo::class, 'intervention_id');
+    }
+
     public function toCalendarEvent(): CalendarEvent|array
     {
         return CalendarEvent::make($this)

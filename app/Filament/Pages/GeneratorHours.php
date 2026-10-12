@@ -6,6 +6,7 @@ use App\Filament\Utils\BadgetWidget;
 use App\Models\ContractGenerator;
 use App\Models\DevisGenerator;
 use App\Models\Generator;
+use App\Services\HourReadingService;
 use ArielMejiaDev\FilamentPrintable\Actions\PrintAction;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
@@ -123,11 +124,12 @@ class GeneratorHours extends Page implements HasTable
                     ->label('Rélévé des heures')
                     ->width(50)
                     ->type('number')
-                    ->updateStateUsing(function (string $state, $record) {
-                        $record->houres = $state;
-                        $record->next_vidange = $record->prochain_visite - $record->houres;
-                        $record->vidange = $record->next_vidange > 30;
-                        $record->save();
+                    ->updateStateUsing(function (?string $state, $record) {
+                        if (! is_numeric($state)) {
+                            return $record->houres;
+                        }
+                        // Historisé dans hour_readings + report sur le groupe.
+                        HourReadingService::recordManual($record, (int) $state);
                         return $state;
                     }),
 

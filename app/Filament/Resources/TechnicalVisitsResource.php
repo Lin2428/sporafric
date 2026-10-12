@@ -248,6 +248,15 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                         ])
                         ->columns(1),
                 ]),
+
+            Section::make('Observations terrain')
+                ->schema([
+                    Forms\Components\Textarea::make('notes')
+                        ->hiddenLabel()
+                        ->rows(4)
+                        ->placeholder('Remarques saisies par le technicien depuis l’app mobile.')
+                        ->columnSpanFull(),
+                ]),
         ]);
     }
 
@@ -354,7 +363,7 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\PhotosRelationManager::class,
         ];
     }
 

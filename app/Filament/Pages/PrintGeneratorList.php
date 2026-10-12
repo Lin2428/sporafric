@@ -2,10 +2,16 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Resources\HourRoundResource;
 use App\Filament\Utils\WidgetUtils;
 use App\Models\Customer;
 use App\Models\Generator;
+use App\Models\HourRound;
 use App\Models\Technicien;
+use App\Services\HourReadingService;
+use Filament\Notifications\Actions\Action as NotificationAction;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\DB;
 use ArielMejiaDev\FilamentPrintable\Actions\PrintAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -32,6 +38,48 @@ class PrintGeneratorList extends Page implements HasForms
 
     public $clients = null;
     public $selectTechniciens;
+
+    public $technicienId = null;
+
+    /**
+     * « Enregistrer » : la fiche affichée (lignes non supprimées) devient une tournée de
+     * relevés assignée au technicien, qu'il retrouve dans la PWA.
+     */
+    public function saveRound(array $generatorIds): void
+    {
+        $generatorIds = array_values(array_unique(array_map('intval', $generatorIds)));
+
+        if (! $this->technicienId) {
+            Notification::make()->title('Sélectionnez un technicien avant d\'enregistrer')->danger()->send();
+            return;
+        }
+        if (empty($generatorIds)) {
+            Notification::make()->title('Aucun groupe sur la fiche')->danger()->send();
+            return;
+        }
+
+        $round = DB::transaction(function () use ($generatorIds) {
+            $round = HourRound::create([
+                'technicien_id' => $this->technicienId,
+                'date'          => now()->toDateString(),
+                'user_id'       => auth()->id(),
+            ]);
+            HourReadingService::addGenerators($round, $generatorIds);
+
+            return $round;
+        });
+
+        Notification::make()
+            ->title('Fiche enregistrée')
+            ->body("Tournée de {$this->selectTechniciens} : " . count($generatorIds) . ' groupe(s) à relever. Elle sera disponible dans l\'app après synchronisation.')
+            ->success()
+            ->actions([
+                NotificationAction::make('voir')
+                    ->label('Voir la tournée')
+                    ->url(HourRoundResource::getUrl('edit', ['record' => $round])),
+            ])
+            ->send();
+    }
 
      public function mount(): void
     {
@@ -86,7 +134,8 @@ class PrintGeneratorList extends Page implements HasForms
                      ->options($techniciens)
                      ->default($this->selectTechniciens)
                     ->afterStateUpdated(function ($state)use($techniciens) {
-                        $this->selectTechniciens = $techniciens[$state];
+                        $this->technicienId = $state;
+                        $this->selectTechniciens = $techniciens[$state] ?? null;
                         $this->refresh();
                     })
                     ->live(true)

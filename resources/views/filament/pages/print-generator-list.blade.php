@@ -62,6 +62,8 @@
 
     <x-filament::button id="print-form-etat" class="flex justify-between" icon="heroicon-s-printer"><span>Imprimer</span></x-filament::button>
 
+    <x-filament::button onclick="saveRound()" color="success" icon="heroicon-s-check"><span>Enregistrer</span></x-filament::button>
+
    </div>
 </div>
 @include('components.report-header')
@@ -96,7 +98,7 @@
     <tbody>
         @if ($data->isNotEmpty())
             @foreach ($client as $index => $item)
-                <tr id="row-{{$key}}-{{ $index }}" class="table-item">
+                <tr id="row-{{$key}}-{{ $index }}" class="table-item" data-generator-id="{{ $item->id }}">
                     <td class="text-blue">
                         {{ $item->contractGenerator?->site ?? $item->devisGenerator?->devis?->site }}
                     </td>
@@ -140,6 +142,13 @@
             lastDeletedRow = null;
             document.getElementById('restore-btn').classList.add('hidden');
         }
+    }
+
+    // Enregistre les lignes encore affichées (les « Supprimer » sont retirées du DOM).
+    function saveRound() {
+        const ids = [...document.querySelectorAll('#printable tr[data-generator-id]')]
+            .map((row) => Number(row.dataset.generatorId));
+        @this.call('saveRound', ids);
     }
 
 </script>
