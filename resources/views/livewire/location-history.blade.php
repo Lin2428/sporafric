@@ -90,7 +90,7 @@
             <tbody>
                 @foreach ($loans as $loan)
                     <tr>
-                        <td class="{{ $td }} font-bold">{{ $loan['role'] === 'loaned' ? 'Prêté (remplace)' : 'Remplacé (en révision)' }}</td>
+                        <td class="{{ $td }} font-bold">{{ $loan['role'] !== 'loaned' ? 'Remplacé (en révision)' : ($loan['replaced_id'] === null ? 'Prêté (statut)' : 'Prêté (remplace)') }}</td>
                         <td class="{{ $td }}">{{ $loan['order_number'] ?? '—' }}</td>
                         <td class="{{ $td }}">{{ $loan['intervention'] }}</td>
                         <td class="{{ $td }}">{{ $loan['other'] ?? '—' }}</td>

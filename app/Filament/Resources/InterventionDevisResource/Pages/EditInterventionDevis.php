@@ -64,13 +64,13 @@ class EditInterventionDevis extends EditRecord
         if ($data['type'] == InterventionType::REMPLACEMENT->value) {
 
 
-            Generator::where('id', $data['generator_id'])
-                ->update([
+            Generator::find($data['generator_id'])
+                ?->update([
                     'status' => GeneratorStatus::EN_REVU->value
                 ]);
 
-            Generator::where('id', $data['new_generator_id'])
-                ->update([
+            Generator::find($data['new_generator_id'])
+                ?->update([
                     'status' => GeneratorStatus::EN_LOCATION->value
                 ]);
 

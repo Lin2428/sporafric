@@ -40,13 +40,13 @@ class CreateInterventionDevis extends CreateRecord
             ]);
 
         if ($data['type'] == InterventionType::REMPLACEMENT->value) {
-            Generator::where('id', $data['generator_id'])
-                ->update([
+            Generator::find($data['generator_id'])
+                ?->update([
                     'status' => GeneratorStatus::EN_REVU->value
                 ]);
 
-            Generator::where('id', $data['new_generator_id'])
-                ->update([
+            Generator::find($data['new_generator_id'])
+                ?->update([
                     'status' => GeneratorStatus::EN_PRET->value
                 ]);
 
@@ -64,8 +64,8 @@ class CreateInterventionDevis extends CreateRecord
                         'generator_id' => $data['new_generator_id'],
                         'old_generator_id' => null,
                     ]);
-                Generator::where('id', $data['new_generator_id'])
-                    ->update([
+                Generator::find($data['new_generator_id'])
+                    ?->update([
                         'status' => GeneratorStatus::EN_LOCATION->value
                     ]);
             } else {

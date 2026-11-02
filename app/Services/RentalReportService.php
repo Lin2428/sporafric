@@ -6,8 +6,10 @@ use App\Enum\GeneratorStatus;
 use App\Enum\InterventionType;
 use App\Enum\RentalUsage;
 use App\Models\AppSetting;
+use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Generator;
+use App\Models\GeneratorStatusLog;
 use App\Models\InternalConsumption;
 use App\Models\Intervention;
 use App\Models\RentalPeriod;
@@ -67,81 +69,142 @@ class RentalReportService
     }
 
     /**
-     * Prêts issus des interventions « Remplacement » sur un devis : le GE de remplacement (B,
-     * new_generator_id) est PRÊTÉ, le GE remplacé (A, generator_id) est immobilisé (maintenance).
-     * Fin du prêt = premier de : remplacement suivant sur le même devis qui retire B, retrait de B
-     * sur ce devis, fin de la location Odoo du devis ; sinon en cours (aujourd'hui).
+     * Prêts du GE : interventions « Remplacement » sur un devis OU un contrat — le GE de
+     * remplacement (B, new_generator_id) est PRÊTÉ, le GE remplacé (A, generator_id) est immobilisé
+     * (maintenance). Fin du prêt = premier de : remplacement suivant sur le même devis / contrat qui
+     * retire B, retrait de B sur ce devis / contrat, fin de la location Odoo du devis (ou fin du
+     * contrat) ; sinon en cours (aujourd'hui).
+     * + Repli sur le statut « En prêt » du GE quand aucun remplacement n'explique le prêt en cours
+     *   (statut mis à la main) : P depuis le dernier passage à ce statut (historique), sinon aujourd'hui.
      *
      * @param  int[]  $generatorIds  GE concernés (prêtés ou remplacés)
-     * @return Collection<int, array{loaned_id: int, replaced_id: int, devis_id: ?int, order_number: ?string, intervention: string, start: Carbon, end: Carbon, ongoing: bool}>
+     * @return Collection<int, array{loaned_id: int, replaced_id: ?int, devis_id: ?int, contract_id: ?int, order_number: ?string, intervention: string, start: Carbon, end: Carbon, ongoing: bool}>
      */
     public static function replacementLoans(array $generatorIds): Collection
     {
+        $loans = static::interventionLoans($generatorIds);
+
+        return $loans->concat(static::statusLoans($generatorIds, $loans))->values();
+    }
+
+    private static function interventionLoans(array $generatorIds): Collection
+    {
         $base = fn () => Intervention::query()
             ->without(['interventionTechniciens', 'pieces', 'generator', 'newGenerator', 'fiches'])
-            ->whereNotNull('devis_id')
+            ->where(fn ($q) => $q->whereNotNull('devis_id')->orWhereNotNull('contract_id'))
             ->where(fn ($q) => $q->where('cancelled', false)->orWhereNull('cancelled'));
 
         $replacements = $base()
             ->where('type', InterventionType::REMPLACEMENT->value)
             ->whereNotNull('new_generator_id')
             ->where(fn ($q) => $q->whereIn('new_generator_id', $generatorIds)->orWhereIn('generator_id', $generatorIds))
-            ->get(['id', 'numero', 'devis_id', 'generator_id', 'new_generator_id', 'start_date', 'date_planifiee']);
+            ->get(['id', 'numero', 'devis_id', 'contract_id', 'generator_id', 'new_generator_id', 'start_date', 'date_planifiee']);
         if ($replacements->isEmpty()) {
             return collect();
         }
 
-        $devisIds = $replacements->pluck('devis_id')->unique()->all();
-        // Événements qui peuvent clore un prêt : remplacements / retraits sur les mêmes devis
+        // Parent du remplacement : le devis (location) prime, sinon le contrat (maintenance)
+        $parent      = fn ($i) => $i->devis_id ? 'd' . $i->devis_id : 'c' . $i->contract_id;
+        $devisIds    = $replacements->pluck('devis_id')->filter()->unique()->values()->all();
+        $contractIds = $replacements->whereNull('devis_id')->pluck('contract_id')->filter()->unique()->values()->all();
+
+        // Événements qui peuvent clore un prêt : remplacements / retraits sur les mêmes devis / contrats
         $closers = $base()
-            ->whereIn('devis_id', $devisIds)
+            ->where(fn ($q) => $q->whereIn('devis_id', $devisIds ?: [0])->orWhereIn('contract_id', $contractIds ?: [0]))
             ->whereIn('type', [InterventionType::REMPLACEMENT->value, InterventionType::RETRAIT->value])
-            ->get(['id', 'type', 'devis_id', 'generator_id', 'start_date', 'end_date', 'date_planifiee']);
-        $rentalEnds = RentalPeriod::query()->confirmed()->whereIn('devis_id', $devisIds)->get()
-            ->groupBy('devis_id')->map(fn ($ps) => $ps->map(fn (RentalPeriod $p) => $p->effectiveEnd())->filter()->max());
-        $orderNumbers = \App\Models\Devis::query()->withTrashed()->whereIn('id', $devisIds)->pluck('number', 'id');
+            ->get(['id', 'type', 'devis_id', 'contract_id', 'generator_id', 'start_date', 'end_date', 'date_planifiee']);
+
+        // Fin du parent : fin de la location Odoo du devis, ou date de fin du contrat
+        $ends = RentalPeriod::query()->confirmed()->whereIn('devis_id', $devisIds ?: [0])->get()
+            ->groupBy('devis_id')
+            ->mapWithKeys(fn ($ps, $id) => ['d' . $id => $ps->map(fn (RentalPeriod $p) => $p->effectiveEnd())->filter()->max()]);
+        $contracts = Contract::query()->withTrashed()->without(['customer', 'generators', 'files'])
+            ->whereIn('id', $contractIds ?: [0])->get(['id', 'number', 'end_date']);
+        foreach ($contracts as $contract) {
+            $ends['c' . $contract->id] = $contract->end_date ? Carbon::parse($contract->end_date) : null;
+        }
+
+        $numbers = \App\Models\Devis::query()->withTrashed()->whereIn('id', $devisIds ?: [0])->pluck('number', 'id')
+            ->mapWithKeys(fn ($n, $id) => ['d' . $id => $n])
+            ->union($contracts->mapWithKeys(fn ($c) => ['c' . $c->id => $c->number]));
 
         $dateOf = fn ($i) => $i->start_date ?? $i->date_planifiee;
 
         // GE « d'origine » de chaque devis (ligne de location Odoo) : les ramener = retour, pas prêt
-        $originals = RentalPeriod::query()->whereIn('devis_id', $devisIds)->get(['devis_id', 'generator_id'])
-            ->groupBy('devis_id')->map(fn ($ps) => $ps->pluck('generator_id')->map(fn ($id) => (int) $id)->all());
+        $originals = RentalPeriod::query()->whereIn('devis_id', $devisIds ?: [0])->get(['devis_id', 'generator_id'])
+            ->groupBy('devis_id')
+            ->mapWithKeys(fn ($ps, $id) => ['d' . $id => $ps->pluck('generator_id')->map(fn ($g) => (int) $g)->all()]);
 
-        return $replacements->map(function (Intervention $r) use ($closers, $rentalEnds, $orderNumbers, $dateOf, $originals) {
+        return $replacements->map(function (Intervention $r) use ($closers, $ends, $numbers, $dateOf, $originals, $parent) {
             $start = $dateOf($r) ? Carbon::parse($dateOf($r)) : null;
             if (! $start) {
                 return null;
             }
+            $key      = $parent($r);
+            $siblings = $closers->filter(fn ($c) => $parent($c) === $key);
 
-            // Retour d'un GE déjà passé par ce devis (GE d'origine, ou remplacé plus tôt) : fin de prêt, pas un nouveau prêt
-            $replacedBefore = $closers
-                ->filter(fn ($c) => (string) $c->type === InterventionType::REMPLACEMENT->value && (int) $c->devis_id === (int) $r->devis_id
+            // Retour d'un GE déjà passé par ce devis / contrat (GE d'origine, ou remplacé plus tôt) : fin de prêt, pas un nouveau prêt
+            $replacedBefore = $siblings
+                ->filter(fn ($c) => (string) $c->type === InterventionType::REMPLACEMENT->value
                     && $dateOf($c) && Carbon::parse($dateOf($c))->lt($start))
                 ->pluck('generator_id')->map(fn ($id) => (int) $id)->all();
-            if (in_array((int) $r->new_generator_id, [...($originals[$r->devis_id] ?? []), ...$replacedBefore], true)) {
+            if (in_array((int) $r->new_generator_id, [...($originals[$key] ?? []), ...$replacedBefore], true)) {
                 return null;
             }
-            $ends = $closers
-                ->filter(fn ($c) => (int) $c->id !== (int) $r->id && (int) $c->devis_id === (int) $r->devis_id
+            $loanEnds = $siblings
+                ->filter(fn ($c) => (int) $c->id !== (int) $r->id
                     && (int) $c->generator_id === (int) $r->new_generator_id && $dateOf($c) && Carbon::parse($dateOf($c))->gt($start))
                 ->map(fn ($c) => Carbon::parse((string) $c->type === InterventionType::RETRAIT->value ? ($c->end_date ?? $dateOf($c)) : $dateOf($c)));
-            $rentalEnd = $rentalEnds[$r->devis_id] ?? null;
-            if ($rentalEnd && $rentalEnd->gt($start)) {
-                $ends->push($rentalEnd);
+            $parentEnd = $ends[$key] ?? null;
+            if ($parentEnd && $parentEnd->gt($start)) {
+                $loanEnds->push($parentEnd);
             }
-            $end = $ends->min();
+            $end = $loanEnds->min();
 
             return [
                 'loaned_id'    => (int) $r->new_generator_id,
                 'replaced_id'  => (int) $r->generator_id,
                 'devis_id'     => $r->devis_id,
-                'order_number' => $orderNumbers[$r->devis_id] ?? null,
+                'contract_id'  => $r->devis_id ? null : $r->contract_id,
+                'order_number' => $numbers[$key] ?? null,
                 'intervention' => $r->numero ?: '#' . $r->id,
                 'start'        => $start,
                 'end'          => $end ? $end->min(now()) : now(),
                 'ongoing'      => ! $end || $end->gt(now()),
             ];
         })->filter()->values();
+    }
+
+    /** GE au statut « En prêt » sans prêt en cours issu d'un remplacement (statut mis à la main). */
+    private static function statusLoans(array $generatorIds, Collection $loans): Collection
+    {
+        $explained = $loans->where('ongoing', true)->pluck('loaned_id')->all();
+
+        return Generator::query()
+            ->without(['contractGenerator', 'etat', 'files'])
+            ->whereIn('id', $generatorIds)
+            ->where('status', GeneratorStatus::EN_PRET->value)
+            ->whereNotIn('id', $explained ?: [0])
+            ->get(['id'])
+            ->map(function (Generator $generator) {
+                $since = GeneratorStatusLog::query()
+                    ->where('generator_id', $generator->id)
+                    ->where('new_status', GeneratorStatus::EN_PRET->value)
+                    ->latest()
+                    ->value('created_at');
+
+                return [
+                    'loaned_id'    => (int) $generator->id,
+                    'replaced_id'  => null,
+                    'devis_id'     => null,
+                    'contract_id'  => null,
+                    'order_number' => null,
+                    'intervention' => 'statut « En prêt »',
+                    'start'        => $since ? Carbon::parse($since) : now(),
+                    'end'          => now(),
+                    'ongoing'      => true,
+                ];
+            });
     }
 
     /** GE de location sélectionnables dans le rapport. */
@@ -337,9 +400,15 @@ class RentalReportService
             $start = $loan['start']->copy()->startOfDay();
             $end   = $loan['end']->copy()->startOfDay();
             $last  = $end->gt($start) ? $end->copy()->subDay() : $start;
+            if ($loan['ongoing']) {
+                // Prêt en cours : aujourd'hui compris
+                $last = now()->startOfDay();
+            }
 
             if ($loan['loaned_id'] === $generatorId) {
-                $ref = 'Prêt (remplacement ' . $loan['intervention'] . ($loan['order_number'] ? ' sur ' . $loan['order_number'] : '') . ')';
+                $ref = $loan['replaced_id'] === null
+                    ? 'Prêt (' . $loan['intervention'] . ')'
+                    : 'Prêt (remplacement ' . $loan['intervention'] . ($loan['order_number'] ? ' sur ' . $loan['order_number'] : '') . ')';
                 foreach ($this->clip($start, $last, $from, $to) as $day) {
                     $current = isset($calendar[$day]) ? RentalUsage::from($calendar[$day]['code']) : null;
                     if (! $current || RentalUsage::PRET->priority() > $current->priority()) {
