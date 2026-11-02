@@ -36,6 +36,8 @@ class SynchronizationAutomatic extends Command
             OdooController::syncronizeGenerator(all: true);
             OdooController::syncronizeDevis(all: true);
             OdooController::syncronizeConsoInterne();
+            OdooController::syncronizeRentalPeriods();
+            OdooController::syncronizeInternalConsumptions();
             Log::info('Synchronization automatique réussi, éxecutée à ' . now());
 
             Notification::make()

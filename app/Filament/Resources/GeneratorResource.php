@@ -29,6 +29,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Actions\Action as InfolistAction;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\Livewire;
@@ -145,6 +146,12 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                 TextInput::make('prochain_visite')
                                     ->label('Vidange programmée (h)')
                                     ->numeric(),
+
+                                TextInput::make('pr')
+                                    ->label('Prix de revient HT')
+                                    ->helperText('Saisi ici (non repris d\'Odoo) ; utilisé pour l\'amortissement et la rentabilité du rapport de location.')
+                                    ->fcfa()
+                                    ->minValue(0),
 
                                 Textarea::make('adresse')
                                     ->label('Adresse')
@@ -356,6 +363,36 @@ class GeneratorResource extends Resource implements HasShieldPermissions
                                                     ->inlineLabel()
                                                     ->columnSpanFull()
                                                     ->extraAttributes(['class' => 'font-bold']),
+
+                                                // Saisi en GMAO uniquement (pas d'import Odoo) : base de l'amortissement du rapport de location
+                                                TextEntry::make('pr')
+                                                    ->label('Prix de revient HT')
+                                                    ->getStateUsing(fn(Generator $record) => $record->pr !== null && (float) $record->pr > 0
+                                                        ? NumberUtils::format($record->pr) . ' FCFA'
+                                                        : 'Non renseigné')
+                                                    ->color(fn(Generator $record) => (float) $record->pr > 0 ? null : 'danger')
+                                                    ->columnSpanFull()
+                                                    ->extraAttributes(['class' => 'font-bold'])
+                                                    ->suffixAction(
+                                                        InfolistAction::make('edit_pr')
+                                                            ->icon('heroicon-o-pencil-square')
+                                                            ->tooltip('Modifier le prix de revient')
+                                                            ->modalHeading('Prix de revient HT')
+                                                            ->modalWidth('md')
+                                                            ->fillForm(fn(Generator $record) => ['pr' => $record->pr])
+                                                            ->form([
+                                                                TextInput::make('pr')
+                                                                    ->label('Prix de revient HT')
+                                                                    ->helperText('Utilisé pour l\'amortissement et la rentabilité du rapport de location.')
+                                                                    ->fcfa()
+                                                                    ->minValue(0),
+                                                            ])
+                                                            ->action(function (Generator $record, array $data) {
+                                                                $record->update(['pr' => $data['pr'] !== null && $data['pr'] !== '' ? $data['pr'] : null]);
+                                                                Notification::make()->title('Prix de revient enregistré')->success()->send();
+                                                            })
+                                                            ->visible(fn() => auth()->user()?->can('update_generator'))
+                                                    ),
 
                                             ]),
 

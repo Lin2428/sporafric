@@ -17,7 +17,7 @@ class GeneratorController extends Controller
         $data = Generator::query()
             ->without(['etat', 'files'])
             ->with([
-                'contractGenerator:id,generator_id,contract_id,site,code_site',
+                'contractGenerator:id,generator_id,contract_id,site,code_site,contact_email',
                 'contractGenerator.contract:id,customer_id',
                 'contractGenerator.contract.customer:id,name',
                 'devisGenerator.devis.customer:id,name',
@@ -37,6 +37,8 @@ class GeneratorController extends Controller
                     ?? $generator->devisGenerator?->devis?->customer?->name,
                 'code_site' => $generator->contractGenerator?->code_site ?? $generator->devisGenerator?->code_site,
                 'adresse' => $generator->adresse,
+                // Pré-remplissage de l'email du compte rendu à la signature
+                'contact_email' => $generator->contractGenerator?->contact_email ?: $generator->devisGenerator?->contact_email,
             ])
             ->values();
 

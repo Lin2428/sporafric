@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Enum\GeneratorStatus;
 use App\Enum\GeneratorType;
 use App\Models\Generator;
+use App\Models\GeneratorStatusLog;
 use App\Models\User;
 use Filament\Notifications\Notification;
 
@@ -32,6 +33,16 @@ class GeneratorObserver
      */
     public function updated(Generator $generator): void
     {
+        // Historique des statuts (Disponible, En location, En prêt…)
+        if ($generator->wasChanged('status')) {
+            GeneratorStatusLog::create([
+                'generator_id' => $generator->id,
+                'old_status'   => $generator->getOriginal('status'),
+                'new_status'   => $generator->status,
+                'user_id'      => auth()->id(),
+            ]);
+        }
+
        if(($generator->getOriginal('status') != $generator->status) && ($generator->type == GeneratorType::LOCATION->value))
        {
            Notification::make()

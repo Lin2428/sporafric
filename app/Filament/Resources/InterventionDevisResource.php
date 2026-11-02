@@ -238,7 +238,7 @@ class InterventionDevisResource extends Resource implements HasShieldPermissions
                             ->required(),
                         TextInput::make('price')
                             ->label('Prix unitaire')
-                            ->numeric()
+                            ->fcfa(false)
                             ->minValue(0)
                             ->reactive()
                             ->required(),

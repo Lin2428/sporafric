@@ -52,10 +52,22 @@ class Intervention extends Model implements Eventable
         'travaux',
         'site',
         'is_synced',
+        'signature_path',
+        'signed_by',
+        'signed_at',
+        'signature_refusal',
+        'client_email',
+        'report_sent_at',
+        'report_error',
         'user_id',
     ];
 
-    protected $with = ['interventionTechniciens', 'pieces', 'generator', 'newGenerator', 'fiches'];
+    protected $casts = [
+        'signed_at'      => 'datetime',
+        'report_sent_at' => 'datetime',
+    ];
+
+    protected $with =['interventionTechniciens', 'pieces', 'generator', 'newGenerator', 'fiches'];
 
 
     protected static function booted()
@@ -125,21 +137,27 @@ class Intervention extends Model implements Eventable
 
     public function toCalendarEvent(): CalendarEvent|array
     {
+        $type   = InterventionType::tryFrom((string) $this->type);
+        $status = InterventionStatus::tryFrom((string) $this->status) ?? InterventionStatus::PLANIFIEE;
+        $start  = $this->start_date ?? $this->date_planifiee ?? $this->created_at;
+
+        // Carte claire + liseré couleur du type (voir components/calendar-event + canlendar-page)
         return CalendarEvent::make($this)
-            ->title(InterventionType::from($this->type)->label())
-            ->start($this->start_date != null ? $this->start_date : $this->date_planifiee)
-            ->end($this->end_date != null ? $this->end_date : $this->date_planifiee)
-            ->backgroundColor(
-                match ($this->status) {
-                    (int) InterventionStatus::PLANIFIEE->value => '#3b82f6',
-                    (int) InterventionStatus::EN_COURS->value => '#f59e0b', // amber-500
-                    (int) InterventionStatus::TERMINEE->value => '#36d16cff', // gray-500
-                    default => '#3b82f6', // default to blue-500
-                }
-            )
+            ->title($type?->label() ?? 'Intervention')
+            ->start($start)
+            ->end($this->end_date ?? $this->date_planifiee ?? $start)
+            ->backgroundColor('transparent')
+            ->textColor('#1f2937')
+            ->classNames(['gmao-ev', 'gmao-st-' . $status->value])
             ->extendedProps([
-                'customer' => $this->customer?->name ?? $this->contract?->customer?->name ?? $this->devis?->customer?->name,
+                'customer'     => $this->customer?->name ?? $this->contract?->customer?->name ?? $this->devis?->customer?->name,
                 'type_service' => $this->type_service,
+                'color'        => $type?->color() ?? '#94a3b8',
+                'status'       => $status->value,
+                'status_label' => ucfirst($status->label()),
+                'detail'       => $this->site ?: ($this->generator?->name ?? $this->generator_name),
+                'time'         => $this->start_date ? \Illuminate\Support\Carbon::parse($this->start_date)->format('H:i') : null,
+                'numero'       => $this->numero,
             ])
             ->key($this->id)
             ->allDay(true);

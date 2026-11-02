@@ -65,7 +65,7 @@ class DevisResource extends Resource implements HasShieldPermissions
 
                                 TextInput::make('forfait')
                                     ->label('Montant')
-                                    ->numeric()
+                                    ->fcfa()
                                     ->columnSpanFull(),
                             ]),
                     ])->columnSpan(['lg' => 2]),

@@ -6,6 +6,7 @@ use App\Enum\InterventionTypeService;
 use App\Http\Controllers\Controller;
 use App\Models\Generator;
 use App\Models\TechnicalVisits;
+use App\Services\ClientReportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -34,6 +35,7 @@ class TechnicalVisitController extends Controller
             'control_tension_2' => ['nullable', 'array'],
             'control_intensite' => ['nullable', 'array'],
             ...$boolControls,
+            ...ClientReportService::rules(),
         ]);
 
         $generator = Generator::query()->find($validated['generator_id']);
@@ -56,7 +58,7 @@ class TechnicalVisitController extends Controller
             $devisId = null;
         }
 
-        $visit = TechnicalVisits::create([
+        $visit = new TechnicalVisits([
             'type_service' => $typeService,
             'contract_id' => $contractId,
             'devis_id' => $devisId,
@@ -87,6 +89,12 @@ class TechnicalVisitController extends Controller
             'control_tension_2' => $validated['control_tension_2'] ?? null,
             'control_intensite' => $validated['control_intensite'] ?? null,
         ]);
+        ClientReportService::fill($visit, $validated);
+        $visit->save();
+
+        // Visite signée (ou client absent) → compte rendu au client
+        ClientReportService::rememberSiteEmail($visit);
+        ClientReportService::sendAfterResponse($visit);
 
         return response()->json([
             'success' => true,

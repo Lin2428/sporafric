@@ -39,10 +39,19 @@ class TechnicalVisits extends Model
         'control_frequence',
         'date',
         'user_id',
+        'signature_path',
+        'signed_by',
+        'signed_at',
+        'signature_refusal',
+        'client_email',
+        'report_sent_at',
+        'report_error',
     ];
 
     protected $casts = [
     'date' => 'datetime',
+    'signed_at' => 'datetime',
+    'report_sent_at' => 'datetime',
     'control_tension' => 'array',
     'control_tension_2' => 'array',
     'control_intensite' => 'array',

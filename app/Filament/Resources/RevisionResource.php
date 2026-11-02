@@ -255,7 +255,7 @@ class RevisionResource extends Resource
                             ->required(),
                         TextInput::make('price')
                             ->label('Prix unitaire')
-                            ->numeric()
+                            ->fcfa(false)
                             ->minValue(0)
                             ->reactive()
                             ->required(),

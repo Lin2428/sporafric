@@ -28,6 +28,12 @@ class ReportLocationPage extends DailyReportPage implements HasForms
     public $devis;
     public $generator;
 
+    // Ancien rapport (vue v_locations_repport), remplacé par RentalReportPage : retiré du menu.
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
          public static function canAccess(): bool
     {
         return auth()->user()->hasPermissionTo('page_ReportLocationPage');

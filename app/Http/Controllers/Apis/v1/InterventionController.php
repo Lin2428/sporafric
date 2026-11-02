@@ -7,6 +7,7 @@ use App\Enum\InterventionType;
 use App\Http\Controllers\Controller;
 use App\Models\Intervention;
 use App\Models\InterventionFiche;
+use App\Services\ClientReportService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -49,6 +50,9 @@ class InterventionController extends Controller
                 'nex_vidange' => $intervention->generator?->next_vidange,
                 'site' => $intervention->site ?? $intervention->contract?->generators?->first()?->pivot?->site ?? $intervention->devis?->generators?->first()?->pivot?->site,
                 'phone' => $intervention->contract?->generators?->first()?->pivot?->contact_phone ?? $intervention->devis?->generators?->first()?->pivot?->contact_phone ?? $intervention->customer?->contact_c_phone,
+                // Destinataire pré-rempli du compte rendu (modifiable au moment de la signature)
+                'email' => ClientReportService::recipient($intervention),
+                'signed' => (bool) ($intervention->signature_path || $intervention->signature_refusal),
                 'images' => $intervention->fiches->map(function (InterventionFiche $fiche) {
                     $data = [];
                     if ($fiche->fiche != null && !str_contains($fiche->fiche, ".pdf")) {
@@ -79,9 +83,12 @@ class InterventionController extends Controller
 
         $validated = $request->validate([
             'rapport' => ['nullable', 'string'],
+            'constat' => ['nullable', 'string'],
+            'houres' => ['nullable', 'numeric', 'min:0'],
             'statut' => ['required', 'in:en_attente,en_cours,termine,annule'],
             'heure_debut' => ['nullable', 'date_format:H:i'],
             'heure_fin' => ['nullable', 'date_format:H:i'],
+            ...ClientReportService::rules(),
         ]);
 
         $intervention = Intervention::query()
@@ -103,6 +110,14 @@ class InterventionController extends Controller
             'cancelled' => $validated['statut'] === 'annule',
         ];
 
+        // Constat et compteur saisis sur le terrain (repris dans le compte rendu client)
+        if (array_key_exists('constat', $validated) && $validated['constat'] !== null) {
+            $update['description_panne'] = $validated['constat'];
+        }
+        if (isset($validated['houres'])) {
+            $update['houres'] = (string) (int) $validated['houres'];
+        }
+
         $update['status'] = match ($validated['statut']) {
             'en_attente' => InterventionStatus::PLANIFIEE->value,
             'en_cours' => InterventionStatus::EN_COURS->value,
@@ -117,7 +132,15 @@ class InterventionController extends Controller
             $update['end_date'] = Carbon::parse("{$day} {$validated['heure_fin']}");
         }
 
-        $intervention->update($update);
+        $intervention->fill($update);
+        ClientReportService::fill($intervention, $validated);
+        $intervention->save();
+
+        // Intervention terminée et signée (ou client absent) → compte rendu au client, une seule fois
+        if ($validated['statut'] === 'termine') {
+            ClientReportService::rememberSiteEmail($intervention);
+            ClientReportService::sendAfterResponse($intervention);
+        }
 
         return response()->json([
             'success' => true,
@@ -126,6 +149,7 @@ class InterventionController extends Controller
                 'id' => $intervention->id,
                 'status' => $intervention->status,
                 'is_synced' => $intervention->is_synced,
+                'signed' => (bool) ($intervention->signature_path || $intervention->signature_refusal),
             ],
         ]);
     }

@@ -101,6 +101,7 @@ class OdooController extends Controller
         $domain = DomainBuilder::build(SynchronizationParametersType::GENERATOR->value);
         if (!$all && !empty($generator)) {
             $domain[] = ['id', 'not in', $generator];
+            $domain[] = ['active', '=', true];
         }
         $data      = $odoo->searchRead(
             'product.template',
@@ -193,7 +194,7 @@ class OdooController extends Controller
                             'customer_id' => $customerId,
                             'number' => $oder['name'],
                             'start_date' => $oder['date_order'],
-                            // 'end_date' => $oder['next_action_date'] == false ? null : $oder['next_action_date'],
+                            //'end_date' => $oder['next_action_date'] == false ? null : $oder['next_action_date'],
                             'forfait' => $oder['amount_total'],
                             'is_active' => $oder['invoice_status'] === 'to invoice' ? true : false,
                             'state' => $oder['state'],
@@ -268,6 +269,22 @@ class OdooController extends Controller
                     ]);
             }
         }
+    }
+
+    /**
+     * Périodes de location (dates prévues + réelles, montants HT, factures) et prix de revient des GE.
+     */
+    public static function syncronizeRentalPeriods(): int
+    {
+        return (new \App\Services\RentalPeriodSync())->run();
+    }
+
+    /**
+     * Consommations internes rattachées aux GE par n° de série (= maintenance dans le rapport de location).
+     */
+    public static function syncronizeInternalConsumptions(): array
+    {
+        return (new \App\Services\InternalConsumptionSync())->run();
     }
 
     public static function syncronizeConsoInterne()

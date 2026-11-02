@@ -257,6 +257,16 @@ class TechnicalVisitsResource extends Resource implements HasShieldPermissions
                         ->placeholder('Remarques saisies par le technicien depuis l’app mobile.')
                         ->columnSpanFull(),
                 ]),
+
+            Section::make('Validation client')
+                ->visibleOn('edit')
+                ->schema([
+                    Forms\Components\Placeholder::make('client_signature')
+                        ->hiddenLabel()
+                        ->content(fn ($record) => $record
+                            ? new HtmlString(view('filament.infolist.components.client-signature', ['model' => $record])->render())
+                            : null),
+                ]),
         ]);
     }
 

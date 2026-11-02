@@ -141,7 +141,7 @@ class ContractResource extends Resource implements HasShieldPermissions
 
                         TextInput::make('forfait')
                             ->label('Forfait de maintenance mensuel')
-                            ->numeric()
+                            ->fcfa()
                             ->columnSpanFull(),
 
                         TextInput::make('site')

@@ -242,7 +242,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                             ->schema([
                                 TextInput::make('montant')
                                     ->label('Montant de la main d\'oeuvre')
-                                    ->numeric()
+                                    ->fcfa()
                                     ->columnSpanFull(),
 
                                 Repeater::make('fiches')
@@ -302,7 +302,7 @@ class InterventionResource extends Resource implements HasShieldPermissions
                             ->required(),
                         TextInput::make('price')
                             ->label('Prix unitaire')
-                            ->numeric()
+                            ->fcfa(false)
                             ->minValue(0)
                             ->reactive()
                             ->required(),

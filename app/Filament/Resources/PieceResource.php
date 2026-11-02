@@ -72,12 +72,12 @@ class PieceResource extends Resource implements HasShieldPermissions
                                     ->label('Durée de vie'),
 
                                 TextInput::make('pr')
-                                    ->numeric()
+                                    ->fcfa()
                                     ->label('Prix d\'achat'),
 
                                 TextInput::make('pv')
                                     ->label('Prix de vente')
-                                    ->numeric(),
+                                    ->fcfa(),
 
 
                             ]),

@@ -50,10 +50,22 @@ class CalendarView extends CalendarWidget
     public function getOptions(): array
     {
         return [
-            'title'        => 'Planing',
-            'nowIndicator' => '',
-            'slotDuration' => '00:15:00',
-            'allDay'       => false,
+            'nowIndicator'  => true,
+            'slotDuration'  => '00:15:00',
+            'allDay'        => false,
+            // Vue Mois uniquement : la version de vkurko embarquée n'a pas de vraie vue « dayGridWeek »
+            // (et une vue semaine horaire serait vide, les interventions sont « toute la journée »).
+            'headerToolbar' => [
+                'start'  => 'today prev,next',
+                'center' => 'title',
+                'end'    => '',
+            ],
+            'buttonText' => [
+                'today' => 'Aujourd\'hui',
+            ],
+            // Hauteur automatique : avec une hauteur fixe + « + N autres », vkurko mesure mal les
+            // cartes personnalisées et elles débordent sur la semaine suivante.
+            'dayMaxEvents' => false,
         ];
     }
 
@@ -197,51 +209,76 @@ class CalendarView extends CalendarWidget
      */
     public function onDateSelect(array $info = []): void {}
 
+    /**
+     * Étirement d'une intervention sur plusieurs cases : la fin est décalée du nombre de jours
+     * ajoutés / retirés (heure conservée).
+     */
     public function onEventResize(array $info = []): bool
     {
         parent::onEventResize($info);
 
         $record = $this->getEventRecord();
+        $days   = $this->dayShift($info, 'end');
+        if ($days === 0) {
+            return true;
+        }
 
-        $eventEndDate = Carbon::make($info['event']['end'])->format('Y-m-d');
-        $eventEndTime = $record->end_date
-            ? Carbon::make($record->end_date)->format('H:i')
-            : '12:00';
+        $currentEnd = $record->end_date ?? $record->start_date ?? $record->date_planifiee;
+        $record->update(['end_date' => Carbon::parse($currentEnd)->addDays($days)]);
 
-        $end = $eventEndDate . '-' . $eventEndTime;
-
-        $this->getEventRecord()->update([
-            'end_date' => $end,
-        ]);
         $this->dispatch('reloadCalendar');
         return true;
     }
 
+    /**
+     * Glisser-déposer sur une autre case : la date planifiée ET les dates de début / fin sont
+     * décalées du même nombre de jours (heures conservées). La date planifiée sert au chargement
+     * du planning et aux interventions « du jour » de l'app mobile.
+     */
     public function onEventDrop(array $info = []): bool
     {
         // Don't forget to call the parent method to resolve the event record
         parent::onEventDrop($info);
         $record = $this->getEventRecord();
 
-        $eventStartDate = Carbon::make($info['event']['start'])->addDay()->format('Y-m-d');
-        $eventStartTime = $record->start_date
-            ? Carbon::make($record->start_date)->format('H:i')
-            : '11:00';
+        $days = $this->dayShift($info, 'start');
+        if ($days === 0) {
+            return true;
+        }
 
-        $eventEndDate = Carbon::make($info['event']['end'])->format('Y-m-d');
-        $eventEndTime = $record->end_date
-            ? Carbon::make($record->end_date)->format('H:i')
-            : '12:00';
-
-        $start = $eventStartDate . '-' . $eventStartTime;
-        $end   = $eventEndDate . '-' . $eventEndTime;
-        $this->getEventRecord()->update([
-            'start_date' => $start,
-            'end_date'   => $end,
+        $shift = fn ($date) => $date ? Carbon::parse($date)->addDays($days) : null;
+        $record->update([
+            'date_planifiee' => $shift($record->date_planifiee),
+            'start_date'     => $shift($record->start_date),
+            'end_date'       => $shift($record->end_date),
         ]);
+
+        Notification::make()
+            ->success()
+            ->body('Intervention déplacée au ' . Carbon::parse($record->date_planifiee)->format('d/m/Y'))
+            ->send();
 
         $this->dispatch('reloadCalendar');
         return true;
+    }
+
+    /**
+     * Nombre de jours de décalage entre l'ancien et le nouvel événement. Les deux dates arrivent
+     * sérialisées de la même façon par le navigateur (UTC), la différence est donc exacte quel que
+     * soit le fuseau ; à défaut, on lit le `delta` de vkurko/calendar.
+     */
+    private function dayShift(array $info, string $edge): int
+    {
+        $old = data_get($info, "oldEvent.{$edge}");
+        $new = data_get($info, "event.{$edge}");
+        if ($old && $new) {
+            return (int) round(Carbon::parse($old)->diffInDays(Carbon::parse($new), false));
+        }
+
+        $delta = (array) data_get($info, $edge === 'start' ? 'delta' : 'endDelta', []);
+
+        return (int) (($delta['years'] ?? 0) * 365 + ($delta['months'] ?? 0) * 30 + ($delta['days'] ?? 0)
+            + intdiv((int) ($delta['seconds'] ?? 0), 86400));
     }
 
     public function getEventContent(): null | string | array

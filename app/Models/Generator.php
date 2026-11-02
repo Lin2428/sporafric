@@ -18,6 +18,7 @@ class Generator extends Model
         'image',
         'reference',
         'power',
+        'pr',
         'voltage',
         'frequency',
         'serial_number',
@@ -104,6 +105,17 @@ class Generator extends Model
     public function files()
     {
         return $this->hasMany(GeneratorFiles::class);
+    }
+
+    /** Périodes de location / prêt / maintenance / dotation importées d'Odoo. */
+    public function rentalPeriods(): HasMany
+    {
+        return $this->hasMany(RentalPeriod::class);
+    }
+
+    public function statusLogs(): HasMany
+    {
+        return $this->hasMany(GeneratorStatusLog::class)->latest();
     }
 
     public function getNextRecordLocation(): ?self
